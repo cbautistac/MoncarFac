@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.formulasistemas.com/WSP/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://www.formulasistemas.com/WSP/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.formulasistemas.com/WSP/">
+      <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+      <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="CreaEmpresaRequest">
+    <wsdl:part name="rfc" type="xsd:string" />
+    <wsdl:part name="folios" type="xsd:int" />
+  </wsdl:message>
+  <wsdl:message name="CreaEmpresaResponse">
+    <wsdl:part name="return" type="xsd:int" />
+  </wsdl:message>
+  <wsdl:message name="TimbrarRequest">
+    <wsdl:part name="rfc" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="TimbrarResponse">
+    <wsdl:part name="return" type="xsd:int" />
+  </wsdl:message>
+  <wsdl:message name="SolicitudTimbresRequest">
+    <wsdl:part name="rfc" type="xsd:string" />
+    <wsdl:part name="folios" type="xsd:int" />
+  </wsdl:message>
+  <wsdl:message name="SolicitudTimbresResponse">
+    <wsdl:part name="return" type="xsd:int" />
+  </wsdl:message>
+  <wsdl:message name="BajaEmpresaRequest">
+    <wsdl:part name="rfc" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="BajaEmpresaResponse">
+    <wsdl:part name="return" type="xsd:int" />
+  </wsdl:message>
+  <wsdl:message name="ReactivarEmpresaRequest">
+    <wsdl:part name="rfc" type="xsd:string" />
+    <wsdl:part name="folios" type="xsd:int" />
+  </wsdl:message>
+  <wsdl:message name="ReactivarEmpresaResponse">
+    <wsdl:part name="return" type="xsd:int" />
+  </wsdl:message>
+  <wsdl:message name="ObtieneEstatusRequest">
+    <wsdl:part name="rfc" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtieneEstatusResponse">
+    <wsdl:part name="return" type="xsd:int" />
+  </wsdl:message>
+  <wsdl:message name="ObtieneFoliosDisponiblesRequest">
+    <wsdl:part name="rfc" type="xsd:string" />
+  </wsdl:message>
+  <wsdl:message name="ObtieneFoliosDisponiblesResponse">
+    <wsdl:part name="return" type="xsd:int" />
+  </wsdl:message>
+  <wsdl:portType name="Manejador de TimbresPortType">
+    <wsdl:operation name="CreaEmpresa">
+      <documentation>
+      </documentation>
+      <wsdl:input message="tns:CreaEmpresaRequest" />
+      <wsdl:output message="tns:CreaEmpresaResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="Timbrar">
+      <documentation>Proceso de Timbrado y manejador de Timbres.</documentation>
+      <wsdl:input message="tns:TimbrarRequest" />
+      <wsdl:output message="tns:TimbrarResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudTimbres">
+      <documentation>Proceso de renovacion y ampliacion de timbres de una empresa.</documentation>
+      <wsdl:input message="tns:SolicitudTimbresRequest" />
+      <wsdl:output message="tns:SolicitudTimbresResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="BajaEmpresa">
+      <documentation>Proceso de dar de Baja una Empresa.</documentation>
+      <wsdl:input message="tns:BajaEmpresaRequest" />
+      <wsdl:output message="tns:BajaEmpresaResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="ReactivarEmpresa">
+      <documentation>Proceso de reactivar una empresa dada de baja.</documentation>
+      <wsdl:input message="tns:ReactivarEmpresaRequest" />
+      <wsdl:output message="tns:ReactivarEmpresaResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtieneEstatus">
+      <documentation>Obtiene el estatus de la empresa.</documentation>
+      <wsdl:input message="tns:ObtieneEstatusRequest" />
+      <wsdl:output message="tns:ObtieneEstatusResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="ObtieneFoliosDisponibles">
+      <documentation>Obtiene el numero de folios disponibles.</documentation>
+      <wsdl:input message="tns:ObtieneFoliosDisponiblesRequest" />
+      <wsdl:output message="tns:ObtieneFoliosDisponiblesResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="Manejador de TimbresBinding" type="tns:Manejador de TimbresPortType">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="rpc" />
+    <wsdl:operation name="CreaEmpresa">
+      <soap:operation soapAction="http://www.formulasistemas.com/WSP/#CreaEmpresa" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Timbrar">
+      <soap:operation soapAction="http://www.formulasistemas.com/WSP/#Timbrar" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SolicitudTimbres">
+      <soap:operation soapAction="http://www.formulasistemas.com/WSP/#SolicitudTimbres" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="BajaEmpresa">
+      <soap:operation soapAction="http://www.formulasistemas.com/WSP/#BajaEmpresa" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ReactivarEmpresa">
+      <soap:operation soapAction="http://www.formulasistemas.com/WSP/#ReactivarEmpresa" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtieneEstatus">
+      <soap:operation soapAction="http://www.formulasistemas.com/WSP/#ObtieneEstatus" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ObtieneFoliosDisponibles">
+      <soap:operation soapAction="http://www.formulasistemas.com/WSP/#ObtieneFoliosDisponibles" style="rpc" />
+      <wsdl:input>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded" namespace="http://www.formulasistemas.com/WSP/" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Manejador de Timbres">
+    <wsdl:port name="Manejador de TimbresPort" binding="tns:Manejador de TimbresBinding">
+      <soap:address location="http://www.formulasistemas.com/WSP/WS.php" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

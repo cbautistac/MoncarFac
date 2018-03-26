@@ -1,0 +1,87 @@
+﻿.infoPanel {
+    -webkit-box-shadow: 0px 75px 35px -85px rgba(10, 30, 65, 0.6);
+    -moz-box-shadow: 0px 75px 35px -85px rgba(10, 30, 65, 0.6);
+    box-shadow: 0px 75px 35px -85px rgba(10, 30, 65, 0.6);
+    font-family: Arial, Helvetica, sans-serif;
+    border-color: #505050;
+    border-style: solid;
+    border-width: 0px;
+    border-radius: 1em 1em 1em 1em;
+    -webkit-border-radius: 1em 1em 1em 1em;
+    -moz-border-radius: 1em 1em 1em 1em;
+    margin: 0 auto;
+    height: 500px;
+    width: 900px;     
+    border-right:solid 1px #ff0000;  
+}
+
+/**
+ * 	CSS3 Only Horizontal and Vertical Accordion
+ * 	Author: Paul Underwood for Hongkiat.com
+ *  Website: www.paulund.co.uk
+ *  Date: 27/11/11
+ *  Version: 1.0
+ */
+
+/*Define Accordion box*/
+section{background-color:#d1d1d1; border:solid 1px #fff;}
+
+.accordion { width:900px; overflow:hidden; color:#000000; background:#ffffff; height:500px;  border-radius: 1em 1em 1em 1em;
+    -webkit-border-radius: 1em 1em 1em 1em;
+    -moz-border-radius: 1em 1em 1em 1em;}
+
+/*General Accordion****************************************************************************/
+/*Set style of open slide*/
+.accordion section:target { background:#FFF;}
+.accordion section:target:hover { background:#FFF; }
+.accordion section:target h2 {width:100%; background-color:#d1d1d1;}
+.accordion section:target h2 a{ color:#000; padding:0;}
+.accordion section:target p {display:block;}
+.accordion section h2 a{display:block; font-size:18pt; font-weight:bold; color:#eee; text-decoration:none; }
+
+/*set style of closed slide*/
+.accordion section{ float:left;	overflow:hidden; color:#333; cursor:pointer; background: #333;}
+.accordion section:hover {background:#3068cc;}
+.accordion section p { display:none; }
+.accordion section:after{position:relative;font-size:12pt;color:#000;font-weight:bold;}
+
+/*End General Accordion****************************************************************************/
+
+/*Horizontal Accordion *********************************************************************/
+.horizontal section{ width:5%; height:500px; 
+	-moz-transition:width 0.2s ease-out; 
+	-webkit-transition:width 0.2s ease-out;
+  	-o-transition:width 0.2s ease-out;
+	-ms-transition:width 0.2s ease-out;
+  	transition:width 0.2s ease-out;
+}
+
+/*Position the number of the slide*/
+.horizontal section:after{top:140px;left:15px;}
+
+/*Header of closed slide*/
+.horizontal section h2 { 
+	-webkit-transform:rotate(90deg);
+	-moz-transform:rotate(90deg);
+	-o-transform: rotate(90deg);
+	-ms-transform: rotate(90deg);
+	transform: rotate(90deg);
+	width:240px; position:relative; left:-100px; top:200px;
+} 
+
+/*On mouse over open slide*/
+.horizontal :target 
+{
+    width:520px; /*Mover por cada seccion agregada*/
+    height:500px; 
+}
+.horizontal :target h2{ top:0px;left:0;
+	-webkit-transform:rotate(0deg);
+	-moz-transform:rotate(0deg);
+	-o-transform: rotate(0deg);
+	-ms-transform: rotate(0deg);
+	transform: rotate(0deg); 
+}
+/*End Horizontal Accordion *********************************************************************/
+
+.alter{background-color:#777;}

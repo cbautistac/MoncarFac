@@ -1,0 +1,11 @@
+using E-Utilities;
+
+Fechas fechas = new Fechas();
+
+
+
+fechas.fecha = fechas.obtieneFechaLocal();
+        fechas.tipoFormato = 4;
+        string fechaRetorno = fechas.obtieneFechaConFormato();
+        fechas.tipoFormato = 6;
+        string horaRetorno = fechas.obtieneFechaConFormato();

@@ -1,0 +1,163 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Cuentas.master.cs" Inherits="Cuentas" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/> 
+    <title>Cuentas</title>
+    <link rel="stylesheet" type="text/css" href="css/cloud-admin.css" />
+	<link rel="stylesheet" type="text/css"  href="css/themes/default.css" />
+	<link rel="stylesheet" type="text/css"  href="css/responsive.css" />	
+	<link href="css/4.4.0/css/font-awesome.min.css" rel="stylesheet"/>
+	<link rel="stylesheet" type="text/css"  href="css/generales.css" />
+	<!-- FONTS -->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'/>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="js/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="js/jquery.cookie.min.js"></script>	
+	<script type="text/javascript" src="js/script.js"></script>
+    
+    <script src="js/base.js" type="text/javascript"></script>
+    <script src="js/full-calendar/fullcalendar.min.js" type="text/javascript"></script>
+
+
+	<script type="text/javascript">
+	    jQuery(document).ready(function () {
+	        App.init(); //Initialise plugins and elements
+
+	    });
+	</script>
+</head>
+<body>
+    <form id="form1" runat="server">
+
+            <div class="encabezado">        
+            <table class="ancho100 colorBlanco alineado alto100">
+                <tr>
+                    <td class="marginLeft top0 ancho50">
+                        <asp:Label ID="lbltitulo" runat="server" Text="MoncarWeb" CssClass="margin-left-50 titulo negritas colorMoncarAzul alineado margenLeft" Visible="false" />&nbsp;
+                        <asp:Label ID="lblEmpresa" runat="server" CssClass="colorMoncarAzul alineado" Visible="false" ></asp:Label>                        
+                        <asp:Image ID="imgEmpresa" runat="server" CssClass="img-responsive imagenLogo" ImageUrl="~/img/moncar.png"/>                        
+                        <asp:Label ID="lblFechaActual" runat="server" Visible="false"></asp:Label>
+                    </td>
+                    <td>
+                        <div id="sidebar-collapse" class="sidebar-collapse btn btn-info">
+				            <i class="fa fa-bars" data-icon1="fa fa-bars" data-icon2="fa fa-bars" ></i>
+			            </div>
+                    </td>
+                    <td class="ancho50">
+
+                        <table class="ancho100">
+                            <tr>
+                                <td  class="textoBold text-left">
+                                    <table>
+                                        <tr>
+                                            <td class="textoBold text-center">
+                                                <asp:Label ID="lblTallerSesion" runat="server" CssClass="colorMorado" Visible="false"></asp:Label>
+                                                <asp:Label ID="lblUser" runat="server" CssClass="colorBlanco"></asp:Label>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>                                
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="page">
+		    <!-- SIDEBAR -->
+		    <div id="sidebar" class="sidebar">
+			    <div class="sidebar-menu nav-collapse">			
+				    <!-- SIDEBAR MENU -->
+				    <ul>
+					    <li class="has-sub" id="mCuentasCP" runat="server">
+						    <a href="javascript:;" class="">
+							    <i class="fa fa-outdent fa-fw"></i> <span class="menu-text">Cuentas por Pagar</span>
+							    <span class="arrow"></span>
+						    </a>
+						    <ul class="sub">
+							    <li id="subFacPagar" runat="server"><asp:LinkButton ID="lnkFacturasPagar" runat="server" OnClick="lnkFacturasPagar_Click" ><span class="sub-menu-text">Facturas por Pagar</span></asp:LinkButton></li>
+                                <li id="subCostos" runat="server"><asp:LinkButton ID="lnkControlCostos" runat="server" onclick="lnkControlCostos_Click" ><span class="sub-menu-text">Control de Costos por Unidad</span></asp:LinkButton></li>
+                                <li id="subConsultaOp" runat="server"><asp:LinkButton ID="lnkOperarios" runat="server" onclick="lnkOperarios_Click"><span class="sub-menu-text">Operarios Ticket</span></asp:LinkButton></li>
+                                <li id="subPagoOper" runat="server"><asp:LinkButton ID="lnkPagoOperarios" runat="server" onclick="lnkPagoOperarios_Click"><span class="sub-menu-text">Pago Operarios</span></asp:LinkButton></li>                                
+						    </ul>
+					    </li>
+                        <li class="has-sub" id="mCuentasCC" runat="server">
+                            <asp:LinkButton ID="lnkCuentasCc" OnClick="lnkCuentasCc_Click" runat="server"><i class="fa fa-indent fa-fw"></i> <span class="menu-text">Cuentas por Cobrar</span></asp:LinkButton>							    
+					    </li>
+                        <li class="has-sub" id="Li1" runat="server">
+						    <a href="javascript:;" class="">
+							    <i class="fa fa-archive fa-fw"></i> <span class="menu-text">Facturas</span>
+							    <span class="arrow"></span>
+						    </a>
+						    <ul class="sub">
+							    <li id="Li2" runat="server"><asp:LinkButton ID="lnkComparativoCostos" runat="server" OnClick="lnkComparativoCostos_Click" ><span class="sub-menu-text">Costos</span></asp:LinkButton></li>
+                                <li id="Li3" runat="server"><asp:LinkButton ID="lnkFacturas" runat="server" onclick="lnkFacturas_Click" ><span class="sub-menu-text">Facturas Por Pagar</span></asp:LinkButton></li>                                
+                                <li id="Li4" runat="server"><asp:LinkButton ID="lnkFacturasCC" runat="server" onclick="lnkFacturasCC_Click" ><span class="sub-menu-text">Facturas Por Cobrar</span></asp:LinkButton></li>                                
+						    </ul>
+					    </li>
+                        <li class="has-sub" id="mext" runat="server">
+                            <asp:LinkButton ID="lnkFacturasExternas" OnClick="lnkFacturasExternas_Click" runat="server"><i class="fa fa-inbox fa-fw"></i> <span class="menu-text">Externas</span></asp:LinkButton>							    
+					    </li>                         
+					    <li class="has-sub" id="mReportes" runat="server" visible="false">
+						    <a href="javascript:;" class="">
+							    <i class="fa fa-print fa-fw"></i> <span class="menu-text">Reportes</span>
+							    <span class="arrow"></span>
+						    </a>
+						    <ul class="sub">
+                                <li id="subCP" runat="server"><asp:LinkButton ID="lnkCP" runat="server" ><span class="sub-menu-text">Cuentas por Cobrar</span></asp:LinkButton></li>
+                                <li id="subCC" runat="server"><asp:LinkButton ID="lnkCC" runat="server" ><span class="sub-menu-text">Cuentas por Pagar</span></asp:LinkButton></li>                                
+						    </ul>
+					    </li>
+                        <li class="has-sub" id="Ordenes">
+                            <asp:LinkButton ID="lnkRegresar" runat="server" OnClick="lnkRegresar_Click"><i class="fa fa-cog"></i><span class="menu-text">Regresar a Operaci&oacute;n</span></asp:LinkButton>						    
+					    </li>
+                        <li class="has-sub" id="msalir">
+                            <asp:LinkButton ID="lnkCerrarSesion" runat="server" OnClick="lnkCerrarSesion_Click"><i class="fa fa-sign-out"></i><span class="menu-text">Cerrar Sesi&oacute;n</span></asp:LinkButton>						    
+					    </li>
+				    </ul>
+				    <!-- /SIDEBAR MENU -->
+			    </div>
+		    </div>
+		    <!-- /SIDEBAR -->
+		    <div id="main-content">
+			    <div class="container">
+				    <div class="row">
+					    <div id="content" class="col-lg-12">
+						    <!-- PAGE HEADER-->
+						    <div class="row">
+							    <div class="col-sm-12">                                    
+                                    <div>
+                                        <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+        
+                                        </asp:ContentPlaceHolder>
+                                    </div>
+                                    <div class="page-header text-center">
+		                                <!-- BREADCRUMBS -->
+		                                <ul class="breadcrumb">
+			                                <li>
+                                                <i class="fa fa-copyright t10 colorNegro"></i>&nbsp;<asp:Label ID="lblCopyRight" runat="server" CssClass="t10 alingMiddle colorNegro link" Text="Formula Sistemas "></asp:Label><br />
+                                                <asp:Label ID="lblversion" runat="server" CssClass="t10 alingMiddle colorNegro"></asp:Label>
+			                                </li>
+		                                </ul>		                                
+	                                </div>
+                                </div>
+						    </div>
+						    <!-- /PAGE HEADER -->
+					    </div>
+				    </div>
+			    </div>
+		    </div>
+	    </div>
+
+
+    
+    </form>
+</body>
+</html>

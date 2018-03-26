@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="GetTicket">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="base64Cfd" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTicketResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTicketResult" type="tns:StructCfd" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="StructCfd">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="RfcEmisor" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="RfcReceptor" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Version" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Serie" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Folio" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="FechaExpedicion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MontoOperacion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="MontoImpuesto" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="TipoComprobante" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Cadena" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Firma" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="SerieCertificado" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Cfdi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Timbre" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="state" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="AuthSoapHd" type="tns:AuthSoapHd" />
+      <s:complexType name="AuthSoapHd">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+        </s:sequence>
+        <s:anyAttribute />
+      </s:complexType>
+      <s:element name="GetTicketSC">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="base64Cfd" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTicketSCResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTicketSCResult" type="tns:StructCfd" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTicketCSF">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="base64Cfd" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTicketCSFResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTicketCSFResult" type="tns:StructCfd" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTicketAU">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="base64Cfd" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="rfcAdministrador" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="cuentaAdministrador" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="claveAdministrador" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTicketAUResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTicketAUResult" type="tns:StructCfd" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CancelTicket">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="base64Cfd" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CancelTicketResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CancelTicketResult" type="tns:StructCancel" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="StructCancel">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="1" name="RfcSolicitante" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Fecha" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="UUIDs" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NoSerieFirmante" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+          <s:element minOccurs="1" maxOccurs="1" name="state" type="s:int" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="CancelTicketSC">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="strUserName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="strPassword" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="base64Cfd" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CancelTicketSCResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CancelTicketSCResult" type="tns:StructCancel" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CancelTicketExt">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="base64Cfd" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="totalfactura" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="rfcreceptor" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="CancelTicketExtResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="CancelTicketExtResult" type="tns:StructCancel" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PpoCfdTimbre_Cn">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="evcTipoComprobante" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="evcRfcEmisor" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="evcRfcReceptor" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="evcFechaExpedicion" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="evcTotal" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PpoCfdTimbre_CnResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PpoCfdTimbre_CnResult" type="tns:ClienteUsuarioTimbre" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ClienteUsuarioTimbre">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="State" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="StateDescript" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Estado" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Cfdi" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="NoEncontrados" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetAcuse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="index" type="s:long" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAcuseResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAcuseResult" type="tns:StructAcuse" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="StructAcuse">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="state" type="s:int" />
+          <s:element minOccurs="0" maxOccurs="1" name="Descripcion" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Fecha" type="s:string" />
+          <s:element minOccurs="0" maxOccurs="1" name="Xml" type="s:string" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="TestCfd">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="base64Cfd" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TestCfdResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TestCfdResult" type="tns:StructCfd" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SchemaCfd">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="base64Cfd" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SchemaCfdResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="SchemaCfdResult" type="tns:StructCfd" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetTicketSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTicket" />
+  </wsdl:message>
+  <wsdl:message name="GetTicketSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTicketResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTicketAuthSoapHd">
+    <wsdl:part name="AuthSoapHd" element="tns:AuthSoapHd" />
+  </wsdl:message>
+  <wsdl:message name="GetTicketSCSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTicketSC" />
+  </wsdl:message>
+  <wsdl:message name="GetTicketSCSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTicketSCResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTicketCSFSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTicketCSF" />
+  </wsdl:message>
+  <wsdl:message name="GetTicketCSFSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTicketCSFResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTicketCSFAuthSoapHd">
+    <wsdl:part name="AuthSoapHd" element="tns:AuthSoapHd" />
+  </wsdl:message>
+  <wsdl:message name="GetTicketAUSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTicketAU" />
+  </wsdl:message>
+  <wsdl:message name="GetTicketAUSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTicketAUResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTicketAUAuthSoapHd">
+    <wsdl:part name="AuthSoapHd" element="tns:AuthSoapHd" />
+  </wsdl:message>
+  <wsdl:message name="CancelTicketSoapIn">
+    <wsdl:part name="parameters" element="tns:CancelTicket" />
+  </wsdl:message>
+  <wsdl:message name="CancelTicketSoapOut">
+    <wsdl:part name="parameters" element="tns:CancelTicketResponse" />
+  </wsdl:message>
+  <wsdl:message name="CancelTicketAuthSoapHd">
+    <wsdl:part name="AuthSoapHd" element="tns:AuthSoapHd" />
+  </wsdl:message>
+  <wsdl:message name="CancelTicketSCSoapIn">
+    <wsdl:part name="parameters" element="tns:CancelTicketSC" />
+  </wsdl:message>
+  <wsdl:message name="CancelTicketSCSoapOut">
+    <wsdl:part name="parameters" element="tns:CancelTicketSCResponse" />
+  </wsdl:message>
+  <wsdl:message name="CancelTicketExtSoapIn">
+    <wsdl:part name="parameters" element="tns:CancelTicketExt" />
+  </wsdl:message>
+  <wsdl:message name="CancelTicketExtSoapOut">
+    <wsdl:part name="parameters" element="tns:CancelTicketExtResponse" />
+  </wsdl:message>
+  <wsdl:message name="CancelTicketExtAuthSoapHd">
+    <wsdl:part name="AuthSoapHd" element="tns:AuthSoapHd" />
+  </wsdl:message>
+  <wsdl:message name="PpoCfdTimbre_CnSoapIn">
+    <wsdl:part name="parameters" element="tns:PpoCfdTimbre_Cn" />
+  </wsdl:message>
+  <wsdl:message name="PpoCfdTimbre_CnSoapOut">
+    <wsdl:part name="parameters" element="tns:PpoCfdTimbre_CnResponse" />
+  </wsdl:message>
+  <wsdl:message name="PpoCfdTimbre_CnAuthSoapHd">
+    <wsdl:part name="AuthSoapHd" element="tns:AuthSoapHd" />
+  </wsdl:message>
+  <wsdl:message name="GetAcuseSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAcuse" />
+  </wsdl:message>
+  <wsdl:message name="GetAcuseSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAcuseResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetAcuseAuthSoapHd">
+    <wsdl:part name="AuthSoapHd" element="tns:AuthSoapHd" />
+  </wsdl:message>
+  <wsdl:message name="TestCfdSoapIn">
+    <wsdl:part name="parameters" element="tns:TestCfd" />
+  </wsdl:message>
+  <wsdl:message name="TestCfdSoapOut">
+    <wsdl:part name="parameters" element="tns:TestCfdResponse" />
+  </wsdl:message>
+  <wsdl:message name="TestCfdAuthSoapHd">
+    <wsdl:part name="AuthSoapHd" element="tns:AuthSoapHd" />
+  </wsdl:message>
+  <wsdl:message name="SchemaCfdSoapIn">
+    <wsdl:part name="parameters" element="tns:SchemaCfd" />
+  </wsdl:message>
+  <wsdl:message name="SchemaCfdSoapOut">
+    <wsdl:part name="parameters" element="tns:SchemaCfdResponse" />
+  </wsdl:message>
+  <wsdl:message name="SchemaCfdAuthSoapHd">
+    <wsdl:part name="AuthSoapHd" element="tns:AuthSoapHd" />
+  </wsdl:message>
+  <wsdl:portType name="ServiceSoap">
+    <wsdl:operation name="GetTicket">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Obtiene el timbre, regresa el timbre y el cfdi</wsdl:documentation>
+      <wsdl:input message="tns:GetTicketSoapIn" />
+      <wsdl:output message="tns:GetTicketSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTicketSC">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Obtiene el timbre, regresa el timbre y el cfdi sin usar cabeceras</wsdl:documentation>
+      <wsdl:input message="tns:GetTicketSCSoapIn" />
+      <wsdl:output message="tns:GetTicketSCSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTicketCSF">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Obtiene el timbre, regresa el timbre y el cfdi, validando solo serie y folio</wsdl:documentation>
+      <wsdl:input message="tns:GetTicketCSFSoapIn" />
+      <wsdl:output message="tns:GetTicketCSFSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTicketAU">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Obtiene el timbre, agrega un usuario si no existe</wsdl:documentation>
+      <wsdl:input message="tns:GetTicketAUSoapIn" />
+      <wsdl:output message="tns:GetTicketAUSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CancelTicket">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Cancela el timbre</wsdl:documentation>
+      <wsdl:input message="tns:CancelTicketSoapIn" />
+      <wsdl:output message="tns:CancelTicketSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CancelTicketSC">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Cancela el timbre sin usar cabecera</wsdl:documentation>
+      <wsdl:input message="tns:CancelTicketSCSoapIn" />
+      <wsdl:output message="tns:CancelTicketSCSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CancelTicketExt">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Cancela el timbre de otros PAC</wsdl:documentation>
+      <wsdl:input message="tns:CancelTicketExtSoapIn" />
+      <wsdl:output message="tns:CancelTicketExtSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PpoCfdTimbre_Cn">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Obtiene un CFDI</wsdl:documentation>
+      <wsdl:input message="tns:PpoCfdTimbre_CnSoapIn" />
+      <wsdl:output message="tns:PpoCfdTimbre_CnSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAcuse">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Obtiene un CFDI</wsdl:documentation>
+      <wsdl:input message="tns:GetAcuseSoapIn" />
+      <wsdl:output message="tns:GetAcuseSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TestCfd">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Verifica la estructura del cfd y entrega la decodificación</wsdl:documentation>
+      <wsdl:input message="tns:TestCfdSoapIn" />
+      <wsdl:output message="tns:TestCfdSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SchemaCfd">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Verifica la estructura del cfd contra el schema</wsdl:documentation>
+      <wsdl:input message="tns:SchemaCfdSoapIn" />
+      <wsdl:output message="tns:SchemaCfdSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ServiceSoap" type="tns:ServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetTicket">
+      <soap:operation soapAction="http://tempuri.org/GetTicket" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetTicketAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTicketSC">
+      <soap:operation soapAction="http://tempuri.org/GetTicketSC" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTicketCSF">
+      <soap:operation soapAction="http://tempuri.org/GetTicketCSF" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetTicketCSFAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTicketAU">
+      <soap:operation soapAction="http://tempuri.org/GetTicketAU" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetTicketAUAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CancelTicket">
+      <soap:operation soapAction="http://tempuri.org/CancelTicket" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:CancelTicketAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CancelTicketSC">
+      <soap:operation soapAction="http://tempuri.org/CancelTicketSC" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CancelTicketExt">
+      <soap:operation soapAction="http://tempuri.org/CancelTicketExt" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:CancelTicketExtAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PpoCfdTimbre_Cn">
+      <soap:operation soapAction="http://tempuri.org/PpoCfdTimbre_Cn" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:PpoCfdTimbre_CnAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAcuse">
+      <soap:operation soapAction="http://tempuri.org/GetAcuse" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:GetAcuseAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TestCfd">
+      <soap:operation soapAction="http://tempuri.org/TestCfd" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:TestCfdAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SchemaCfd">
+      <soap:operation soapAction="http://tempuri.org/SchemaCfd" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+        <soap:header message="tns:SchemaCfdAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ServiceSoap12" type="tns:ServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetTicket">
+      <soap12:operation soapAction="http://tempuri.org/GetTicket" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetTicketAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTicketSC">
+      <soap12:operation soapAction="http://tempuri.org/GetTicketSC" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTicketCSF">
+      <soap12:operation soapAction="http://tempuri.org/GetTicketCSF" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetTicketCSFAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTicketAU">
+      <soap12:operation soapAction="http://tempuri.org/GetTicketAU" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetTicketAUAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CancelTicket">
+      <soap12:operation soapAction="http://tempuri.org/CancelTicket" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:CancelTicketAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CancelTicketSC">
+      <soap12:operation soapAction="http://tempuri.org/CancelTicketSC" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CancelTicketExt">
+      <soap12:operation soapAction="http://tempuri.org/CancelTicketExt" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:CancelTicketExtAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PpoCfdTimbre_Cn">
+      <soap12:operation soapAction="http://tempuri.org/PpoCfdTimbre_Cn" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:PpoCfdTimbre_CnAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAcuse">
+      <soap12:operation soapAction="http://tempuri.org/GetAcuse" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:GetAcuseAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TestCfd">
+      <soap12:operation soapAction="http://tempuri.org/TestCfd" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:TestCfdAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SchemaCfd">
+      <soap12:operation soapAction="http://tempuri.org/SchemaCfd" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+        <soap12:header message="tns:SchemaCfdAuthSoapHd" part="AuthSoapHd" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service">
+    <wsdl:port name="ServiceSoap" binding="tns:ServiceSoap">
+      <soap:address location="http://108.60.211.43/rvltimbrado/service1.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ServiceSoap12" binding="tns:ServiceSoap12">
+      <soap12:address location="http://108.60.211.43/rvltimbrado/service1.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
