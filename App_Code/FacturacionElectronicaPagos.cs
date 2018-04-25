@@ -4,25 +4,25 @@ using System.Linq;
 using System.Web;
 
 /// <summary>
-/// Descripción breve de FacturacionElectronica3
+/// Descripción breve de FacturacionElectronicaPagos
 /// </summary>
-public class FacturacionElectronica3
+public class FacturacionElectronicaPagos
 {
     Ejecuciones ejecuta = new Ejecuciones();
     public int empresa { get; set; }
     public int taller { get; set; }
     public int idCFD { get; set; }
     public int idEmisor { get; set; }
-    public int idReceptor {get;set;}
+    public int idReceptor { get; set; }
     private string sql;
     public object[] retorno;
 
-	public FacturacionElectronica3()
-	{
-		//
-		// TODO: Agregar aquí la lógica del constructor
-		//
-	}
+    public FacturacionElectronicaPagos()
+    {
+        //
+        // TODO: Agregar aquí la lógica del constructor
+        //
+    }
     public void obtieneDatosEncabezado()
     {
         //sql = "select encfolioimpresion,case encFormaPago when '1' then '01' when '2' then '02' when '3' then '03' when '4' then '04' when '5' then '05' when '6' then '06' when '7' then '07' when '8' then '08' when '9' then '09' else EncFormaPago end as encformapago  ,EncCondicionesPago,encsubtotal-encdescglobimp,encdesc,enctotal,IdMoneda,EncTipoCambio,TIPO,encmetodopago,EncEmCP,idRecep,encImpTras,encdescglobimp from enccfd_f where IdCfd=" + idCFD;
@@ -51,17 +51,25 @@ public class FacturacionElectronica3
         sql = "select case IdTras3 when '1' then '001' when '2' then '002' when '3' then '003' else '' end as idTras3,cast(DetImpTras3 as decimal(15,4)) from DetCFD_f where idCfd=" + idCFD;
         retorno = ejecuta.dataSet(sql);
     }
-    public void actualizaFactura(string UUID, string fecha,string hora, string selloSAT, string certificadoSAT, string timbreSAT,string certificado, string noCertificado)
+    public bool actualizaFactura(string UUID, string fecha, string hora, string selloSAT, string certificadoSAT, string timbreSAT, string certificado, string noCertificado)
     {
+        bool fact = false;
         //sql = "update EncCFD_f set encEstatus='T', noCertificadoOrg='"+txtNoCertificado+"', certificado='', encSello='"+SelloCFDI+"', encCertificado='', encTimbre='', encFolioUUID='" + UUID + "', encFechaGenera='"+fecha+"', encHoraGenera='"+hora+"' where IdCfd=" + idCFD;
         //sql = " EncCFD_f where idCfd=" + idCFD;
-        sql = "update EncCFD_f set EncFolioUUID='"+UUID+"', EncFechaGenera='"+fecha+"', EncHoraGenera='"+hora+"',EncSello='"+selloSAT+"', EncCertificado='"+certificadoSAT+"',EncTimbre='"+timbreSAT+"',EncEstatus='T',certificado='"+certificado+"',nocertificadoOrg='"+noCertificado+"' where IdCFD=" + idCFD;
-        retorno = ejecuta.insertUpdateDelete(sql);
+        try
+        {
+            sql = "update recepcion_pagos_f set EncFolioUUID='" + UUID + "', EncFechaGenera='" + fecha + "', EncHoraGenera='" + hora + "',EncSello='" + selloSAT + "', EncCertificado='" + certificadoSAT + "',EncTimbre='" + timbreSAT + "',EncEstatus='T',certificado='" + certificado + "',nocertificadoOrg='" + noCertificado + "' where idcfdant=" + idCFD;
+            retorno = ejecuta.insertUpdateDelete(sql);
+            fact = true;
+        }
+        catch (Exception ) { fact = false; };
+        return fact;
     }
-    public void actualizaTimbrado(int IdCDF, string certificado, string fecha, string uuid, string selloSat, string selloCFD, byte[] qr, string ruta, string cadena, string certificadoCfd)
+
+    public void actualizaTimbrado(int IdCDF,string emisor,string receptor, string certificado, string fecha, string uuid, string selloSat, string selloCFD, byte[] qr, string ruta, string cadena, string certificadoCfd, string Folio, string SAnt,string SPag, string STotal, string Parci)
     {
-        sql = "insert into timbrado_f values (" + IdCDF + ",(select isnull((select top 1 idtimbre from timbrado_f where idCfd=" + IdCDF + " order by idtimbre desc),0)+1),'" + certificado + "','" + fecha + "','" + uuid + "','" + selloSat + "','" + selloCFD + "','@imagen','" + ruta + "','" + cadena + "','" + certificadoCfd + "')";
-        retorno = ejecuta.insertAdjuntos(sql,qr);
+        sql = "insert into RecepcionPagos_f values (" + IdCDF + "," + Folio + "," + emisor + "," + receptor + ",(select isnull((select top 1 idtimbre from timbrado_f where idCfd=" + IdCDF + " order by idtimbre desc),0)+1),'" + certificado + "','" + fecha + "','" + uuid + "','" + selloSat + "','" + selloCFD + "','@imagen','" + ruta + "','" + cadena + "','" + certificadoCfd + "','MXN','"+SAnt+"','"+SPag+"','"+STotal+"','"+Parci+"')";
+        retorno = ejecuta.insertAdjuntos(sql, qr);
         //retorno = ejecuta.insertUpdateDelete(sql);
     }
 }

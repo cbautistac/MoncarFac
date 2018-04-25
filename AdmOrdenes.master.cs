@@ -276,4 +276,9 @@ public partial class AdmOrdenes : System.Web.UI.MasterPage
     {
         Response.Redirect("ServProd_F.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"]);
     }
+
+    protected void lnkRecepcionPagos_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("ComprobatePagos.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"]);
+    }
 }

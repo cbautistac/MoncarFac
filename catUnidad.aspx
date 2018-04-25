@@ -197,7 +197,7 @@
                            
                         </div>
 
-                                 <div class="col-lg-3 col-sm-3 text-left"><asp:Label ID="Label9" runat="server" Text="Fecha Inicio:" CssClass="textoBold"></asp:Label></div>
+                                <%-- <div class="col-lg-3 col-sm-3 text-left"><asp:Label ID="Label9" runat="server" Text="Fecha Inicio:" CssClass="textoBold"></asp:Label></div>
                         <div class="col-lg-9 col-sm-9 text-left">
                              <telerik:RadDatePicker ID="txtFecha_ini" runat="server"   >
                                                  <DateInput ID="DateInput3" runat="server" DateFormat="yyyy/MM/dd">
@@ -211,7 +211,7 @@
                                                  <DateInput ID="DateInput1" runat="server" DateFormat="yyyy/MM/dd">
                                                  </DateInput>
                                              </telerik:RadDatePicker>
-                        </div>
+                        </div>--%>
 
                                  <div class="col-lg-3 col-sm-3 text-left"><asp:Label ID="Label12" runat="server" Text="Simbolo:" CssClass="textoBold"></asp:Label></div>
                         <div class="col-lg-9 col-sm-9 text-left">
@@ -258,7 +258,7 @@
                            
                         </div>
 
-                                 <div class="col-lg-3 col-sm-3 text-left"><asp:Label ID="Label17" runat="server" Text="Fecha Inicio:" CssClass="textoBold"></asp:Label></div>
+                                 <%--<div class="col-lg-3 col-sm-3 text-left"><asp:Label ID="Label17" runat="server" Text="Fecha Inicio:" CssClass="textoBold"></asp:Label></div>
                         <div class="col-lg-9 col-sm-9 text-left">
                              <telerik:RadDatePicker ID="txtFechainiEDT" runat="server"   >
                                                  <DateInput ID="DateInput2" runat="server" DateFormat="yyyy/MM/dd">
@@ -272,7 +272,7 @@
                                                  <DateInput ID="DateInput4" runat="server" DateFormat="yyyy/MM/dd">
                                                  </DateInput>
                                              </telerik:RadDatePicker>
-                        </div>
+                        </div>--%>
 
                                  <div class="col-lg-3 col-sm-3 text-left"><asp:Label ID="Label19" runat="server" Text="Simbolo:" CssClass="textoBold"></asp:Label></div>
                         <div class="col-lg-9 col-sm-9 text-left">

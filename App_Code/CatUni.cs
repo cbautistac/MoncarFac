@@ -17,6 +17,7 @@ public class CatUni
     public string simbolo { get; set; }
     public int Decimales { get; set; }
     public decimal Porcentaje { get; set; }
+    public string Temp { set; get; }
 
     public object[] retorno;
     private string sql;
@@ -55,19 +56,19 @@ public class CatUni
 
     public void agregarUnidadSat()
     {
-        sql = "insert into c_unidad_f values ('" + codigo + "','" + Nombre + "','"+Descripcion+"','"+fechaini+"','"+fechafin+"','"+simbolo+"')";
+        sql = "insert into c_unidad_f values ('" + codigo + "','" + Nombre + "','"+Descripcion+"','"+simbolo+"')";
         retorno = ejecuta.insertUpdateDelete(sql);
     }
 
     public void editaUnidadSat()
     {
         sql = "UPDATE c_unidad_f " +
-                " SET  ClaveUnidad='" + codigo + "', Nombre='" + Nombre + "',Descripcion='" + Descripcion + "', FechainicioVigencia='" + fechaini + "',FechafinVigencia='" + fechafin + "',Simbolo='" + simbolo + "' where ClaveUnidad='" + codigo + "' ";
+                " SET  ClaveUnidad='" + codigo + "', Nombre='" + Nombre + "',Descripcion='" + Descripcion + "', Simbolo='" + simbolo + "' where ClaveUnidad='" + Temp + "' ";
         retorno = ejecuta.insertUpdateDelete(sql);
     }
     public void obtieneunidadEditSat()
     {
-        sql = "select * from c_unidad_f where ClaveUnidad='" + codigo + "'";
+        sql = "select ClaveUnidad, RTRIM(Nombre) as Nombre, RTRIM(Descripcion) as Descripcion, RTRIM(Simbolo) as Simbolo from c_unidad_f where ClaveUnidad='" + codigo + "'";
         retorno = ejecuta.dataSet(sql);
     }
     public void eliminaUnidadSat()

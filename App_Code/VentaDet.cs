@@ -76,7 +76,7 @@ public class VentaDet
 
     public static object[] Funcion(int ticket, int idPunto) {
         Ejecuciones ejecuta = new Ejecuciones();
-        string sqlVenta= "SELECT vd.renglon, vd.id_refaccion, vd.descripcion, vd.cantidad, vd.venta_unitaria, vd.importe, vd.porc_descuento, vd.valor_descuento, ve.porc_descuento,ve.desglosado, c.claveProductoSAT, c.claveUnidadSAT,ve.subtotal,ve.iva,ve.total,ve.descuento FROM venta_det vd,venta_enc ve, catproductos c where vd.ticket ="+ticket+" and ve.ticket="+ticket+" and vd.id_refaccion=c.idproducto and ve.id_punto="+idPunto;
+        string sqlVenta= "SELECT vd.renglon, vd.id_refaccion, vd.descripcion, vd.cantidad, vd.venta_unitaria, vd.importe, vd.porc_descuento, vd.valor_descuento, ve.porc_descuento,ve.desglosado, c.claveProductoSAT, c.claveUnidadSAT,ve.subtotal,ve.iva,ve.total,ve.descuento, ve.tickets FROM venta_det vd,venta_enc ve, catproductos c where vd.ticket =" + ticket+" and ve.ticket="+ticket+" and vd.id_refaccion=c.idproducto and ve.id_punto="+idPunto;
         object[] result = ejecuta.dataSet(sqlVenta);
         return result;
     }

@@ -102,12 +102,12 @@ public partial class catUnidad : System.Web.UI.Page
 
             foreach (DataRow r1 in ds1.Tables[0].Rows)
             {
-                TextBox1.Text = r1[0].ToString();
+                TextBox1.Text = temp=r1[0].ToString();
                 txtNombreEDT.Text = r1[1].ToString();
                 txtDescEDT.Text = r1[2].ToString();
-                txtFechainiEDT.SelectedDate = Convert.ToDateTime(r1[3]);
-                txtFechafinEDT.SelectedDate = Convert.ToDateTime(r1[4]);
-                txtSimboloEDT.Text = r1[5].ToString();
+                //txtFechainiEDT.SelectedDate = Convert.ToDateTime(r1[3]);
+                //txtFechafinEDT.SelectedDate = Convert.ToDateTime(r1[4]);
+                txtSimboloEDT.Text = r1[3].ToString();
 
 
 
@@ -115,6 +115,7 @@ public partial class catUnidad : System.Web.UI.Page
         }
 
     }
+    static string temp;
     protected void btnEliminar_Click2(object sender, EventArgs e)
     {
         CatUni edt = new CatUni();
@@ -132,11 +133,12 @@ public partial class catUnidad : System.Web.UI.Page
         agr.codigo = TextBox1.Text;
         agr.Nombre = txtNombreEDT.Text;
         agr.Descripcion = txtDescEDT.Text;
-        DateTime fecha_in = Convert.ToDateTime(txtFechainiEDT.SelectedDate);
-        agr.fechaini = fecha_in.ToString("yyyy/MM/dd");
-        DateTime Fecha_fin = Convert.ToDateTime(txtFechafinEDT.SelectedDate);
-        agr.fechafin = Fecha_fin.ToString("yyyy/MM/dd");
+        //DateTime fecha_in = Convert.ToDateTime(txtFechainiEDT.SelectedDate);
+        //agr.fechaini = fecha_in.ToString("yyyy/MM/dd");
+        //DateTime Fecha_fin = Convert.ToDateTime(txtFechafinEDT.SelectedDate);
+        //agr.fechafin = Fecha_fin.ToString("yyyy/MM/dd");
         agr.simbolo = txtSimboloEDT.Text;
+        agr.Temp = temp;
         agr.editaUnidadSat();
         RadGrid2.DataBind();
         UnidadSATMOD.VisibleOnPageLoad = false;
@@ -157,10 +159,10 @@ public partial class catUnidad : System.Web.UI.Page
         agr.codigo = txtUnidadSat.Text;
         agr.Nombre = txtNombre.Text;
         agr.Descripcion = txtDesSat.Text;
-        DateTime fecha_in = Convert.ToDateTime(txtFecha_ini.SelectedDate);
-        agr.fechaini = fecha_in.ToString("yyyy/MM/dd");
-        DateTime Fecha_fin = Convert.ToDateTime(txtFecha_fin.SelectedDate);
-        agr.fechafin = Fecha_fin.ToString("yyyy/MM/dd");
+        //DateTime fecha_in = Convert.ToDateTime(txtFecha_ini.SelectedDate);
+        //agr.fechaini = fecha_in.ToString("yyyy/MM/dd");
+        //DateTime Fecha_fin = Convert.ToDateTime(txtFecha_fin.SelectedDate);
+        //agr.fechafin = Fecha_fin.ToString("yyyy/MM/dd");
         agr.simbolo = txtSimbolo.Text;
         agr.agregarUnidadSat();
         RadGrid2.DataBind();

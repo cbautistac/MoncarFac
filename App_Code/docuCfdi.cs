@@ -14,6 +14,9 @@ public class docuCfdi
     private static SqlCommand comm = new SqlCommand();
     private static Fechas fechas = new Fechas();
 
+    
+
+
     public int IdCfd { get; set; }
     public int IdEmisor { get; set; }
     public int IdRecep { get; set; }
@@ -194,6 +197,87 @@ public class docuCfdi
         return result;
     }
 
+
+    public static object[] GuardaRecepcionPago(docuCfdi dcfd, List<detDocCfdi> lstDet)
+    {
+        //int CfdiID = -1;
+        //object[] result = new object[2] { false, "" };
+        //conn = new SqlConnection(ConfigurationManager.ConnectionStrings["PVW"].ToString());
+        //if (conn.State == ConnectionState.Open)
+        //    conn.Close();
+
+        //comm = new SqlCommand();
+
+        //using (comm)
+        //{
+        object[] re = new object[1];
+            try
+            {
+            BaseDatos bd = new BaseDatos();
+
+            string valores = "";
+            foreach (detDocCfdi a in lstDet){
+                valores=",'"+a.Folio+"','"+a.Parcialidad+"','"+a.SaldoAnt+"','"+a.SaldoPagado+"','"+a.SaldoAct+"','" + a.UUID+"','"+a.ProductoSAT+"','"+a.ClaveUnidadSAT+"'";
+            }
+            object[] idcfd=bd.scalarInt("select count(*)+1 from recepcion_pagos_f");
+            
+                string Insertar = "insert into recepcion_pagos_f (idcfd,idemisor,idrecep,idtipodoc,idmoneda,EncEmRfc,EncReRfc,EncFecha,EncHora,EncSello,EncCertificado,EncTimbre,EncFormaPago,EncCondicionesPago,EncMetodoPago," +
+                    "EncTipoCambio,EncNota,EncReferencia,EncNumCtaPago,EncRegimen,EncLugarExpedicion,EncFolioImpresion,EncSerieImpresion,usocfdi_sat,tipoDocumento,Folio,Parcialidad," +
+                    "SaldoAnterior, SaldoPagado, SaldoActual, UUIDFactura,ProductoSAT,ClaveUnidadSAT,encestatus,idcfdAnt)" +
+                    "values ('"+idcfd[1].ToString()+"','"+ dcfd.IdEmisor + "'" +
+                    ",'"+ dcfd.IdRecep + "'" +
+                    ",'"+ dcfd.IdTipoDoc + "'" +
+                    ",'"+ dcfd.IdMoneda + "'" +
+                    ",'"+ dcfd.strEmRfc + "'" +
+                    ",'"+ dcfd.strReRfc + "'" +
+                    ",'"+ dcfd.dteFecha.ToShortDateString() + "'" +
+                    ",'"+ dcfd.strHora + "'" +
+                    ",'"+ dcfd.strEncSello + "'" +
+                    ",'"+ dcfd.strEncCert + "'" +
+                    ",'"+ dcfd.strEncTimbre + "'" +
+                    ",'"+ dcfd.strEncFormaPago + "'" +
+                    ",'"+ dcfd.strEncCondicionesPago + "'" +
+                    ",'"+ dcfd.strEncMetodoPago +"'" +
+                    ",'"+ dcfd.floEncTipoCambio + "'" +
+                    ",'"+ dcfd.strEncNota + "'" +
+                    ",'"+ dcfd.strEncReferencia + "'" +
+                    ",'"+ dcfd.strEncNumCtaPago + "'" +
+                    ",'"+ dcfd.strEncRegimen + "'" +
+                    ",'"+ dcfd.strEncLugarExpedicion + "'" +
+                    ",'"+ dcfd.strEncFolioImp + "'" +
+                    ",'"+ dcfd.strEncSerieImp + "'" +
+                    ",'"+ dcfd.idUsoCFDI + "'" +
+                    ",'"+ dcfd.tipoDocumento + "'"+valores +",'P','"+dcfd.idCfdAnt+"')";
+            re= bd.insertUpdateDelete(Insertar);
+
+
+
+                //int filAfec = comm.ExecuteNonQuery();
+
+                //string resp = comm.Parameters["@IdCfd"].Value.ToString();
+                //CfdiID = Convert.ToInt32(comm.Parameters["@IdCfd"].Value);
+                //result[0] = true;
+                //if (CfdiID != -1)
+                //    result[1] = CfdiID;
+                //else
+                //    result[1] = resp;
+            }
+            catch (Exception ex)
+            {
+                re[1] = ex.Message;
+            }
+            finally
+            {
+                comm.Dispose();
+                conn.Close();
+                conn.Dispose();
+            }
+        //}
+
+        return re;
+    }
+
+
     public void actualizaTipoFactura()
     {
         object[] result = new object[2] { false, "" };
@@ -229,6 +313,22 @@ public class docuCfdi
 
 public class detDocCfdi
 {
+
+    /// <summary>
+    /// Para el guardado de la recepcion de pagos
+    /// </summary>
+
+    public string UUID { set; get; }
+    public string Folio { set; get; }
+    public string Moneda { set; get; }
+    public string Parcialidad { set; get; }
+    public string SaldoAnt { set; get; }
+    public string SaldoAct { set; get; }
+    public string SaldoPagado { set; get; }
+    public string ProductoSAT { set; get; }
+    public string ClaveUnidadSAT { set; get; }
+    public string idcfdAnterior { set; get; }
+
     public int IdDetCfd { get; set; }
     int IdCfd { get; set; }
     public int IdEmisor { get; set; }
