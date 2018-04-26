@@ -807,7 +807,7 @@
     <div class="page-header">
         <!-- /BREADCRUMBS -->
         <div class="clearfix">
-            <h3 class="content-title pull-left">Recepci&oacute;n de Pagos</h3>
+            <h3 class="content-title pull-left">Complemento de Pago</h3>
         </div>
     </div>
     <asp:Panel ID="Panel4" runat="server" CssClass="panelCatalogos text-center" ScrollBars="Auto">
@@ -825,7 +825,7 @@
                         SelectedIndex="0" Skin="MetroTouch">
                         <Tabs>
                             <telerik:RadTab Text="Emisor" />
-                            <%--<telerik:RadTab Text="Lugar de Expedición" />--%>
+                            <telerik:RadTab Text="Lugar de Expedición" Visible="false"/>
                             <telerik:RadTab Text="Receptor" />
                             <telerik:RadTab Text="Detalles" />
                             <telerik:RadTab Text="Información Adicional" />
@@ -902,7 +902,7 @@
                             </div>
 
                         </telerik:RadPageView>
-                        <telerik:RadPageView runat="server" ID="vExpedicion">
+                        <telerik:RadPageView runat="server" ID="vExpedicion" Visible="false">
                             <div class="col-lg-12 col-sm-12 text-left">
                                 <asp:Label ID="Label28" runat="server" Text="Emisor: " CssClass="textoBold"></asp:Label>
                                 <asp:Label ID="lblRFCEmiExFac" runat="server"></asp:Label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

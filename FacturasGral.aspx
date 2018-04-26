@@ -116,13 +116,13 @@
                                 EnableHeaderContextFilterMenu="true" AllowPaging="True" PagerStyle-AlwaysVisible="true" DataSourceID="SqlDataSource1" AllowSorting="true" GroupingEnabled="false" PageSize="100" >                        
                                 <MasterTableView DataSourceID="SqlDataSource1" AutoGenerateColumns="False" DataKeyNames="idCfd">
                                     <Columns>                                                                
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="idCfd" HeaderStyle-Width="150px" FilterControlAltText="Filtro idCfd" HeaderText="idCfd" SortExpression="idCfd" UniqueName="idCfd" Visible="true"/>
+                                        <%--<telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="idCfd" HeaderStyle-Width="150px" FilterControlAltText="Filtro idCfd" HeaderText="idCfd" SortExpression="idCfd" UniqueName="idCfd" Visible="true"/>--%>
                                         <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncFolioUUID" HeaderStyle-Width="250px" FilterControlAltText="Filtro UUID" HeaderText="UUID" SortExpression="EncFolioUUID" UniqueName="EncFolioUUID" Resizable="true"/>
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncReferencia" HeaderStyle-Width="200px" FilterControlAltText="Filtro Referenica" HeaderText="Referencia Externa" SortExpression="EncReferencia" UniqueName="EncReferencia" Resizable="true"/>
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncFechaGenera" HeaderStyle-Width="150px" FilterControlAltText="Filtro Fecha" HeaderText="Fecha" SortExpression="EncFechaGenera" UniqueName="EncFechaGenera" Resizable="true"/>
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncReRFC" HeaderStyle-Width="150px" FilterControlAltText="Filtro RFC" HeaderText="Emitida al R.F.C." SortExpression="EncReRFC" UniqueName="EncReRFC" Resizable="true"/>
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncReNombre" HeaderStyle-Width="300px" FilterControlAltText="Filtro Cliente" HeaderText="Nombre del Receptor del Documento" SortExpression="EncReNombre" UniqueName="EncReNombre" Resizable="true"/>
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="tipo" HeaderStyle-Width="150px" FilterControlAltText="Filtro Tipo" HeaderText="Tipo Factura" SortExpression="tipo" UniqueName="tipo" Resizable="true"/>
+                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncReferencia" HeaderStyle-Width="120px" FilterControlAltText="Filtro Referenica" HeaderText="Referencia Externa" SortExpression="EncReferencia" UniqueName="EncReferencia" Resizable="true"/>
+                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncFechaGenera" HeaderStyle-Width="130px" FilterControlAltText="Filtro Fecha" HeaderText="Fecha" SortExpression="EncFechaGenera" UniqueName="EncFechaGenera" Resizable="true"/>
+                                        <%--<telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncReRFC" HeaderStyle-Width="150px" FilterControlAltText="Filtro RFC" HeaderText="Emitida al R.F.C." SortExpression="EncReRFC" UniqueName="EncReRFC" Resizable="true"/>--%>
+                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncReNombre" HeaderStyle-Width="260px" FilterControlAltText="Filtro Cliente" HeaderText="Nombre del Receptor del Documento" SortExpression="EncReNombre" UniqueName="EncReNombre" Resizable="true"/>
+                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="tipo" HeaderStyle-Width="120px" FilterControlAltText="Filtro Tipo" HeaderText="Tipo Factura" SortExpression="tipo" UniqueName="tipo" Resizable="true"/>
                                         <telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkSeleccionaDocumento" runat="server" CausesValidation="False"
                                                 CssClass="btn btn-info t14" CommandName="Select" ToolTip="Seleccionar" CommandArgument='<%# Eval("idCfd") %>'
@@ -136,14 +136,14 @@
                                             <ItemTemplate><asp:LinkButton ID="lnkImprimir" runat="server" OnClick="lnkImprimir_Click" CausesValidation="False"
                                                 CssClass="btn btn-primary t14" CommandName="Print" ToolTip="Imprimir" CommandArgument='<%# Eval("idCfd") %>'><i class="fa fa-print"></i></asp:LinkButton></ItemTemplate>
                                         </telerik:GridTemplateColumn>
-                                        <telerik:GridTemplateColumn HeaderStyle-Width="50px">
+                                        <%--<telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkEnviar" runat="server" CausesValidation="False" CssClass="btn btn-success t14"  onclick="lnkEnviarCorreo_Click"
                                                 CommandName="SendEmail" ToolTip="Enviar" CommandArgument='<%# Eval("idCfd")+";"+Eval("recorreo") %>'><i class="fa fa-envelope"></i></asp:LinkButton></ItemTemplate>
                                         </telerik:GridTemplateColumn>
                                          <telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkADD" runat="server"  CssClass="btn btn-info t14"  onclick="lnkADD_Click"
                                                 CommandName="SendEmail" ToolTip="Addenda" CommandArgument='<%# Eval("idCfd")+";"+Eval("recorreo") %>'><i class="fa fa-qrcode"></i></asp:LinkButton></ItemTemplate>
-                                        </telerik:GridTemplateColumn>                                        
+                                        </telerik:GridTemplateColumn>  --%>                                      
                                     </Columns>
                                 </MasterTableView>
                                 <ClientSettings>

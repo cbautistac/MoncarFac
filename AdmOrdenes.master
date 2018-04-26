@@ -92,7 +92,7 @@
 						    </a>
 						    <ul class="sub">
                                 <li id="subFact" runat="server"><asp:LinkButton ID="lnkFacturacion" runat="server" onclick="lnkFacturacion_Click"><span class="sub-menu-text">Facturaci&oacute;n</span></asp:LinkButton></li>
-                                <li id="Li7" runat="server"><asp:LinkButton ID="lnkRecepcionPagos"  runat="server" onclick="lnkRecepcionPagos_Click"><span class="sub-menu-text">Recepcion de Pagos</span></asp:LinkButton></li>
+                                <li id="Li7" runat="server"><asp:LinkButton ID="lnkRecepcionPagos"  runat="server" onclick="lnkRecepcionPagos_Click"><span class="sub-menu-text">Complemento de Pago</span></asp:LinkButton></li>
                                 <li id="Li6" runat="server"><asp:LinkButton ID="LinkButton16"  runat="server" onclick="lnkAddenda_Click"><span class="sub-menu-text">Addenda</span></asp:LinkButton></li>
                                 <li id="Li3" runat="server"><asp:LinkButton ID="lnkPuntoVenta" runat="server" onclick="lnkPuntoVenta_Click"><span class="sub-menu-text">Punto Venta</span></asp:LinkButton></li>
                                 <li id="Li2" runat="server"><asp:LinkButton ID="lnkFacturasExternas" runat="server" onclick="lnkFacturasExternas_Click"><span class="sub-menu-text">Facturas Externas</span></asp:LinkButton></li>

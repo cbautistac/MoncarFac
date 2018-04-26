@@ -241,15 +241,7 @@ public class ImprimeFacturaPago
             tablaEmisor.AddCell(tituPagina);
 
             //factura
-            try
-            {
-                string[] referencia = encabezado[14].ToString().Split('-');
-                string refe = "";
-                if (referencia.Length > 1)
-                    refe = referencia[referencia.Length - 1];
-                tituPagina = new PdfPCell(new Phrase(Convert.ToString(refe), FontFactory.GetFont("ARIAL", 7, iTextSharp.text.Font.NORMAL)));
-            }
-            catch (Exception) { tituPagina = new PdfPCell(new Phrase("", FontFactory.GetFont("ARIAL", 7, iTextSharp.text.Font.NORMAL))); }
+            tituPagina = new PdfPCell(new Phrase(encabezado[0].ToString(), FontFactory.GetFont("ARIAL", 7, iTextSharp.text.Font.NORMAL)));
             tituPagina.HorizontalAlignment = Element.ALIGN_LEFT;
             tituPagina.VerticalAlignment = 1;
             tituPagina.Border = 0;

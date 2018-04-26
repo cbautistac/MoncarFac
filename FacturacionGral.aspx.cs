@@ -2730,10 +2730,11 @@ public partial class FacturacionGral : System.Web.UI.Page
             object[] info = new object[2] { false, "" };//////////////borrar
             Ejecuciones bd = new Ejecuciones();
             info[0] = this.timbradoCFDI33();
-            /*  com.formulasistemas.www.ManejadordeTimbres foliosWSFormula = new com.formulasistemas.www.ManejadordeTimbres();
 
 
-              object[] info = new object[2] { false, "" };
+            //////Resta folios
+            com.formulasistemas.www.ManejadordeTimbres foliosWSFormula = new com.formulasistemas.www.ManejadordeTimbres();
+            //object[] info = new object[2] { false, "" };
               string rfc = "MCA9505036Z2";
               try
               {
@@ -2754,7 +2755,7 @@ public partial class FacturacionGral : System.Web.UI.Page
                       }
                       else
                       {
-                         //////////////////////aquiiiiiiiiiiiiiii
+                         //////////////////aquiiiiiiiiiiiiiii
                           int timbrado = 0;
 
                           if (Convert.ToBoolean(info[0]))
@@ -2767,7 +2768,8 @@ public partial class FacturacionGral : System.Web.UI.Page
               }
               catch (Exception ex)
               {
-              }*/
+              }
+            //termina Resta Folios
 
 
 
@@ -3455,15 +3457,32 @@ public partial class FacturacionGral : System.Web.UI.Page
         int factura = Convert.ToInt32(Request.QueryString["fact"]);
 
         BaseDatos bd = new BaseDatos();
-        string query = "insert into recepcion_pagos_f (IdCfd,IdTipoDoc,IdEmisor,IdRecep,IdMatrizRecep,IdMoneda,EncReRFC,EncEmRFC,EncFolioUUID,EncFecha,EncHora,EncFechaGenera,EncHoraGenera,EncFechaCancel,EncHoraCancel,EncSello,EncCertificado,EncTimbre,EncFormaPago,EncCondicionesPago,EncMetodoPago,EncDescGlob,EncDescGlobImp,EncSubTotal,EncDesc,EncImpTras,EncImpRet,EncTotal,EncMotivoDescuento,EncEstatus,EncEmNombre,EncEmCalle,EncEmNoExt,EncEmNoInt,EncEmPais,EncEmEstado,EncEmDelMun,EncEmColonia,EncEmLocalidad,EncEmReferenc,EncEmCP,EncEmExCalle,EncEmExNoExt,EncEmExNoInt,EncEmExPais,EncEmExEstado,EncEmExDelMun,EncEmExColonia,EncEmExLocalidad,EncEmExReferenc,EncEmExCP,EncReNombre,EncReCalle,EncReNoExt,EncReNoInt,EncRePais,EncReEstado,EncReDelMun,EncReColonia,EncReLocalidad,EncReReferenc,EncReCP,EncTipoCambio,EncNota,EncReferencia,EncNumCtaPago,EncFolioFiscalOrig,EncSerieFolioFiscalOrig,EncFechaFolioFiscalOrig,EncHoraFolioFiscalOrig,EncMontoFolioFiscalOrig,EncRegimen,EncLugarExpedicion,EncFolioImpresion,EncSerieImpresion,EncDescMO,EncDescRefaccion,certificado,nocertificadoOrg,TIPO,UsoCFDi_SAT,TipoDocumento) " +
-            "select* from enccfd_f where idcfd = '"+factura+"'; " +
-            "declare @ID int, @idcfd int; " +
-            "set @ID = (select count(*) from Recepcion_Pagos_F); " +
-            "set @idcfd = (select top 1(idcfd) from recepcion_pagos_f order by idcfd desc);" +
-            "update recepcion_pagos_f set idcfd=@ID, idcfdant=@idcfd,EncFolioUUID='',EncFechaGenera='',EncHoraGenera='',EncSello='',EncCertificado='',EncTimbre='', EncEstatus='P', certificado='', nocertificadoOrg='' where IdCfd=@idcfd;";
-        bd.insertUpdateDelete(query);
-
-
-        Response.Redirect("FComprobantePagos.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + factura);
+        string EnCaptura = "select count(*) from recepcion_pagos_f where idcfdant=" + factura + " and encestatus in('P','T','C')";
+        string MetodoPago = "select count(*) from EncCFD_f where idcfd=" + factura + " and EncMetodoPago in('PPD','PID')";
+        object[] T = bd.scalarInt(MetodoPago);
+        if (Convert.ToBoolean(T[1]))
+        {
+            object[] EC = bd.scalarInt(EnCaptura);
+            if (Convert.ToBoolean(EC[1]))
+            {
+                ErrorGeneral.Visible = true;
+                ErrorGeneral.Text = "Esta Factura ya se encuentra con Una Recepcion de Pago";
+            }
+            else
+            {
+                string query = "insert into recepcion_pagos_f (IdCfd,IdTipoDoc,IdEmisor,IdRecep,IdMatrizRecep,IdMoneda,EncReRFC,EncEmRFC,EncFolioUUID,EncFecha,EncHora,EncFechaGenera,EncHoraGenera,EncFechaCancel,EncHoraCancel,EncSello,EncCertificado,EncTimbre,EncFormaPago,EncCondicionesPago,EncMetodoPago,EncDescGlob,EncDescGlobImp,EncSubTotal,EncDesc,EncImpTras,EncImpRet,EncTotal,EncMotivoDescuento,EncEstatus,EncEmNombre,EncEmCalle,EncEmNoExt,EncEmNoInt,EncEmPais,EncEmEstado,EncEmDelMun,EncEmColonia,EncEmLocalidad,EncEmReferenc,EncEmCP,EncEmExCalle,EncEmExNoExt,EncEmExNoInt,EncEmExPais,EncEmExEstado,EncEmExDelMun,EncEmExColonia,EncEmExLocalidad,EncEmExReferenc,EncEmExCP,EncReNombre,EncReCalle,EncReNoExt,EncReNoInt,EncRePais,EncReEstado,EncReDelMun,EncReColonia,EncReLocalidad,EncReReferenc,EncReCP,EncTipoCambio,EncNota,EncReferencia,EncNumCtaPago,EncFolioFiscalOrig,EncSerieFolioFiscalOrig,EncFechaFolioFiscalOrig,EncHoraFolioFiscalOrig,EncMontoFolioFiscalOrig,EncRegimen,EncLugarExpedicion,EncFolioImpresion,EncSerieImpresion,EncDescMO,EncDescRefaccion,certificado,nocertificadoOrg,TIPO,UsoCFDi_SAT,TipoDocumento) " +
+                    "select* from enccfd_f where idcfd = '" + factura + "'; " +
+                    "declare @ID int, @idcfd int; " +
+                    "set @ID = (select count(*) from Recepcion_Pagos_F); " +
+                    "set @idcfd = (select top 1(idcfd) from recepcion_pagos_f order by idcfd desc);" +
+                    "update recepcion_pagos_f set idcfd=@ID, idcfdant=@idcfd,EncFolioUUID='',EncFechaGenera='',EncHoraGenera='',EncSello='',EncCertificado='',EncTimbre='', EncEstatus='P', certificado='', nocertificadoOrg='' where IdCfd=@idcfd;";
+                bd.insertUpdateDelete(query);
+                Response.Redirect("FComprobantePagos.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + factura);
+            }
+        }
+        else{
+            ErrorGeneral.Visible = true;
+            ErrorGeneral.Text = "No puedes generar una Recepcion de Pago para esta Factura";
+        }
     }
 }

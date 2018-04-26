@@ -210,8 +210,8 @@ public partial class ComprobatePagos : System.Web.UI.Page
         lblError.Text = "";
         try
         {
-            FacturacionElectronica.Facturas factura = new FacturacionElectronica.Facturas();
-            ImprimeFacturaPrueba imprime = new ImprimeFacturaPrueba();
+            FacturacionPago.Facturas factura = new FacturacionPago.Facturas();
+            ImprimeFacturaPago imprime = new ImprimeFacturaPago();
             if (idFactura == 0)
             { }
             else
@@ -220,7 +220,7 @@ public partial class ComprobatePagos : System.Web.UI.Page
                 DataTable detalle = null;
                 //Encabezado
                 factura.idCfd = idFactura;
-                factura.obtieneEncabezado();
+                factura.obtieneEncabezadoPAGO();
                 if (Convert.ToBoolean(factura.info[0]))
                 {
                     DataSet iEnc = (DataSet)factura.info[1];
@@ -231,7 +231,7 @@ public partial class ComprobatePagos : System.Web.UI.Page
                 }
 
                 //Detalle
-                factura.obtieneDetalle();
+                factura.obtieneDetallePAGO();
                 if (Convert.ToBoolean(factura.info[0]))
                 {
                     DataSet iDet = (DataSet)factura.info[1];
@@ -239,7 +239,7 @@ public partial class ComprobatePagos : System.Web.UI.Page
                 }
 
                 //Timbrado
-                factura.obtieneTimbrado();
+                factura.obtieneTimbradoPAGO();
                 if (Convert.ToBoolean(factura.info[0]))
                 {
                     DataSet iTim = (DataSet)factura.info[1];
@@ -303,21 +303,21 @@ public partial class ComprobatePagos : System.Web.UI.Page
             string estatus = DataBinder.Eval(e.Item.DataItem, "EncEstatus").ToString();
             string timbrado = DataBinder.Eval(e.Item.DataItem, "EncFolioUUID").ToString();
             var btnCancelar = e.Item.FindControl("lnkCancelar") as LinkButton;
-            var btnEnviar = e.Item.FindControl("lnkEnviar") as LinkButton;
-            var btnaddenda = e.Item.FindControl("lnkADD") as LinkButton;
+            //var btnEnviar = e.Item.FindControl("lnkEnviar") as LinkButton;
+            //var btnaddenda = e.Item.FindControl("lnkADD") as LinkButton;
             if (estatus == "T" || estatus == "P")
                 btnCancelar.Visible = true;
             else
                 btnCancelar.Visible = false;
             if (estatus == "T")
             {
-                btnaddenda.Visible = true;
-                btnEnviar.Visible = true;
+                //btnaddenda.Visible = true;
+                //btnEnviar.Visible = true;
             }
             else
             {
-                btnEnviar.Visible = false;
-                btnaddenda.Visible = false;
+                //btnEnviar.Visible = false;
+                //btnaddenda.Visible = false;
             }
 
         }

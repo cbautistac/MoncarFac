@@ -733,13 +733,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
         string delete = "delete from recepcion_pagos_f WHERE IdEmisor = " + lblEmisorFacturas.Text + " AND IdRecep = " + lblReceptorFactura.Text;
         bd.insertUpdateDelete(delete);
 
-        if (status != "P")
-        {
-
-            Dictionary<string, string>[] valores = new Dictionary<string, string>[]
-            {
-
-            };
+        if (status != "P"){
 
             int IDEmisor = Convert.ToInt32(lblEmisorFacturas.Text);
             int IdRecep = Convert.ToInt32(lblReceptorFactura.Text);
@@ -1408,6 +1402,12 @@ public partial class FComprobantePagos : System.Web.UI.Page
                                 try
                                 {
                                     conLoc.Open();
+                                    BaseDatos bd = new BaseDatos();
+                                    object[] v = bd.scalarInt("Select count(*) from RecepcionPagos_f WHERE IdEmisor = " + IDEmisor + " AND IdReceptor = " + IdRecep+" and Folio="+r[4].ToString());
+                                    if (Convert.ToBoolean(v[1])){
+                                        
+                                    }
+
                                     //string qryInserta = "INSERT INTO Documentocfdi_f (IdFila, IdEmisor, IdRecep, txtIdent, txtConcepto, radnumCantidad, ddlUnidad, txtValUnit, lblImporte, txtPtjeDscto, txtDscto, lblSubTotal, ddlIvaTras, ddlIeps, lblIvaTras, lblIeps, ddlIvaRet, ddlIsrRet, lblIvaRet, lblIsrRet, lblTotal, EncFechaGenera,ddlClaveProdSAT,ddlClaveUnidadSAT) " +
                                     //    "VALUES (" + filas + ",'" + IDEmisor + "' , '" + IdRecep + "', '" + r[0].ToString() + "', '" + r[1].ToString() + "', " + r[2].ToString() + ", " + r[3].ToString() + ", " + Math.Round(Convert.ToDecimal(r[4].ToString()), 2) + ", " + Math.Round(Math.Round(Convert.ToDecimal(r[4].ToString()), 2) * Convert.ToDecimal(r[2].ToString()), 2) + ", " + r[6].ToString() + ", " + Math.Round(Convert.ToDecimal(r[7].ToString()), 2) + ", " + r[8].ToString() + "," + r[9].ToString() + ", " + r[10].ToString() + ", " + Math.Round(Convert.ToDecimal(r[11].ToString()), 2) + ", " + r[12].ToString() + ", " + r[13].ToString() + ", " + r[14].ToString() + ", " + r[15].ToString() + ", " + r[16].ToString() + ", " + Math.Round(Convert.ToDecimal(r[17].ToString()), 2) + ",convert(datetime,'" + fechas.obtieneFechaLocal().ToString("yyyy-MM-dd HH:mm:ss") + "',120),'" + r[18].ToString() + "','" + r[19].ToString() + "')";
                                     string qryInserta = "insert into RecepcionPagos_f_temp values('"+r[0].ToString()+"','"+r[4].ToString()+"','"+IDEmisor+"','"+IdRecep+"','1','"+r[5].ToString()+"','"+r[6].ToString()+"','"+r[3].ToString()+"','','','','','','','','"+r[7].ToString()+"','"+r[7].ToString()+"','0.00','0');" +
@@ -1796,10 +1796,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
             object[] info = new object[2] { false, "" };//////////////borrar
             Ejecuciones bd = new Ejecuciones();
             info[0] = this.timbradoCFDI33();
-            /*  com.formulasistemas.www.ManejadordeTimbres foliosWSFormula = new com.formulasistemas.www.ManejadordeTimbres();
-
-
-              object[] info = new object[2] { false, "" };
+            com.formulasistemas.www.ManejadordeTimbres foliosWSFormula = new com.formulasistemas.www.ManejadordeTimbres();
+            //object[] info = new object[2] { false, "" };
               string rfc = "MCA9505036Z2";
               try
               {
@@ -1833,7 +1831,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
               }
               catch (Exception ex)
               {
-              }*/
+              }
 
 
 
@@ -2360,8 +2358,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 DataSet a = (DataSet)baseD[1];
                 foreach (DataRow Info in a.Tables[0].Rows)
                 {
-                    new BaseDatos().insertUpdateDelete("delete from RecepcionPagos_f where IdEmisor="+Info[0]+" and IdReceptor="+Info[1]+" and IdCfd="+ Convert.ToInt32(Request.QueryString["fact"]));
-
+                    BaseDatos s = new BaseDatos();
+                    s.insertUpdateDelete("delete from RecepcionPagos_f where IdEmisor="+Info[0]+" and IdReceptor="+Info[1]+" and IdCfd="+ Convert.ToInt32(Request.QueryString["fact"]));
                     guarda.actualizaTimbrado(Convert.ToInt32(Request.QueryString["fact"]), Info[0].ToString(), Info[1].ToString(), certificadoSAT, FechaTimbrado, UUID, SelloSAT, SelloCFDI, QR, directorioTimbrado, cadenaOriginal, noCertificado, Info[2].ToString(), Info[3].ToString(), Info[4].ToString(), Info[5].ToString(), Info[6].ToString());
                 }
 

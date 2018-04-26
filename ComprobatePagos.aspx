@@ -78,7 +78,7 @@
         <!-- /BREADCRUMBS -->
         <div class="clearfix">
             <h3 class="content-title pull-left">
-                Recepci&oacute;n de Pagos</h3>            
+                Complemento de Pago</h3>            
         </div>
     </div>
     
@@ -115,13 +115,13 @@
                                 EnableHeaderContextFilterMenu="true" AllowPaging="True" PagerStyle-AlwaysVisible="true" DataSourceID="SqlDataSource1" AllowSorting="true" GroupingEnabled="false" PageSize="100" >                        
                                 <MasterTableView DataSourceID="SqlDataSource1" AutoGenerateColumns="False" DataKeyNames="idCfd">
                                     <Columns>                                                                
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="idCfd" HeaderStyle-Width="150px" FilterControlAltText="Filtro idCfd" HeaderText="idCfd" SortExpression="idCfd" UniqueName="idCfd" Visible="true"/>
+                                        <%--<telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="idCfd" HeaderStyle-Width="150px" FilterControlAltText="Filtro idCfd" HeaderText="idCfd" SortExpression="idCfd" UniqueName="idCfd" Visible="true"/>--%>
+                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="Folio" HeaderStyle-Width="70px" FilterControlAltText="Filtro Factura" HeaderText="Referencia Factura" SortExpression="EncReferencia" UniqueName="EncReferencia" Resizable="true"/>
                                         <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncFolioUUID" HeaderStyle-Width="250px" FilterControlAltText="Filtro UUID" HeaderText="UUID" SortExpression="EncFolioUUID" UniqueName="EncFolioUUID" Resizable="true"/>
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="idcfdAnt" HeaderStyle-Width="200px" FilterControlAltText="Filtro Factura" HeaderText="Referencia Factura" SortExpression="EncReferencia" UniqueName="EncReferencia" Resizable="true"/>
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncFechaGenera" HeaderStyle-Width="150px" FilterControlAltText="Filtro Fecha" HeaderText="Fecha" SortExpression="idcfdAnt" UniqueName="idcfdAnt" Resizable="true"/>
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncReRFC" HeaderStyle-Width="150px" FilterControlAltText="Filtro RFC" HeaderText="Emitida al R.F.C." SortExpression="EncReRFC" UniqueName="EncReRFC" Resizable="true"/>
+                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncFechaGenera" HeaderStyle-Width="130px" FilterControlAltText="Filtro Fecha" HeaderText="Fecha" SortExpression="idcfdAnt" UniqueName="idcfdAnt" Resizable="true"/>
+                                        <%--<telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncReRFC" HeaderStyle-Width="150px" FilterControlAltText="Filtro RFC" HeaderText="Emitida al R.F.C." SortExpression="EncReRFC" UniqueName="EncReRFC" Resizable="true"/>--%>
                                         <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="EncReNombre" HeaderStyle-Width="300px" FilterControlAltText="Filtro Cliente" HeaderText="Nombre del Receptor del Documento" SortExpression="EncReNombre" UniqueName="EncReNombre" Resizable="true"/>
-                                        <telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="tipo" HeaderStyle-Width="150px" FilterControlAltText="Filtro Tipo" HeaderText="Tipo Factura" SortExpression="tipo" UniqueName="tipo" Resizable="true"/>
+                                        <%--<telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="tipo" HeaderStyle-Width="120px" FilterControlAltText="Filtro Tipo" HeaderText="Tipo Factura" SortExpression="tipo" UniqueName="tipo" Resizable="true"/>--%>
                                         <telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkSeleccionaDocumento" runat="server" CausesValidation="False"
                                                 CssClass="btn btn-info t14" CommandName="Select" ToolTip="Seleccionar" CommandArgument='<%# Eval("idcfdAnt") %>'
@@ -133,16 +133,16 @@
                                         </telerik:GridTemplateColumn>
                                         <telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkImprimir" runat="server" OnClick="lnkImprimir_Click" CausesValidation="False"
-                                                CssClass="btn btn-primary t14" CommandName="Print" ToolTip="Imprimir" CommandArgument='<%# Eval("idCfd") %>'><i class="fa fa-print"></i></asp:LinkButton></ItemTemplate>
+                                                CssClass="btn btn-primary t14" CommandName="Print" ToolTip="Imprimir" CommandArgument='<%# Eval("idcfdAnt") %>'><i class="fa fa-print"></i></asp:LinkButton></ItemTemplate>
                                         </telerik:GridTemplateColumn>
-                                        <telerik:GridTemplateColumn HeaderStyle-Width="50px">
+                                        <%--<telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkEnviar" runat="server" CausesValidation="False" CssClass="btn btn-success t14"  onclick="lnkEnviarCorreo_Click"
                                                 CommandName="SendEmail" ToolTip="Enviar" CommandArgument='<%# Eval("idCfd")+";"+Eval("recorreo") %>'><i class="fa fa-envelope"></i></asp:LinkButton></ItemTemplate>
                                         </telerik:GridTemplateColumn>
                                          <telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkADD" runat="server"  CssClass="btn btn-info t14"  onclick="lnkADD_Click"
                                                 CommandName="SendEmail" ToolTip="Addenda" CommandArgument='<%# Eval("idCfd")+";"+Eval("recorreo") %>'><i class="fa fa-qrcode"></i></asp:LinkButton></ItemTemplate>
-                                        </telerik:GridTemplateColumn>                                        
+                                        </telerik:GridTemplateColumn> --%>                                       
                                     </Columns>
                                 </MasterTableView>
                                 <ClientSettings>
@@ -154,7 +154,7 @@
                     </div>
                     <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:PVW %>"
                             SelectCommand="
-select distinct e.idCfd,e.EncFolioUUID,e.idcfdAnt,convert(char(10),e.EncFechaGenera,120)+' '+convert(char(8),e.enchoragenera,120) as EncFechaGenera,e.EncReRFC,case when e.EncReNombre is null then (select renombre from receptores_f where idrecep=e.idrecep) when e.encrenombre='' then (select renombre from receptores_f where idrecep=e.idrecep) else e.encrenombre end as EncReNombre,e.EncEstatus, 
+select distinct e.Folio,e.idCfd,e.EncFolioUUID,e.idcfdAnt,convert(char(10),e.EncFechaGenera,120)+' '+convert(char(8),e.enchoragenera,120) as EncFechaGenera,e.EncReRFC,case when e.EncReNombre is null then (select renombre from receptores_f where idrecep=e.idrecep) when e.encrenombre='' then (select renombre from receptores_f where idrecep=e.idrecep) else e.encrenombre end as EncReNombre,e.EncEstatus, 
 case e.encestatus when 'P' then 'En Captura' when 'E' then 'En Tránsito' when 'T' then 'Timbrado' when 'R' then 'Rechazado' when 'C' then 'Cancelado'	 else 'Otro' end as est,r.recorreo,case e.tipo when 'GL' then 'GLOBAL' when 'MO' then 'MANO OBRA' when 'RE' then 'REFACCIONES' when 'SO' then 'SIN ORDEN' when 'PV' then 'PUNTO DE VENTA' when 'PA' then 'PARTICULAR' when 'NC' then 'NOTA DE CREDITO' else '' end as tipo
 from recepcion_pagos_f e left join receptores_f r on r.idrecep=e.idrecep where e.encestatus=@estatus order by e.idcfd desc">
                             <SelectParameters>

@@ -115,7 +115,7 @@ public partial class FacturasGral : System.Web.UI.Page
             ProdServ cesta = new ProdServ();
             cesta.fac = fac;
             cesta.cambiaEstatus();
-            /* com.formulasistemas.www.ManejadordeTimbres foliosWSFormula = new com.formulasistemas.www.ManejadordeTimbres();
+            com.formulasistemas.www.ManejadordeTimbres foliosWSFormula = new com.formulasistemas.www.ManejadordeTimbres();
              object[] info = new object[2] { false, "" };
              string rfc = "MCA9505036Z2";
              try
@@ -148,7 +148,7 @@ public partial class FacturasGral : System.Web.UI.Page
              catch (Exception ex)
              {
 
-             }*/
+             }
         }
         else
             lblError.Text = "Ocurrió un error al cancelar el XML: " + objCan.MensajeDeError;
@@ -305,19 +305,19 @@ public partial class FacturasGral : System.Web.UI.Page
             string estatus = DataBinder.Eval(e.Item.DataItem, "EncEstatus").ToString();
             string timbrado = DataBinder.Eval(e.Item.DataItem, "EncFolioUUID").ToString();
             var btnCancelar = e.Item.FindControl("lnkCancelar") as LinkButton;
-            var btnEnviar = e.Item.FindControl("lnkEnviar") as LinkButton;
-            var btnaddenda = e.Item.FindControl("lnkADD") as LinkButton;
+            //var btnEnviar = e.Item.FindControl("lnkEnviar") as LinkButton;
+            //var btnaddenda = e.Item.FindControl("lnkADD") as LinkButton;
             if (estatus == "T" || estatus == "P")
                 btnCancelar.Visible = true;
             else
                 btnCancelar.Visible = false;
             if (estatus == "T") { 
-                btnaddenda.Visible = true;
-            btnEnviar.Visible = true;
+                //btnaddenda.Visible = true;
+            //btnEnviar.Visible = true;
             }
             else { 
-                btnEnviar.Visible = false;
-                btnaddenda.Visible = false;
+                //btnEnviar.Visible = false;
+                //btnaddenda.Visible = false;
             }
                
         }

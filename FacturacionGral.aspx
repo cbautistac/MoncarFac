@@ -821,13 +821,17 @@
                         <asp:Label ID="lblError" runat="server" CssClass="errores" />
                         <asp:ValidationSummary ID="ValidationSummary1" runat="server" ValidationGroup="facturas" />
                     </div>
+                    <div>
+                        <asp:Label ID="ErrorGeneral" Visible="false" runat="server" CssClass="errores" />
+                        <asp:ValidationSummary ID="ValidationSummary3" runat="server" ValidationGroup="facturas" />
+                    </div>
                 </div>
                 <asp:Panel runat="server" ID="pnlDaños" CssClass="col-lg-12 col-sm-12">
                     <telerik:RadTabStrip ID="tabFactura" RenderMode="Lightweight" runat="server" MultiPageID="multiPagina"
                         SelectedIndex="0" Skin="MetroTouch">
                         <Tabs>
                             <telerik:RadTab Text="Emisor" />
-                            <telerik:RadTab Text="Lugar de Expedición" />
+                            <telerik:RadTab Text="Lugar de Expedición" Visible="false"/>
                             <telerik:RadTab Text="Receptor" />
                             <telerik:RadTab Text="Detalles" />
                             <telerik:RadTab Text="Información Adicional" />
@@ -904,7 +908,7 @@
                             </div>
 
                         </telerik:RadPageView>
-                        <telerik:RadPageView runat="server" ID="vExpedicion">
+                        <telerik:RadPageView runat="server" ID="vExpedicion" Visible="false">
                             <div class="col-lg-12 col-sm-12 text-left">
                                 <asp:Label ID="Label28" runat="server" Text="Emisor: " CssClass="textoBold"></asp:Label>
                                 <asp:Label ID="lblRFCEmiExFac" runat="server"></asp:Label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
