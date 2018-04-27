@@ -20,10 +20,8 @@ Copyright (C) Microsoft Corporation. Todos los derechos reservados.
     <SourceWebPhysicalPath>$(MSBuildThisFileDirectory)</SourceWebPhysicalPath>
     <SourceWebVirtualPath>/e-Factura3.3</SourceWebVirtualPath>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <SourceWebProject>
-    </SourceWebProject>
-    <SourceWebMetabasePath>
-    </SourceWebMetabasePath>
+    <SourceWebProject>http://localhost/e-Factura3.3</SourceWebProject>
+    <SourceWebMetabasePath>/LM/W3SVC/1/ROOT/e-Factura3.3</SourceWebMetabasePath>
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

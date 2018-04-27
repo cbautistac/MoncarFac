@@ -132,22 +132,21 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 multiPagina.PageViews[3].Enabled = multiPagina.PageViews[4].Enabled = true;
                 fvwResumen.Enabled = false;
                 ddlFormaPagoSAT.Enabled = txtCondicionesPago.Enabled = ddlMetodoPagoSAT.Enabled = ddlRegimenSAT.Enabled = txtCtaPago.Enabled = true;
-                lnkTimbrar.Visible = true;
-
+                //lnkTimbrar.Visible = true;
             }
 
 
 
-            if (estaTimbrada(Convert.ToInt32(Request.QueryString["fact"]))){
-                lnkBuscar.Visible = false;
-                lnkBuscaRec.Visible = false;
-                lnkBuscaMonedas.Visible = false;
-                multiPagina.PageViews[3].Enabled = multiPagina.PageViews[4].Enabled = true;
-                fvwResumen.Enabled = false;
-                ddlFormaPagoSAT.Enabled = txtCondicionesPago.Enabled = ddlMetodoPagoSAT.Enabled = ddlRegimenSAT.Enabled = txtCtaPago.Enabled = true;
-                lnkTimbrar.Visible = false;
-                grdDocu.Enabled = false;
-            }
+            //if (estaTimbrada(Convert.ToInt32(Request.QueryString["fact"]))){
+            //    lnkBuscar.Visible = false;
+            //    lnkBuscaRec.Visible = false;
+            //    lnkBuscaMonedas.Visible = false;
+            //    multiPagina.PageViews[3].Enabled = multiPagina.PageViews[4].Enabled = true;
+            //    fvwResumen.Enabled = false;
+            //    ddlFormaPagoSAT.Enabled = txtCondicionesPago.Enabled = ddlMetodoPagoSAT.Enabled = ddlRegimenSAT.Enabled = txtCtaPago.Enabled = true;
+            //    lnkTimbrar.Visible = false;
+            //    grdDocu.Enabled = false;
+            //}
 
         }
     }
@@ -770,7 +769,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                         docCfd.floEncTipoCambio = float.Parse(txtTipoCambio.Text);
                         docCfd.strEncNota = txtNotaFac.Text;
                         docCfd.idUsoCFDI = ddlUsoCFDI.SelectedValue;
-                        docCfd.tipoDocumento = cmbTipoDocumento.SelectedValue;
+                        docCfd.tipoDocumento = cmbTipoDocumento.Text;
                         string lugarExpedicion = "";
 
                         lugarExpedicion = lugarExpedicion.Trim() + lblCalleEmiExFac.Text.Trim().ToUpper() + " No. Ext. " + lblNoExtEmiExFac.Text.Trim().ToUpper();
@@ -1037,6 +1036,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                         }
                     
                 }
+                string scriptError = string.Format("alert('La Factura se guardo Correctamente');");
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptError, true);
                 lnkTimbrar.Visible = true;
             }
         }
@@ -1229,7 +1230,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 try
                 {
                     conLoc.Open();
-                    qrySelect = "select * FROM RecepcionPagos_f_temp WHERE IdEmisor = " + IDEmisor + " AND IdReceptor = " + IdRecep;
+                    qrySelect = "select * FROM RecepcionPagos_f_temp WHERE IdEmisor = " + IDEmisor + " AND IdReceptor = " + IdRecep+ " and len(noCertificadoCfd)=0";
 
                     using (conLoc)
                     {
@@ -1258,6 +1259,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
             Session["info"] = dt;
             grdDocu.DataBind();
 
+            decimal total = 0;
 
             if (grdDocu.Items.Count > 0)
             {
@@ -1278,11 +1280,14 @@ public partial class FComprobantePagos : System.Web.UI.Page
                             ((RadDropDownList)fila.FindControl("ddlParcialidad")).SelectedValue = dato[18].ToString();
                             ((TextBox)fila.FindControl("txtSaldoAnterior")).Text = dato[15].ToString();
                             ((TextBox)fila.FindControl("txtIportePagado")).Text = dato[16].ToString();
+                            ((Label)fila.FindControl("lblSaldoActual")).Text = dato[17].ToString();
+                            total = total + Convert.ToDecimal(dato[16].ToString());
                         }
                         filaIns++;
                     }
                     filasDt++;
                 }
+                ((Label)fvwResumen.Row.FindControl("lblTotal")).Text = total.ToString();
             }
             else
             {
@@ -1402,18 +1407,23 @@ public partial class FComprobantePagos : System.Web.UI.Page
                                 try
                                 {
                                     conLoc.Open();
+                                    SqlCommand comLoc = new SqlCommand();
                                     BaseDatos bd = new BaseDatos();
-                                    object[] v = bd.scalarInt("Select count(*) from RecepcionPagos_f WHERE IdEmisor = " + IDEmisor + " AND IdReceptor = " + IdRecep+" and Folio="+r[4].ToString());
-                                    if (Convert.ToBoolean(v[1])){
-                                        
+                                    string qryInserta = "";
+                                    object[] v = bd.scalarInt("Select count(*) from RecepcionPagos_f WHERE IdEmisor = " + IDEmisor + " AND IdReceptor = " + IdRecep+" and len(noCertificadoCfd)=0");
+                                    if (!Convert.ToBoolean(v[1]))
+                                    {
+                                        //string qryInserta = "INSERT INTO Documentocfdi_f (IdFila, IdEmisor, IdRecep, txtIdent, txtConcepto, radnumCantidad, ddlUnidad, txtValUnit, lblImporte, txtPtjeDscto, txtDscto, lblSubTotal, ddlIvaTras, ddlIeps, lblIvaTras, lblIeps, ddlIvaRet, ddlIsrRet, lblIvaRet, lblIsrRet, lblTotal, EncFechaGenera,ddlClaveProdSAT,ddlClaveUnidadSAT) " +
+                                        //    "VALUES (" + filas + ",'" + IDEmisor + "' , '" + IdRecep + "', '" + r[0].ToString() + "', '" + r[1].ToString() + "', " + r[2].ToString() + ", " + r[3].ToString() + ", " + Math.Round(Convert.ToDecimal(r[4].ToString()), 2) + ", " + Math.Round(Math.Round(Convert.ToDecimal(r[4].ToString()), 2) * Convert.ToDecimal(r[2].ToString()), 2) + ", " + r[6].ToString() + ", " + Math.Round(Convert.ToDecimal(r[7].ToString()), 2) + ", " + r[8].ToString() + "," + r[9].ToString() + ", " + r[10].ToString() + ", " + Math.Round(Convert.ToDecimal(r[11].ToString()), 2) + ", " + r[12].ToString() + ", " + r[13].ToString() + ", " + r[14].ToString() + ", " + r[15].ToString() + ", " + r[16].ToString() + ", " + Math.Round(Convert.ToDecimal(r[17].ToString()), 2) + ",convert(datetime,'" + fechas.obtieneFechaLocal().ToString("yyyy-MM-dd HH:mm:ss") + "',120),'" + r[18].ToString() + "','" + r[19].ToString() + "')";
+                                        qryInserta = "insert into RecepcionPagos_f_temp values('" + r[0].ToString() + "','" + r[1].ToString() + "','" + IDEmisor + "','" + IdRecep + "',(select count(idtimbre)+1 from recepcionpagos_f where IdEmisor =" + IDEmisor + " and IdReceptor=" + IdRecep + " and folio='" + r[1].ToString() + "'),'','','" + r[2].ToString() + "','','','','','','','MXN','" + r[3].ToString() + "','" + r[4].ToString() + "','" + r[5].ToString() + "','" + r[6].ToString() + "');" +
+                                            "insert into RecepcionPagos_f (IdCfd,Folio,IdEmisor,IdReceptor,IdTimbre,noCertificadoSat,fechaTimbrado,uuid,selloSat,selloCFD,qr,rutaArchivo,cadenaOriginal,noCertificadoCfd,Moneda,SaldoAnterior,SaldoActual,Total,Parcialidad) " +
+                                            "select * from RecepcionPagos_f_temp where idcfd='" + r[0].ToString() + "' and idemisor='" + IDEmisor + "' and idreceptor='" + IdRecep + "'";
+                                        comLoc = new SqlCommand(qryInserta, conLoc);
                                     }
-
-                                    //string qryInserta = "INSERT INTO Documentocfdi_f (IdFila, IdEmisor, IdRecep, txtIdent, txtConcepto, radnumCantidad, ddlUnidad, txtValUnit, lblImporte, txtPtjeDscto, txtDscto, lblSubTotal, ddlIvaTras, ddlIeps, lblIvaTras, lblIeps, ddlIvaRet, ddlIsrRet, lblIvaRet, lblIsrRet, lblTotal, EncFechaGenera,ddlClaveProdSAT,ddlClaveUnidadSAT) " +
-                                    //    "VALUES (" + filas + ",'" + IDEmisor + "' , '" + IdRecep + "', '" + r[0].ToString() + "', '" + r[1].ToString() + "', " + r[2].ToString() + ", " + r[3].ToString() + ", " + Math.Round(Convert.ToDecimal(r[4].ToString()), 2) + ", " + Math.Round(Math.Round(Convert.ToDecimal(r[4].ToString()), 2) * Convert.ToDecimal(r[2].ToString()), 2) + ", " + r[6].ToString() + ", " + Math.Round(Convert.ToDecimal(r[7].ToString()), 2) + ", " + r[8].ToString() + "," + r[9].ToString() + ", " + r[10].ToString() + ", " + Math.Round(Convert.ToDecimal(r[11].ToString()), 2) + ", " + r[12].ToString() + ", " + r[13].ToString() + ", " + r[14].ToString() + ", " + r[15].ToString() + ", " + r[16].ToString() + ", " + Math.Round(Convert.ToDecimal(r[17].ToString()), 2) + ",convert(datetime,'" + fechas.obtieneFechaLocal().ToString("yyyy-MM-dd HH:mm:ss") + "',120),'" + r[18].ToString() + "','" + r[19].ToString() + "')";
-                                    string qryInserta = "insert into RecepcionPagos_f_temp values('"+r[0].ToString()+"','"+r[4].ToString()+"','"+IDEmisor+"','"+IdRecep+"','1','"+r[5].ToString()+"','"+r[6].ToString()+"','"+r[3].ToString()+"','','','','','','','','"+r[7].ToString()+"','"+r[7].ToString()+"','0.00','0');" +
-                                        "insert into RecepcionPagos_f (IdCfd,Folio,IdEmisor,IdReceptor,IdTimbre,noCertificadoSat,fechaTimbrado,uuid,selloSat,selloCFD,qr,rutaArchivo,cadenaOriginal,noCertificadoCfd,Moneda,SaldoAnterior,SaldoActual,Total,Parcialidad) " +
-                                        "select * from RecepcionPagos_f_temp where idcfd='" + r[0].ToString()+"' and idemisor='"+IDEmisor+"' and idreceptor='"+IdRecep+"'";
-                                    SqlCommand comLoc = new SqlCommand(qryInserta, conLoc);
+                                    else{
+                                        qryInserta = "insert into RecepcionPagos_f_temp values('" + r[0].ToString() + "','" + r[1].ToString() + "','" + IDEmisor + "','" + IdRecep + "',(select count(idtimbre)+1 from recepcionpagos_f where IdEmisor =" + IDEmisor + " and IdReceptor=" + IdRecep + " and folio='" + r[1].ToString() + "'),'','','" + r[2].ToString() + "','','','','','','','MXN','" + r[3].ToString() + "','" + r[4].ToString() + "','" + r[5].ToString() + "','" + r[6].ToString() + "');";
+                                        comLoc = new SqlCommand(qryInserta, conLoc);
+                                    }
                                     using (comLoc)
                                     {
                                         comLoc.CommandText = qryInserta;
@@ -1799,39 +1809,39 @@ public partial class FComprobantePagos : System.Web.UI.Page
             com.formulasistemas.www.ManejadordeTimbres foliosWSFormula = new com.formulasistemas.www.ManejadordeTimbres();
             //object[] info = new object[2] { false, "" };
               string rfc = "MCA9505036Z2";
-              try
-              {
-                  int empresaActiva = foliosWSFormula.ObtieneEstatus(rfc);
-                  if (empresaActiva != 6)
-                  {
-                      info[0] = false;
-                      info[1] = "Error al timbrar documento: La empresa con R.F.C. " + rfc.Trim().ToUpper() + " esta dada de baja o no existe registrada en el catálogo de empresas de su proveedor de servicios; por favor contáctelo para resolver este error";
-                  }
-                  else
-                  {
-                      int foliosDisponibles = 0;
-                      foliosDisponibles = foliosWSFormula.ObtieneFoliosDisponibles(rfc);
-                      if (foliosDisponibles == 0)
-                      {
-                          info[0] = false;
-                          info[1] = "Error al timbrar documento: La empresa con R.F.C. " + rfc.Trim().ToUpper() + " no cuenta con folios disponibles; por favor a su proveedor de servicio de timbrado para solicitar más folios";
-                      }
-                      else
-                      {
-                         //////////////////////aquiiiiiiiiiiiiiii
-                          int timbrado = 0;
+              //try
+              //{
+              //    int empresaActiva = foliosWSFormula.ObtieneEstatus(rfc);
+              //    if (empresaActiva != 6)
+              //    {
+              //        info[0] = false;
+              //        info[1] = "Error al timbrar documento: La empresa con R.F.C. " + rfc.Trim().ToUpper() + " esta dada de baja o no existe registrada en el catálogo de empresas de su proveedor de servicios; por favor contáctelo para resolver este error";
+              //    }
+              //    else
+              //    {
+              //        int foliosDisponibles = 0;
+              //        foliosDisponibles = foliosWSFormula.ObtieneFoliosDisponibles(rfc);
+              //        if (foliosDisponibles == 0)
+              //        {
+              //            info[0] = false;
+              //            info[1] = "Error al timbrar documento: La empresa con R.F.C. " + rfc.Trim().ToUpper() + " no cuenta con folios disponibles; por favor a su proveedor de servicio de timbrado para solicitar más folios";
+              //        }
+              //        else
+              //        {
+              //           //////////////////////aquiiiiiiiiiiiiiii
+              //            int timbrado = 0;
 
-                          if (Convert.ToBoolean(info[0]))
-                          {
-                              timbrado = foliosWSFormula.Timbrar(rfc);                           
-                          }
-                          foliosDisponibles = foliosWSFormula.ObtieneFoliosDisponibles(rfc);
-                      }
-                  }
-              }
-              catch (Exception ex)
-              {
-              }
+              //            if (Convert.ToBoolean(info[0]))
+              //            {
+              //                timbrado = foliosWSFormula.Timbrar(rfc);                           
+              //            }
+              //            foliosDisponibles = foliosWSFormula.ObtieneFoliosDisponibles(rfc);
+              //        }
+              //    }
+              //}
+              //catch (Exception ex)
+              //{
+              //}
 
 
 
@@ -1846,6 +1856,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
             lblError.Text = "No se puede timbrar la factura ya que esta ha sido timbrada anteriormente";
         }
     }
+    static string fechaactual;
 
     private bool timbradoCFDI33()
     {
@@ -1856,10 +1867,10 @@ public partial class FComprobantePagos : System.Web.UI.Page
         // Agrega el certificado
         //object[] certificado = bd.scalarToString("select certRutaCert from certificados_f where idEmisor=" + lblIdEmisor.Text);
         //object[] llave = bd.scalarToString("select certRutaLlave from certificados_f where idEmisor=" + lblIdEmisor.Text);
-        //string rutaCer = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/00001000000406147836.cer");
-        //string rutaKey = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_DEL_ORIENTE_MCA9505036Z2_20170511_143948.key");
-        string rutaCer = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_Pruebas_CFDI_LAN7008173R5.cer");
-        string rutaKey = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_Pruebas_CFDI_LAN7008173R5.key");
+        string rutaCer = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/00001000000406147836.cer");    //Certificado Moncar
+        string rutaKey = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_DEL_ORIENTE_MCA9505036Z2_20170511_143948.key");    //Key Moncar
+        //string rutaCer = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_Pruebas_CFDI_LAN7008173R5.cer");
+        //string rutaKey = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_Pruebas_CFDI_LAN7008173R5.key");
         //string rutaCer = certificado[1].ToString();
         //string rutaKey = llave[1].ToString();
         //string[] NoCertificadoOrgRuta = certificado[1].ToString().Split(new char[] { '\\' });
@@ -1874,9 +1885,9 @@ public partial class FComprobantePagos : System.Web.UI.Page
 
         switch ("Pago10")
         {
+            #region Pagos 1.0
+            case "Pago10":
 
-            #region Ninguno
-            case "Ninguno":
                 string serie;
                 string RFC = "";
                 string Folio, FormaDePago, CondicionesDePago, TipoDoc;
@@ -1941,18 +1952,20 @@ public partial class FComprobantePagos : System.Web.UI.Page
                         idreceptor = Convert.ToInt32(InfoComprobante[11]);
                         imptrastot = Convert.ToDouble(InfoComprobante[12]);
                         descuentoGlobal = Convert.ToDouble(InfoComprobante[13]);
-                        objCfdi.agregarComprobante33(serie, Folio, dia + "T" + hora, FormaDePago, CondicionesDePago, SubTotal, DescuentoTotal, Moneda, TipoCambio, total, TipoDeComprobante, MetodoPago, LugarExpedicion, Confirmacion);
+                        objCfdi.agregarComprobante33(serie, Folio, dia + "T" + hora, "", "", 0, 0, "XXX", "", 0, "P", "", LugarExpedicion, Confirmacion);
                     }//
                 }
 
-                //Obtenemos la informacion del Emisor al XML
-                FacturacionElectronica3 emisor = new FacturacionElectronica3();
-                emisor.idEmisor = Convert.ToInt32(lblIdEmisor.Text);
-                emisor.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
-                emisor.obtieneInfoEmisor();
-                if (Convert.ToBoolean(emisor.retorno[0]))
+                //objCfdi.agregarComprobante33("Pago", "1", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "", "", 0, 0, "MXN", "", 0, "P", "", "39300", "");
+
+                //Obtenemos la informacion del emisor XML
+                FacturacionElectronicaPagos emisora = new FacturacionElectronicaPagos();
+                emisora.idEmisor = Convert.ToInt32(lblIdEmisor.Text);
+                emisora.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
+                emisora.obtieneInfoEmisor();
+                if (Convert.ToBoolean(emisora.retorno[0]))
                 {
-                    DataSet DatosEmisor = (DataSet)emisor.retorno[1];
+                    DataSet DatosEmisor = (DataSet)emisora.retorno[1];
                     foreach (DataRow InfoEmisor in DatosEmisor.Tables[0].Rows)
                     {
                         //Agrega nodo Emisor al XML
@@ -1960,239 +1973,6 @@ public partial class FComprobantePagos : System.Web.UI.Page
                         objCfdi.agregarEmisor(InfoEmisor[0].ToString().Trim(), InfoEmisor[1].ToString().Trim(), InfoEmisor[2].ToString().Trim());
                     }
                 }
-                //Obtenemos la informacion del Receptor XML
-                FacturacionElectronica3 receptor = new FacturacionElectronica3();
-                receptor.idReceptor = idreceptor;
-                receptor.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
-                receptor.obtieneInfoReceptor();
-                if (Convert.ToBoolean(receptor.retorno[0]))
-                {
-                    DataSet DatosReceptor = (DataSet)receptor.retorno[1];
-                    foreach (DataRow InfoReceptor in DatosReceptor.Tables[0].Rows)
-                    {
-                        //Agrega nodo Receptor al XML
-                        RECEPTOR = InfoReceptor[0].ToString();
-                        objCfdi.agregarReceptor(InfoReceptor[0].ToString().Trim(), InfoReceptor[1].ToString().Trim(), "", "", InfoReceptor[2].ToString().Trim());
-                    }
-                }
-
-                //Se obtienen los datos de los conceptos
-                FacturacionElectronica3 conceptos = new FacturacionElectronica3();
-                conceptos.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
-                conceptos.obtieneInfoConceptos();
-                if (Convert.ToBoolean(conceptos.retorno[0]))
-                {
-                    string ClaveProdServ, NoIdentificacion, ClaveUnidad, Unidad, Descripcion = "";
-                    double Cantidad, ValorUnitario, Importe, Descuento, ImpuestosRetenidos, ImpTrasladados = 0;
-                    decimal valorunitario2;
-                    int contador_impuestos = 0;
-                    DataSet DatosConceptos = (DataSet)conceptos.retorno[1];
-                    //Tabla para impuestos de traslado
-                    DataTable tbImp = new DataTable();
-                    tbImp.Columns.Add(new DataColumn("contador", typeof(int)));
-                    tbImp.Columns.Add(new DataColumn("importe", typeof(double)));
-                    tbImp.Columns.Add(new DataColumn("impuesto", typeof(string)));
-                    tbImp.Columns.Add(new DataColumn("tasa", typeof(string)));
-                    tbImp.Columns.Add(new DataColumn("tasaOcuota", typeof(double)));
-                    tbImp.Columns.Add(new DataColumn("total", typeof(double)));
-
-                    foreach (DataRow InfoConceptos in DatosConceptos.Tables[0].Rows)
-                    {
-                        ClaveProdServ = InfoConceptos[0].ToString();
-                        NoIdentificacion = InfoConceptos[1].ToString();
-                        Cantidad = Convert.ToDouble(InfoConceptos[2]);
-                        ClaveUnidad = InfoConceptos[3].ToString().Trim();
-                        Unidad = InfoConceptos[4].ToString().Trim();
-                        Descripcion = InfoConceptos[5].ToString();
-                        if (descuentoGlobal != 0)
-                        {
-                            ValorUnitario = Convert.ToDouble(InfoConceptos[7]);
-                            ValorUnitario = ValorUnitario / Cantidad;
-                        }
-                        else
-                            ValorUnitario = Convert.ToDouble(InfoConceptos[6]);
-                        Importe = Convert.ToDouble(InfoConceptos[7]);
-                        Descuento = Convert.ToDouble(InfoConceptos[8]);
-                        //Agrega nodo Conceptos con el impuesto de Traslado (Si es que tiene) al XML
-                        objCfdi.agregarConcepto(ClaveProdServ, NoIdentificacion, Cantidad, ClaveUnidad, Unidad, Descripcion, ValorUnitario, ValorUnitario * Cantidad, Descuento);
-                        if (Convert.ToDecimal(InfoConceptos[9]) != 0 && InfoConceptos[10].ToString() == "002" || InfoConceptos[10].ToString() == "003")
-                        {
-                            contador_impuestos = contador_impuestos + 1;
-                            double tasaOcuota;
-                            double impuesto;
-                            string tasa;
-                            if (InfoConceptos[10].ToString() == "002")
-                            {
-                                tasa = "Tasa";
-                                tasaOcuota = 0.1600;
-                                impuesto = Importe * tasaOcuota;
-                            }
-                            else
-                            {
-                                tasa = "Tasa";
-                                tasaOcuota = 0.160000;
-                                impuesto = Importe * tasaOcuota;
-                            }
-                            ImpTrasladados = ImpTrasladados + impuesto;
-
-
-                            objCfdi.agregarImpuestoConceptoTraslado(Importe, InfoConceptos[10].ToString().Trim(), "Tasa", tasaOcuota, Convert.ToDouble(InfoConceptos[9]));
-
-                            DataRow dr = tbImp.NewRow();
-                            dr["contador"] = contador_impuestos;
-                            dr["importe"] = Importe;
-                            //dr["impuesto"] = InfoConceptos[10].ToString().Trim(); Original
-                            dr["impuesto"] = InfoConceptos[9].ToString().Trim();
-                            dr["tasa"] = tasa;
-                            dr["tasaOcuota"] = tasaOcuota;
-                            dr["total"] = impuesto;
-                            tbImp.Rows.Add(dr);
-                        }
-                    }
-                    if (contador_impuestos != 0)
-                    {
-                        string impuestoIVA = "002";
-                        string TipoFactorIVA = "Tasa";
-                        double ImporteImpuestoIVA = 0;
-                        double tasaOcuota = 0.160000;
-                        foreach (DataRow tbimpuestos in tbImp.Rows)
-                        {
-                            ImporteImpuestoIVA = ImporteImpuestoIVA + Convert.ToDouble(tbimpuestos[5]);
-                            //objCfdi.agregarImpuestoConceptoTraslado(Convert.ToDouble(tbimpuestos[1]), tbimpuestos[2].ToString(), tbimpuestos[3].ToString(), Convert.ToDouble(tbimpuestos[4]),Convert.ToDouble(tbimpuestos[5]));
-                        }
-
-                        objCfdi.agregarImpuestos(0, imptrastot);
-
-                        objCfdi.agregarTraslado(impuestoIVA, TipoFactorIVA, tasaOcuota, imptrastot);
-
-                        /*
-                        conceptos.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
-                        conceptos.obtieneImpConceptos();
-                        if (Convert.ToBoolean(conceptos.retorno[0]))
-                        {
-                            //Obtenemos datos de impuestos de traslados y retenciones
-                            DataSet DatosImpConceptos = (DataSet)conceptos.retorno[1];
-                            foreach (DataRow InfoImpConceptos in DatosImpConceptos.Tables[0].Rows)
-                            {
-                                Impuesto = InfoImpConceptos[0].ToString();
-                                TipoFactor = "Tasa";
-                                TasaoCuota = 0.160000;
-                                ImporteImpuesto = Convert.ToDouble(InfoImpConceptos[1]);
-                                //Agrega noto Impuestos translado y retenciones al XML
-                                if (Convert.ToDecimal(InfoImpConceptos[1]) != 0)
-                                {
-                                    objCfdi.agregarTraslado(Impuesto, TipoFactor, TasaoCuota, ImporteImpuesto);
-                                }
-                            }
-                        }*/
-                    }
-                }
-
-
-                /*
-                objCfdi.agregarImpuestoConceptoTraslado(1, "002", "Tasa", 0.160000, 0.16);
-                objCfdi.agregarInformacionAduanera("13  47  3160  3001698");
-                */
-
-                objCfdi.AgregarInfoAdicional("NoProveedor", "OrdenCompra", "Telefono", "SitioWeb", "Pagare");
-
-                break;
-            #endregion
-
-            #region IEDU
-            case "Educativas":
-                objCfdi.agregarComprobante33("A", "6172", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "01", "01", 1, 0, "MXN", "1", 1.16, "I", "PUE", "39300", "");
-                //objCfdi.agregarCfdiRelacionados("04");
-                //objCfdi.agregarCfdiRelacionado("0a8e8af1-c7af-4925-a389-bfd1be89c99e");
-                objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
-                objCfdi.agregarReceptor("XAXX010101000", "Cliente general", "", "", "P01");
-                objCfdi.agregarConcepto("01010101", "NoId", 1, "EA", "Pieza", "Producto Generico", 1, 1, 0);
-                objCfdi.agregarImpuestoConceptoTraslado(1, "002", "Tasa", 0.160000, 0.16);
-                //objCfdi.agregarInformacionAduanera("13  47  3160  3001698");
-                objCfdi.agregarEducativas("Juan Manuel Calderón Martínez", "LANA841219HGRLRN14", "Primaria", "1023456789", "CAMJ841219I33");
-                //
-                objCfdi.agregarImpuestos(0, 0.16);
-                objCfdi.agregarTraslado("002", "Tasa", 0.160000, 0.16);
-                //objCfdi.agregarRetencion(
-                break;
-            #endregion
-
-            #region NotariosPublicos
-            case "Notarios Públicos":
-                objCfdi.agregarComprobante33("A", "6172", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "01", "01", 1, 0, "MXN", "1", 1, "I", "PUE", "39300", "");
-                objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
-                objCfdi.agregarReceptor("XAXX010101000", "Cliente general", "", "", "P01");
-                objCfdi.agregarConcepto("01010101", "NoId", 1, "EA", "Pieza", "Producto Generico", 1, 1, 0);
-                objCfdi.agregarNotariosPublicos("1.0");
-                objCfdi.agregarDescInmueble("01", "Calle", "", "", "", "", "", "Acapulco", 12, "MEX", "39715");
-                objCfdi.agregarDatosOperacion(15, "2017-10-23", 10, 10, 1.16);
-                objCfdi.agregarDatosNotario("CAMJ841219HGRLRN14", 5, 12, "");
-                objCfdi.agregarDatosEnajenante("No");
-                objCfdi.agregarDatosUnEnajenante("Cliente genérico", "Generico", "Genérico", "LANA7008173R5", "LANA700817HGRLRN14");
-                objCfdi.agregarDatosAdquiriente("No");
-                objCfdi.agregarDatosUnAdquiriente("Cliente genérico", "Generico", "Genérico", "LANA7008173R5", "LANA700817HGRLRN14");
-                break;
-            #endregion
-
-            #region SPEI
-            case "SPEI":
-                objCfdi.agregarComprobante33("A", "6172", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "01", "", 1, 0, "MXN", "1", 1, "I", "PUE", "39300", "");
-                objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
-                objCfdi.agregarReceptor("CAMJ841219I33", "Cliente general", "", "", "P01");
-                objCfdi.agregarConcepto("01010101", "NoId", 1, "EA", "Pieza", "Producto Generica", 1, 1, 0);
-                //
-                objCfdi.agregarSPEITercero(System.DateTime.Now.ToString("yyyy-MM-dd"), "14:05:04", "12345", "jhjhjhjhjh", "000000000000000", "jhjhjhjhjhjhjh");
-                objCfdi.agregarSPEIOrdenante("Bancomer", "Juan Manuel", "12", "00000000000", "CAMJ841219I33");
-                objCfdi.agregarSPEIBeneficiario("Banamex", "Juan Manuel", "12", "0000000002", "CAMJ841219I33", "Prueba", 0.16, 1);
-                break;
-            #endregion
-
-            #region ValesDespensa
-            case "Vales de Despensa":
-                // Cfdi 3.3
-                objCfdi.agregarComprobante33("A", "6172", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "01", "", 1, 0, "MXN", "1", 1.16, "I", "PUE", "39300", "");
-                objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
-                objCfdi.agregarReceptor("CAMJ841219I33", "Cliente general", "", "", "P01");
-                objCfdi.agregarConcepto("01010101", "NoId", 1, "EA", "Pieza", "Producto Generica", 1, 1, 0);
-                // Complemento
-                objCfdi.agregarValesDespensa("monedero electrónico", "C1215456380", "12345678901", 20);
-                objCfdi.agregarConceptoValesDespensa("123456789", "2017-09-22T13:18:00", "CAMJ841219I33", "CAMJ841219HGRLRN14", "Juan Manuel Calderón", "72015612300", 10);
-                objCfdi.agregarConceptoValesDespensa("234567890", "2017-09-22T13:18:00", "CAMJ841219I33", "CAMJ841219HGRLRN14", "Juan Manuel Calderón", "72015612300", 10);
-                break;
-            #endregion
-
-            #region ImpuestosLocales
-            case "Impuestos Locales":
-                // Cfdi 3.3
-                objCfdi.agregarComprobante33("A", "6172", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "01", "", 1, 0, "MXN", "1", 1.16, "I", "PUE", "39300", "");
-                objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
-                objCfdi.agregarReceptor("CAMJ841219I33", "Cliente general", "", "", "P01");
-                objCfdi.agregarConcepto("01010101", "NoId", 1, "EA", "Pieza", "Producto Generica", 1, 1, 0);
-                // Complemento
-                objCfdi.agregarImpuestosLocales("1.0", 0, 0.16);
-                objCfdi.agregarTrasladosLocales("IVA Local", 0.16, 0.16);
-                break;
-            #endregion
-
-            #region Pagos 1.0
-            case "Pago10":
-
-                objCfdi.agregarComprobante33("Pago", "1", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "", "", 0, 0, "XXX", "", 0, "P", "", "39300", "");
-
-                //FacturacionElectronicaPagos emisora = new FacturacionElectronicaPagos();
-                //emisora.idEmisor = Convert.ToInt32(lblIdEmisor.Text);
-                //emisora.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
-                //emisora.obtieneInfoEmisor();
-                //if (Convert.ToBoolean(emisora.retorno[0]))
-                //{
-                //    DataSet DatosEmisor = (DataSet)emisora.retorno[1];
-                //    foreach (DataRow InfoEmisor in DatosEmisor.Tables[0].Rows)
-                //    {
-                //        //Agrega nodo Emisor al XML
-                //        EMISOR = InfoEmisor[0].ToString().Trim().ToUpper();
-                //        objCfdi.agregarEmisor(InfoEmisor[0].ToString().Trim(), InfoEmisor[1].ToString().Trim(), InfoEmisor[2].ToString().Trim());
-                //    }
-                //}
                 //Obtenemos la informacion del Receptor XML
                 FacturacionElectronicaPagos receptora = new FacturacionElectronicaPagos();
                 receptora.idReceptor = idreceptor;
@@ -2205,92 +1985,68 @@ public partial class FComprobantePagos : System.Web.UI.Page
                     {
                         //Agrega nodo Receptor al XML
                         RECEPTOR = InfoReceptor[0].ToString();
-                        //objCfdi.agregarReceptor(InfoReceptor[0].ToString().Trim(), InfoReceptor[1].ToString().Trim(), "", "", InfoReceptor[2].ToString().Trim());
+                        objCfdi.agregarReceptor(InfoReceptor[0].ToString().Trim(), InfoReceptor[1].ToString().Trim(), "", "", "P01");
                     }
                 }
 
 
-                objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
-                objCfdi.agregarReceptor("XAXX010101000", "Cliente general", "", "", "P01");
+                //objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
+                //objCfdi.agregarReceptor("XAXX010101000", "Cliente general", "", "", "P01");
                 //
-                objCfdi.agregarConcepto("84111506", "", 1, "ACT", "", "Pago", 0, 0, 0);
+
+                //Se obtienen los datos de los conceptos
+                FacturacionElectronicaPagos conceptos = new FacturacionElectronicaPagos();
+                conceptos.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
+                conceptos.obtieneUUIDFOLIO();
+                string UUIDF = "", Fol = "", Par = "", SAnt = "", SP = "", SACT = "", formapago = "", metodpago = "";
+                if (Convert.ToBoolean(conceptos.retorno[0]))
+                {
+                    DataSet DatosConceptos = (DataSet)conceptos.retorno[1];
+
+                    foreach (DataRow InfoConceptos in DatosConceptos.Tables[0].Rows)
+                    {
+                        //Agrega nodo Conceptos con el impuesto de Traslado (Si es que tiene) al XML
+                        objCfdi.agregarConcepto("84111506", "", 1, "ACT", "", "Pago", 0, 0, 0);
+                        UUIDF = InfoConceptos[0].ToString();
+                        Fol = InfoConceptos[1].ToString();
+                        Par = InfoConceptos[2].ToString();
+                        SAnt = InfoConceptos[3].ToString();
+                        SP = InfoConceptos[4].ToString();
+                        SACT = InfoConceptos[5].ToString();
+                        formapago = InfoConceptos[6].ToString();
+                        metodpago = InfoConceptos[7].ToString();
+                    }
+                }
+
+                //objCfdi.agregarConcepto("84111506", "", 1, "ACT", "", "Pago", 0, 0, 0);
                 // aquí empezamos con el Complemento de Pagos
-                objCfdi.agregarPago10("2017-07-18T12:00:00", "02", "MXN", 0, 3, "", "", "", "12345678901", "", "", "", "", "", "");     //Ingresar los valores generados por el concepto de pago
-                objCfdi.agregarPago10DoctoRelacionado("39BF5250-E071-4DDB-828D-6669E1C1C886", "", "", "MXN", 0, "PPD", 1, 1000, 1, 999);    //Ingresar UUID de la factura previa 
+
+                fechaactual = DateTime.Now.ToString("yyyy-MM-dd") + "T" + DateTime.Now.ToString("hh:mm:ss");
+
+
+
+                objCfdi.agregarPago10(fechaactual, formapago, "MXN", 0, Convert.ToDouble(SP), "", "", "", "", "", "", "", "", "", "");     //Ingresar los valores generados por el concepto de pago
+                string PPDPPID = "";
+                if (Convert.ToBoolean(Convert.ToInt32(metodpago)))
+                    PPDPPID = "PID";
+                else
+                    PPDPPID = "PPD";
+
+                objCfdi.agregarPago10DoctoRelacionado(UUIDF, "", Fol, "MXN", 0, PPDPPID, Convert.ToInt32(Par), Convert.ToDouble(SAnt), Convert.ToDouble(SP), Convert.ToDouble(SACT));    //Ingresar UUID de la factura previa 
                 //objCfdi.agregarPago10DoctoRelacionado("39BF5250-E071-4DDB-828D-6669E1C1C886", "", "", "MXN", 0, "PPD", 1, 1000, 1, 999);
                 //objCfdi.agregarPago10Impuestos(0, 10);
                 //objCfdi.agregarPago10Traslado("002", "Tasa", 0.1600, 5);
                 //objCfdi.agregarPago10Traslado("003", "Tasa", 0.1600, 5);
                 break;
-            #endregion
-
-            #region EstadoDeCuentaGasolinas
-            case "Estado De Cuenta Combustible":
-                objCfdi.agregarComprobante33("A", "6172", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "01", "01", 1, 0, "MXN", "1", 1.16, "I", "PUE", "39300", "");
-                objCfdi.agregarCfdiRelacionados("04");
-                objCfdi.agregarCfdiRelacionado("0a8e8af1-c7af-4925-a389-bfd1be89c99e");
-                objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
-                objCfdi.agregarReceptor("XAXX010101000", "Cliente general", "", "", "P01");
-                //
-                objCfdi.agregarConcepto("01010101", "NoId", 1, "EA", "Pieza", "Producto Generica", 1, 1, 0);
-                objCfdi.agregarImpuestoConceptoTraslado(1, "002", "Tasa", 0.160000, 0.16);
-                //
-                objCfdi.agregarImpuestos(0, 0.16);
-                objCfdi.agregarTraslado("002", "Tasa", 0.160000, 0.16);
-                objCfdi.agregarEstadoCuentaCombustible11("Tarjeta", "14BRC00043", 1, 1.16);
-                objCfdi.agregarConceptoEstadoCuentaCombustible("531714663", "2017-05-12T12:00:00", "NEP1004207LA", "0000108043", "", 1, "32011", "Litros", "Magna", "9655118", 1, 1);
-                objCfdi.agregarTrasladoEstadoCuentaCombustible("IVA", 0.1600, 0.16);
-                break;
-            #endregion
-
-            #region Nomina12
-            case "Nómina12":
-                // Cfdi 3.3
-                objCfdi.Decimales = 2;
-                objCfdi.agregarComprobante33("Serie", "Folio", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "99", "", 1.00, 0, "MXN", "1", 1.00, "N", "PUE", "39715", "");
-                objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
-                objCfdi.agregarReceptor("CAMJ841219I33", "Juan Manuel Calderón", "", "", "P01");
-                objCfdi.agregarConcepto("84111505", "", 1, "ACT", "", "Pago de nómina", 1.00, 1.00, 0);
-                // Complemento
-                objCfdi.agregarNomina12("1.2", "O", "2016-11-15", "2016-11-01", "2017-01-15", "0.001", "1.00", "", "");
-                objCfdi.agregarNominaEmisor12("", "C1215456387", "");
-                objCfdi.agregarNominaReceptor12("HETJ880528HGRRLL13", "123456789012345", "2017-01-01", "P3M21D", "01", "", "01", "02", "EMP13", "DOCUMENTOS DIGITALES", "DESARROLLADOR JR", "1", "01", "002", "1234567890", "1.00", "1.00", "DIF");
-                objCfdi.agregarNominaPercepciones12("1.00", null, null, "1.00", "0");
-                objCfdi.agregarNominaPercepcionesPercepcion12("001", "001", "Sueldo", "1.00", "0");                    // Cfdi 3.3
-                                                                                                                       //// Complemento
-                                                                                                                       //objCfdi.agregarNomina12("1.2", "O", "2016-11-15", "2016-11-01", "2017-01-15", "0.001", "1.00", "", "");
-                                                                                                                       //objCfdi.agregarNominaEmisor12("", "C1215456387", "");
-                                                                                                                       //objCfdi.agregarNominaReceptor12("HETJ880528HGRRLL13", "123456789012345", "2017-01-01", "P3M21D", "01", "", "01", "02", "EMP13", "DOCUMENTOS DIGITALES", "DESARROLLADOR JR", "1", "01", "002", "1234567890", "1.00", "1.00", "DIF");
-                                                                                                                       //objCfdi.agregarNominaPercepciones12("1.00", null, null, "1.00", "0");
-                                                                                                                       //objCfdi.agregarNominaPercepcionesPercepcion12("001", "001", "Sueldo", "1.00", "0");     
-                break;
-            #endregion
-
-            #region Areolineas
-            case "Aerolíneas":
-                // Cfdi 3.3
-                objCfdi.agregarComprobante33("A", "6172", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "01", "", 1, 0, "MXN", "1", 1, "I", "PUE", "39300", "");
-                objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
-                objCfdi.agregarReceptor("CAMJ841219I33", "Cliente general", "", "", "P01");
-                objCfdi.agregarConcepto("01010101", "NoId", 1, "EA", "Pieza", "Producto Generica", 1, 1, 0);
-                // Complemento
-                objCfdi.agregarAerolineas(10);
-                objCfdi.agregarOtrosCargos(10);
-                objCfdi.agregarCargo("001", 10);
-                break;
-            #endregion
-
-            default:
-                //MessageBox.Show("Este complemento no está habilitado todavía");
-                break;
+                #endregion
         }
         #endregion
 
         #region GeneraXML
         //objCfdi.CargaXslt();
-        objCfdi.GeneraXML(rutaKey, "12345678a"); //Certificadoprueba
+        //objCfdi.GeneraXML(rutaKey, "12345678a"); //Certificadoprueba
         //objCfdi.GeneraXML(rutaKey, "ForSis2017");
-        //objCfdi.GeneraXML(rutaKey, "MONCAR2017");
+        objCfdi.GeneraXML(rutaKey, "MONCAR2017");
 
         //objCfdi.GeneraXML(rutaKey, "ForSis2017");
 
@@ -2303,8 +2059,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
         }
         // Escribe el previo del XML
         txtXML = objCfdi.Xml;
-        EMISOR = "LAN7008173R5";
-        RECEPTOR = "XAXX010101000";
+        //EMISOR = "LAN7008173R5";
+        //RECEPTOR = "XAXX010101000";
 
         string Directorio = HttpContext.Current.Server.MapPath("~/Comprobantes");
         Directorio = Directorio + "/" + EMISOR + "/" + RECEPTOR + "/";
@@ -2321,8 +2077,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
         if (timbrar)
         {
             //objCfdi.TimbrarCfdiArchivo(Directorio + NombreArchivo + ".xml", "fgomez", "12121212", "http://generacfdi.com.mx/rvltimbrado/service1.asmx?WSDL",Directorio, "Timbrado.xml", false);
-            objCfdi.TimbrarCfdi("fgomez", "12121212", "http://generacfdi.com.mx/rvltimbrado/service1.asmx?WSDL", false); //TIMBRADO PRUEBA
-            //objCfdi.TimbrarCfdi("MCA9505036Z2", "K2C694v6", "http://generacfdi.com.mx/rvltimbrado/service1.asmx?WSDL", true);
+            //objCfdi.TimbrarCfdi("fgomez", "12121212", "http://generacfdi.com.mx/rvltimbrado/service1.asmx?WSDL", false); //TIMBRADO PRUEBA
+            objCfdi.TimbrarCfdi("MCA9505036Z2", "K2C694v6", "http://generacfdi.com.mx/rvltimbrado/service1.asmx?WSDL", true);
             //objCfdi.TimbrarCfdi("MCA9505036Z2", "K2C694v6", "http://generacfdi.com.mx/rvltimbrado/service1.asmx?WSDL", true);
             // Verifica el error
             if (objCfdi.MensajeError == "")
@@ -2330,8 +2086,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 txtXML = objCfdi.XmlTimbrado;
                 // Coloca datos del timbrado
                 string UUID = objCfdi.UUID;
-                string FechaTimbrado = objCfdi.FechaTimbrado;
-                string[] fecha = FechaTimbrado.Split(new char[] { 'T' }); ;
+                //string FechaTimbrado = objCfdi.FechaTimbrado;
+                string[] fecha = fechaactual.Split(new char[] { 'T' }); ;
                 string SelloSAT = objCfdi.SelloSat;
                 string certificadoSAT = objCfdi.NoCertificadoPac;
                 string SelloCFDI = objCfdi.SelloCfdi;
@@ -2352,21 +2108,19 @@ public partial class FComprobantePagos : System.Web.UI.Page
 
                 byte[] QR = objCfdi.ConvertirQrCode("Hola");
 
-                
+
 
                 object[] baseD = new Ejecuciones().dataSet("select idemisor,idrecep,Folio,SaldoAnterior,SaldoPagado,SaldoActual,Parcialidad  from recepcion_pagos_f where idcfdant='" + Convert.ToInt32(Request.QueryString["fact"]) + "'");
                 DataSet a = (DataSet)baseD[1];
                 foreach (DataRow Info in a.Tables[0].Rows)
                 {
-                    BaseDatos s = new BaseDatos();
-                    s.insertUpdateDelete("delete from RecepcionPagos_f where IdEmisor="+Info[0]+" and IdReceptor="+Info[1]+" and IdCfd="+ Convert.ToInt32(Request.QueryString["fact"]));
-                    guarda.actualizaTimbrado(Convert.ToInt32(Request.QueryString["fact"]), Info[0].ToString(), Info[1].ToString(), certificadoSAT, FechaTimbrado, UUID, SelloSAT, SelloCFDI, QR, directorioTimbrado, cadenaOriginal, noCertificado, Info[2].ToString(), Info[3].ToString(), Info[4].ToString(), Info[5].ToString(), Info[6].ToString());
+                    guarda.actualizaTimbrado(Convert.ToInt32(Request.QueryString["fact"]), Info[0].ToString(), Info[1].ToString(), certificadoSAT, fechaactual, UUID, SelloSAT, SelloCFDI, QR, directorioTimbrado, cadenaOriginal, noCertificado, Info[2].ToString(), Info[3].ToString(), Info[4].ToString(), Info[5].ToString(), Info[6].ToString());
                 }
 
 
-                    
+
                 //if (Convert.ToBoolean(guarda.retorno[1]))
-                if(actualizado)
+                if (actualizado)
                 {
                     lblError.Text = "Factura timbrada correctamente";
                     lnkBuscar.Visible = false;
@@ -2577,10 +2331,13 @@ public partial class FComprobantePagos : System.Web.UI.Page
     protected void txtIportePagado_TextChanged(object sender, EventArgs e)
     {
         decimal a = 0;
+        decimal total = 0;
         foreach (GridDataItem item in grdDocu.Items) {
             a = Convert.ToDecimal(((TextBox)item.FindControl("txtSaldoAnterior")).Text) - Convert.ToDecimal(((TextBox)item.FindControl("txtIportePagado")).Text);
             ((Label)item.FindControl("lblSaldoActual")).Text = a.ToString();
+            total = Convert.ToDecimal(((TextBox)item.FindControl("txtIportePagado")).Text);
         }
-        ((Label)fvwResumen.Row.FindControl("lblTotal")).Text = a.ToString();
+
+        ((Label)fvwResumen.Row.FindControl("lblTotal")).Text = total.ToString();
     }
 }

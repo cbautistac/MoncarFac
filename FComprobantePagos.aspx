@@ -819,6 +819,10 @@
                         <asp:Label ID="lblError" runat="server" CssClass="errores" />
                         <asp:ValidationSummary ID="ValidationSummary1" runat="server" ValidationGroup="facturas" />
                     </div>
+                    <div>
+                        <asp:Label ID="ErrorGeneral" Visible="false" runat="server" CssClass="errores" />
+                        <asp:ValidationSummary ID="ValidationSummary3" runat="server" ValidationGroup="facturas" />
+                    </div>
                 </div>
                 <asp:Panel runat="server" ID="pnlDaños" CssClass="col-lg-12 col-sm-12">
                     <telerik:RadTabStrip ID="tabFactura" RenderMode="Lightweight" runat="server" MultiPageID="multiPagina"
@@ -1098,9 +1102,10 @@
                                 <asp:Label ID="lblTipoDocumento" runat="server" Text="Tipo Documento:" CssClass="textoBold"></asp:Label>
                             </div>
                             <div class="col-lg-4 col-sm-4 text-left">
-                                <asp:DropDownList ID="cmbTipoDocumento" DataSourceID="SqlDataSource3" runat="server" CssClass="input-large" DataTextField="descripcion" DataValueField="id_tipo">
+                                <asp:DropDownList ID="cmbTipoDocumento"  runat="server" CssClass="input-large" DataTextField="descripcion" DataValueField="id_tipo">
+                                    <asp:ListItem Selected="True" Text="Pago" Value="1"></asp:ListItem>
                                 </asp:DropDownList>
-                                <asp:SqlDataSource ID="SqlDataSource3" runat="server" SelectCommand="select * from tipo_documento_f order by id_tipo desc" ConnectionString='<%$ ConnectionStrings:PVW %>'></asp:SqlDataSource>
+                                <%--<asp:SqlDataSource ID="SqlDataSource3" runat="server" SelectCommand="select * from tipo_documento_f order by id_tipo desc" ConnectionString='<%$ ConnectionStrings:PVW %>'></asp:SqlDataSource>--%>
                             </div>
                         </telerik:RadPageView>
                         <telerik:RadPageView runat="server" ID="vAdicional">
@@ -1291,7 +1296,7 @@
                                 <td>
                                     <asp:Label ID="LabelFormaPago" Visible="false" runat="server" Text="Mostrar la forma de pago!!!"></asp:Label></td>
                                 <td style="width: 100px;">&nbsp;</td>
-                                <td>TOTAL:</td>
+                                <td>Total Pagado:</td>
                                 <td>
                                     <asp:Label ID="lblTotal" runat="server" Text="0.00"></asp:Label></td>
                             </tr>

@@ -34,6 +34,13 @@ public class FacturacionElectronicaPagos
         sql = "select  a.claveprodServ,a.IdConcepto,a.DetCantidad,a.ClaveUnidad_SAT, b.Nombre,a.DetDesc,cast(a.DetValorUnit as decimal(15,4)) as DetValorUnit,  cast (a.subtotal as decimal(15,4)) as subtotal,a.detimpdesc,cast( a.DetImpTras3 as decimal(15,4)) as DetImpTras3, case IdTras3 when '1' then '001' when '2' then '002' when '3' then '003' else '' end as idTras3  from DetCFD_f a  left join c_unidad_f b on b.ClaveUnidad = a.ClaveUnidad_SAT where idCfd=" + idCFD;
         retorno = ejecuta.dataSet(sql);
     }
+
+    public void obtieneUUIDFOLIO() {
+        sql = "select UUIDFactura,Folio,Parcialidad,SaldoAnterior,SaldoPagado,Saldoactual,case when LEN(encformapago)=1 then '0'+encformapago else Encformapago end as EncFormaPago,encmetodopago from Recepcion_Pagos_F where idcfdant=" + idCFD;
+        retorno = ejecuta.dataSet(sql);
+    }
+
+
     public void obtieneInfoEmisor()
     {
         sql = "select EncEmRFC,EncEmNombre,EncRegimen from EncCFD_f where idCfd=" + idCFD + " and  IdEmisor=" + idEmisor;
@@ -68,7 +75,9 @@ public class FacturacionElectronicaPagos
 
     public void actualizaTimbrado(int IdCDF,string emisor,string receptor, string certificado, string fecha, string uuid, string selloSat, string selloCFD, byte[] qr, string ruta, string cadena, string certificadoCfd, string Folio, string SAnt,string SPag, string STotal, string Parci)
     {
-        sql = "insert into RecepcionPagos_f values (" + IdCDF + "," + Folio + "," + emisor + "," + receptor + ",(select isnull((select top 1 idtimbre from timbrado_f where idCfd=" + IdCDF + " order by idtimbre desc),0)+1),'" + certificado + "','" + fecha + "','" + uuid + "','" + selloSat + "','" + selloCFD + "','@imagen','" + ruta + "','" + cadena + "','" + certificadoCfd + "','MXN','"+SAnt+"','"+SPag+"','"+STotal+"','"+Parci+"')";
+
+        //sql = "insert into RecepcionPagos_f values (" + IdCDF + "," + Folio + "," + emisor + "," + receptor + ",(select isnull((select top 1 idtimbre from timbrado_f where idCfd=" + IdCDF + " order by idtimbre desc),0)+1),'" + certificado + "','" + fecha + "','" + uuid + "','" + selloSat + "','" + selloCFD + "','@imagen','" + ruta + "','" + cadena + "','" + certificadoCfd + "','MXN','"+SAnt+"','"+SPag+"','"+STotal+"','"+Parci+"')";
+        sql = "update recepcionpagos_f set noCertificadoSat='" + certificado + "',fechaTimbrado='" + fecha + "',uuid='" + uuid + "',selloSat='" + selloSat + "',selloCFD='" + selloCFD + "',qr='@imagen',rutaArchivo='" + ruta + "',cadenaoriginal='" + cadena + "',noCertificadoCfd='" + certificadoCfd + "',SaldoAnterior='" + SAnt + "',SaldoActual='" + SPag + "',Total='" + STotal + "',Parcialidad='" + Parci + "' where idcfd=" + idCFD + " and idtimbre=(select top 1 (idtimbre)from RecepcionPagos_f where idcfd='"+idCFD+"' order by idtimbre desc)";
         retorno = ejecuta.insertAdjuntos(sql, qr);
         //retorno = ejecuta.insertUpdateDelete(sql);
     }
