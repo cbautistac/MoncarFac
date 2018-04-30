@@ -16,7 +16,7 @@
             var oWnd = $find("<%=modalEmisores.ClientID%>");
             oWnd.close();
         }
-
+         
         function abreWinRec() {
             var oWnd = $find("<%=modalReceptores.ClientID%>");
             oWnd.setUrl('');
@@ -807,7 +807,7 @@
     <div class="page-header">
         <!-- /BREADCRUMBS -->
         <div class="clearfix">
-            <h3 class="content-title pull-left">Complemento de Pago</h3>
+            <h3 class="content-title pull-left">Facturaci&oacute;n</h3>
         </div>
     </div>
     <asp:Panel ID="Panel4" runat="server" CssClass="panelCatalogos text-center" ScrollBars="Auto">
@@ -818,10 +818,6 @@
                     <div class="col-lg-12 col-sm-12 text-center">
                         <asp:Label ID="lblError" runat="server" CssClass="errores" />
                         <asp:ValidationSummary ID="ValidationSummary1" runat="server" ValidationGroup="facturas" />
-                    </div>
-                    <div>
-                        <asp:Label ID="ErrorGeneral" Visible="false" runat="server" CssClass="errores" />
-                        <asp:ValidationSummary ID="ValidationSummary3" runat="server" ValidationGroup="facturas" />
                     </div>
                 </div>
                 <asp:Panel runat="server" ID="pnlDaños" CssClass="col-lg-12 col-sm-12">
@@ -1051,11 +1047,11 @@
                                 <asp:Label ID="Label56" runat="server" Text="*" CssClass="errores"></asp:Label>
                             </div>
                             <div class="col-lg-4 col-sm-4 text-left">
-                                <asp:DropDownList ID="ddlFormaPagoSAT" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlFormaPagoSAT_SelectedIndexChanged" DataSourceID="SqlDsFormaPagoSAT" DataTextField="descripcion" DataValueField="claveformapago" CssClass="input-large"></asp:DropDownList></td>
+                                <asp:DropDownList ID="ddlFormaPagoSAT" runat="server" DataSourceID="SqlDsFormaPagoSAT" DataTextField="claveformapago" DataValueField="claveformapago" CssClass="input-large"></asp:DropDownList></td>
                                 <asp:SqlDataSource ID="SqlDsFormaPagoSAT" runat="server" SelectCommand="select claveformapago,descripcion from c_FormaPago_F" ConnectionString='<%$ ConnectionStrings:PVW %>'></asp:SqlDataSource>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Debe indicar la Forma de Pago" Text="*" CssClass="errores" ControlToValidate="ddlFormaPagoSAT" ValidationGroup="factura"></asp:RequiredFieldValidator>
                             </div>
-
+                           
                             <div class="col-lg-2 col-sm-2 text-left">
                                 <asp:Label ID="Label60" runat="server" Text="Condiciones de Pago: " CssClass="textoBold"></asp:Label>
                             </div>
@@ -1068,12 +1064,9 @@
                                 <asp:Label ID="Label70" runat="server" Text="*" CssClass="errores"></asp:Label>
                             </div>
                             <div class="col-lg-4 col-sm-4 text-left">
-                                <asp:DropDownList ID="ddlMetodoPagoSAT" runat="server" DataTextField="clavemetodo" DataValueField="clavemetodo" CssClass="input-large">
-                                
-                            <asp:ListItem Selected="True" Text="PID" Value="1"></asp:ListItem>
-                                <asp:ListItem Text="PPD" Value="2"></asp:ListItem>
-                                </asp:DropDownList></td>
-                                
+                                <asp:DropDownList ID="ddlMetodoPagoSAT" runat="server" DataSourceID="SqlDsMetodoSAT" DataTextField="clavemetodo" DataValueField="clavemetodo" CssClass="input-large"></asp:DropDownList></td>
+                                <asp:SqlDataSource ID="SqlDsMetodoSAT" runat="server" SelectCommand="select * from metodopago_fsat" ConnectionString='<%$ ConnectionStrings:PVW %>'></asp:SqlDataSource>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ErrorMessage="Debe indicar el Método de Pago" Text="*" CssClass="errores" ControlToValidate="ddlMetodoPagoSAT" ValidationGroup="factura"></asp:RequiredFieldValidator>
                             </div>
                             <div class="col-lg-2 col-sm-2 text-left">
                                 <asp:Label ID="Label74" runat="server" Text="Régimen: " CssClass="textoBold"></asp:Label>
@@ -1102,10 +1095,9 @@
                                 <asp:Label ID="lblTipoDocumento" runat="server" Text="Tipo Documento:" CssClass="textoBold"></asp:Label>
                             </div>
                             <div class="col-lg-4 col-sm-4 text-left">
-                                <asp:DropDownList ID="cmbTipoDocumento"  runat="server" CssClass="input-large" DataTextField="descripcion" DataValueField="id_tipo">
-                                    <asp:ListItem Selected="True" Text="Pago" Value="1"></asp:ListItem>
+                                <asp:DropDownList ID="cmbTipoDocumento" DataSourceID="SqlDataSource3" runat="server" CssClass="input-large" DataTextField="descripcion" DataValueField="id_tipo">
                                 </asp:DropDownList>
-                                <%--<asp:SqlDataSource ID="SqlDataSource3" runat="server" SelectCommand="select * from tipo_documento_f order by id_tipo desc" ConnectionString='<%$ ConnectionStrings:PVW %>'></asp:SqlDataSource>--%>
+                                <asp:SqlDataSource ID="SqlDataSource3" runat="server" SelectCommand="select * from tipo_documento_f" ConnectionString='<%$ ConnectionStrings:PVW %>'></asp:SqlDataSource>
                             </div>
                         </telerik:RadPageView>
                         <telerik:RadPageView runat="server" ID="vAdicional">
@@ -1142,12 +1134,6 @@
                                     TargetControlID="txtReferenciasFac" WatermarkText="Referencia Externa/Documento de Referencia" WatermarkCssClass="input-large water" />
                             </div>
                             <div class="col-lg-3 col-sm-3 text-left">
-                                <asp:Label ID="Label2" runat="server" Text="Ticket(s):" CssClass="textoBold"></asp:Label>
-                            </div>
-                            <div class="col-lg-9 col-sm-9 text-left">
-                                <asp:TextBox ID="txtTickets" Enabled="false" runat="server" MaxLength="30" CssClass="input-medium"></asp:TextBox>
-                            </div>
-                            <div class="col-lg-3 col-sm-3 text-left">
                                 <asp:Label ID="Label95" runat="server" Text="Folio de Impresión:" CssClass="textoBold"></asp:Label>
                             </div>
                             <div class="col-lg-9 col-sm-9 text-left">
@@ -1161,8 +1147,7 @@
                             </div>
                             <div class="col-lg-9 col-sm-9 text-left">
                                 <asp:DropDownList ID="ddlTipoFactura" runat="server" CssClass="input-medium">
-                                    <asp:ListItem Selected="True" Value="RP" Text="RECEPCION DE PAGO"></asp:ListItem>
-                                    <asp:ListItem Value="GL" Text="GLOBAL"></asp:ListItem>
+                                    <asp:ListItem Selected="True" Value="GL" Text="GLOBAL"></asp:ListItem>
                                     <asp:ListItem Value="MO" Text="MANO OBRA"></asp:ListItem>
                                     <asp:ListItem Value="RE" Text="REFACCIONES"></asp:ListItem>
                                     <asp:ListItem Value="SO" Text="SIN ORDEN"></asp:ListItem>
@@ -1173,111 +1158,197 @@
                             </div>
                         </telerik:RadPageView>
                     </telerik:RadMultiPage>
-
-
-                    <%-- PANEL DE INFORMACION --%>
                     <asp:Panel runat="server" ID="pnlConceptos" CssClass="marTop9px col-lg-12 col-sm-12">
                         <div>
                             <asp:Panel ID="pnlDocumento" runat="server" HorizontalAlign="Center" ScrollBars="Auto" BorderStyle="Solid">
                                 <telerik:RadGrid ID="grdDocu" AutoGenerateColumns="False" runat="server" RenderMode="Lightweight" OnPreRender="grdDocu_PreRender" OnItemCommand="grdDocu_ItemCommand" OnItemCreated="grdDocu_ItemCreated" Culture="es-Mx" OnNeedDataSource="grdDocu_NeedDataSource" GroupPanelPosition="Top" OnItemDataBound="grdDocu_ItemDataBound">
-                                    <MasterTableView CommandItemDisplay="Bottom" AllowAutomaticInserts="false" CommandItemSettings-ShowAddNewRecordButton="True" SkinID="Metro">
+                                    <MasterTableView CommandItemDisplay="Bottom" AllowAutomaticInserts="false" CommandItemSettings-ShowAddNewRecordButton="True" SkinID="Metro" DataKeyNames="IdFila">
                                         <CommandItemSettings ShowRefreshButton="false" ShowSaveChangesButton="true" ShowCancelChangesButton="false" AddNewRecordText="Agregar Concepto" SaveChangesText="Guardar Documento" />
                                         <Columns>
-                                            <telerik:GridTemplateColumn HeaderText="UUID" UniqueName="UUID">
+                                            <telerik:GridTemplateColumn HeaderText="Concepto" UniqueName="Concepto">
                                                 <ItemTemplate>
                                                     <table style="text-align: center;">
                                                         <tr>
-                                                            <td class="text-left">UUID:</td>
-                                                            <td class="text-right">
-                                                                <asp:TextBox ID="txtUUID" Width="270px" runat="server" />
+                                                            <td>
+                                                                ID:
+                                                                <br />
+                                                                <asp:TextBox ID="txtIdent" runat="server"/>
+                                                            </td>
                                                         </tr>
-                                                    </table>
-                                                </ItemTemplate>
-                                            </telerik:GridTemplateColumn>
-                                            <telerik:GridTemplateColumn UniqueName="Folio" HeaderText="Folio">
-                                                <ItemTemplate>
-                                                    <table>
-
+                                                           <tr>
+                                                            <td>
+                                                                Clave Producto/Servicio SAT:
+                                                                <br />
+                                                                <asp:DropDownList ID="ddlClaveProdSAT" runat="server"  DataSourceID="SqlDsClaveProdSAT" Width="160px" DataTextField="descripcion" DataValueField="claveProdServ" DefaultMessage="Elija Producto/Servicio"></asp:DropDownList>
+                                                            </td>
+                                                        </tr>
                                                         <tr>
-                                                            <td class="text-left">Folio:</td>
-                                                            <td class="text-right">
-                                                                <asp:TextBox ID="txtFoliot" Width="70px" runat="server" Columns="2" Text="" AutoPostBack="true"></asp:TextBox>
-                                                                <cc1:FilteredTextBoxExtender ID="atxtFoliot" runat="server" TargetControlID="txtFoliot" FilterType="Custom, Numbers" ValidChars="." />
+                                                            <td>
+                                                                Concepto:
+                                                                <br />
+                                                                <asp:TextBox runat="server" ID="txtConcepto" TextMode="MultiLine" Columns="15" Rows="5" CssClass="textNota" />
                                                             </td>
                                                         </tr>
                                                     </table>
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
-                                            <telerik:GridTemplateColumn UniqueName="Moneda" HeaderText="Moneda">
+                                            <telerik:GridTemplateColumn UniqueName="Importe" HeaderText="Importe">
                                                 <ItemTemplate>
                                                     <table>
-
                                                         <tr>
-                                                            <td class="text-left">Moneda: </td>
+                                                            <td class="text-left">Cantidad:</td>
                                                             <td class="text-right">
-                                                                <asp:Label ID="lblMoneda" runat="server" Text="Peso"></asp:Label></td>
+                                                                <telerik:RadNumericTextBox ID="radnumCantidad" runat="server" Font-Size="Small" MaxValue="10000" MinValue="0" Value="0" CssClass="input-mini" Width="80" NumberFormat-AllowRounding="False" ShowButton="False" AutoPostBack="true" ShowSpinButtons="True" OnTextChanged="radnumCantidad_TextChanged"></telerik:RadNumericTextBox></td>
+                                                           
                                                         </tr>
-
+                                                        <tr>
+                                                            <td class="text-left">
+                                                                Cve Unidad SAT:
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <asp:DropDownList ID="ddlClaveUnidadSAT" runat="server" DataSourceID="SqlDsClaveUnidadSAT" Width="100px"  DataTextField="Nombre" DataValueField="claveunidad" DefaultMessage="Elija Unidad"></asp:DropDownList>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">
+                                                                Unidad:
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <asp:DropDownList ID="ddlUnidad" runat="server" DataSourceID="SqlDsUnidad" DataTextField="UnidDesc" DataValueField="IdUnid" CssClass="input-small"></asp:DropDownList>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">
+                                                                Valor Unitario:
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <asp:TextBox ID="txtValUnit" runat="server" Columns="2" Text="0.00" AutoPostBack="true" OnTextChanged="txtValUnit_TextChanged"></asp:TextBox>
+                                                                <cc1:FilteredTextBoxExtender ID="filtxtValUnit" runat="server" TargetControlID="txtValUnit" FilterType="Custom, Numbers" ValidChars="." />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">Importe:</td>
+                                                            <td class="text-right">
+                                                                <asp:Label ID="lblImporte" runat="server" Text="0.00"></asp:Label></td>
+                                                        </tr>
                                                     </table>
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
-                                            <telerik:GridTemplateColumn UniqueName="Parcialidad" HeaderText="Parcialidad">
+                                            <telerik:GridTemplateColumn UniqueName="SubTotal" HeaderText="SubTotal">
+                                                <ItemTemplate>
+                                                    <table>
+                                                        <tr>
+                                                            <td class="text-left">% Descuento:</td>
+                                                            <td class="text-right">
+                                                                <asp:TextBox ID="txtPtjeDscto" runat="server" Text="0" Columns="1" MaxLength="5" AutoPostBack="true" OnTextChanged="txtPtjeDscto_TextChanged"></asp:TextBox></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">Descuento: </td>
+                                                            <td class="text-right">
+                                                                <asp:TextBox ID="txtDscto" runat="server" Text="0.00" Columns="2" AutoPostBack="true" OnTextChanged="txtDscto_TextChanged"></asp:TextBox>
+                                                                <cc1:FilteredTextBoxExtender ID="filtxtPtheDscto" runat="server" TargetControlID="txtPtjeDscto" FilterType="Custom, Numbers" ValidChars="." />
+                                                                <cc1:FilteredTextBoxExtender ID="filtxtDscto" runat="server" TargetControlID="txtDscto" FilterType="Custom, Numbers" ValidChars="." />
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">Dto. Global: </td>
+                                                            <td class="text-right">
+                                                                <asp:Label ID="lblDtoGlobalConcepto" runat="server" Text="0.00"></asp:Label></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">SubTotal:</td>
+                                                            <td class="text-right">
+                                                                <asp:Label ID="lblSubTotal" runat="server" Text="0.00"></asp:Label></td>
+                                                        </tr>
+                                                    </table>
+                                                </ItemTemplate>
+                                            </telerik:GridTemplateColumn>
+                                            <telerik:GridTemplateColumn UniqueName="Imp_Tras" HeaderText="Impuestos Trasladados">
                                                 <ItemTemplate>
                                                     <table class="text-left">
                                                         <tr>
                                                             <td class="text-left">
-                                                                <telerik:RadDropDownList runat="server" ID="ddlParcialidad"
-                                                                    DataSourceID="SqlParcialidad" DataTextField="Parcialidad"
-                                                                    DataValueField="IdParcialidad" Width="100" AutoPostBack="true" OnSelectedIndexChanged="ddlParcialidad_SelectedIndexChanged">
-                                                                </telerik:RadDropDownList>
+                                                                <telerik:RadDropDownList runat="server" ID="ddlIvaTras" DataSourceID="SqlDSIva" DataTextField="TrasDescrip" DataValueField="Id_Tras" Width="100" DefaultMessage="Elija IVA" OnClientItemSelected="" AutoPostBack="true" OnSelectedIndexChanged="ddlIvaTras_SelectedIndexChanged"></telerik:RadDropDownList>
                                                             </td>
+                                                            <td class="text-right">
+                                                                <asp:Label runat="server" ID="lblIvaTras" Text="0.00"></asp:Label></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">
+                                                                <telerik:RadDropDownList ID="ddlIeps" runat="server" DataSourceID="SqlDSIeps" DataTextField="TrasDescrip" DataValueField="Id_Tras" DefaultMessage="Elija IEPS" Width="100" OnClientItemSelected="" AutoPostBack="true" OnSelectedIndexChanged="ddlIeps_SelectedIndexChanged"></telerik:RadDropDownList>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <asp:Label runat="server" ID="lblIeps" Text="0.00"></asp:Label></td>
                                                         </tr>
                                                     </table>
                                                     <br />
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
-                                            <telerik:GridTemplateColumn UniqueName="Saldo_Anterior" HeaderText="Saldo Anterior">
+                                            <telerik:GridTemplateColumn UniqueName="Imp_Ret" HeaderText="Impuestos Retenidos">
                                                 <ItemTemplate>
                                                     <table>
                                                         <tr>
-                                                            <td>Anterior:
-                                                                <br />
-                                                                <asp:TextBox ID="txtSaldoAnterior" Width="100px" Text="0.00" runat="server" />
+                                                            <td class="text-left">
+                                                                <telerik:RadDropDownList runat="server" ID="ddlIvaRet" DataSourceID="SqlDsIvaRet" DataTextField="RetDescrip" DataValueField="Id_Ret" Width="100" AutoPostBack="true"
+                                                                    DefaultMessage="Elija IVA" OnClientItemSelected="" OnSelectedIndexChanged="ddlIvaRet_SelectedIndexChanged">
+                                                                </telerik:RadDropDownList>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <asp:Label runat="server" ID="lblIvaRet" Text="0.00"></asp:Label>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-left">
+                                                                <telerik:RadDropDownList ID="ddlIsrRet" runat="server" DataSourceID="SqlDsIsrRet" DataTextField="RetDescrip" DataValueField="Id_Ret" AutoPostBack="true"
+                                                                    OnSelectedIndexChanged="ddlIsrRet_SelectedIndexChanged" DefaultMessage="Elija ISR" Width="100">
+                                                                </telerik:RadDropDownList>
+                                                            </td>
+                                                            <td class="text-right">
+                                                                <asp:Label runat="server" ID="lblIsrRet" Text="0.00"></asp:Label>
                                                             </td>
                                                         </tr>
                                                     </table>
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
-                                            <telerik:GridTemplateColumn UniqueName="Importe_Pagado" HeaderText="Importe Pagado">
+                                            <telerik:GridTemplateColumn UniqueName="Total" HeaderText="Total">
                                                 <ItemTemplate>
-                                                    <table>
-                                                        <tr>
-                                                            <td>Pagado:
-                                                                <br />
-                                                                <asp:TextBox ID="txtIportePagado" Width="100px" Text="0.00" OnTextChanged="txtIportePagado_TextChanged" runat="server" />
-                                                            </td>
-                                                        </tr>
-                                                    </table>
+                                                    <asp:Label ID="lblTotalCpto" runat="server" Text="0.00"></asp:Label>
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
-                                            <telerik:GridTemplateColumn UniqueName="Saldo_Actual" HeaderText="Saldo Actual">
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lblSaldoActual" runat="server" Text="0.00"></asp:Label>
-                                                </ItemTemplate>
-                                            </telerik:GridTemplateColumn>
-                                            <%--<telerik:GridTemplateColumn HeaderText="Elimina">
+                                            <telerik:GridTemplateColumn HeaderText="Elimina">
                                                 <ItemTemplate>
                                                     <asp:LinkButton ID="lnkElimina" runat="server" CssClass="btn btn-danger" OnClick="lnkElimina_Click" OnClientClick="return confirm('¿Está seguro de eliminar el concepto de la factura?')" CommandArgument='<%# Eval("idFila") %>'><i class="fa fa-trash"></i></asp:LinkButton>
                                                 </ItemTemplate>
-                                            </telerik:GridTemplateColumn>--%>
+                                            </telerik:GridTemplateColumn>
                                         </Columns>
                                     </MasterTableView>
                                     <ClientSettings AllowKeyboardNavigation="false" Selecting-AllowRowSelect="true" Scrolling-AllowScroll="true" Scrolling-SaveScrollPosition="true" Scrolling-UseStaticHeaders="true"></ClientSettings>
                                     <HeaderContextMenu RenderMode="Lightweight"></HeaderContextMenu>
                                 </telerik:RadGrid>
 
-                                <asp:SqlDataSource runat="server" ID="SqlParcialidad" ConnectionString='<%$ ConnectionStrings:PVW %>' SelectCommand="SELECT * from Parcialidad_f">
+                                <asp:SqlDataSource runat="server" ID="SqlDsUnidad" ConnectionString='<%$ ConnectionStrings:PVW %>' SelectCommand="SELECT [IdUnid], [UnidDesc] FROM [Unidades_f]"></asp:SqlDataSource>
+                                <asp:SqlDataSource runat="server" ID="SqlDSIeps" ConnectionString='<%$ ConnectionStrings:PVW %>' SelectCommand="SELECT [Id_Tras], [TrasDescrip] FROM [ImpTrasladado_f] WHERE ([TrasNombre] = @TrasNombre)">
+                                    <SelectParameters>
+                                        <asp:Parameter DefaultValue="IEPS" Name="TrasNombre" Type="String"></asp:Parameter>
+                                    </SelectParameters>
                                 </asp:SqlDataSource>
+                                <asp:SqlDataSource runat="server" ID="SqlDSIva" ConnectionString='<%$ ConnectionStrings:PVW %>' SelectCommand="SELECT Id_Tras, TrasDescrip FROM [ImpTrasladado_f] WHERE ([TrasNombre] = @TrasNombre)">
+                                    <SelectParameters>
+                                        <asp:Parameter DefaultValue="IVA" Name="TrasNombre" Type="String"></asp:Parameter>
+                                    </SelectParameters>
+                                </asp:SqlDataSource>
+                                <asp:SqlDataSource runat="server" ID="SqlDsIvaRet" ConnectionString='<%$ ConnectionStrings:PVW %>' SelectCommand="SELECT Id_Ret, RetDescrip FROM [ImpRetenidos_f] WHERE (RetNombre LIKE @RetNombre)">
+                                    <SelectParameters>
+                                        <asp:Parameter DefaultValue="IVA%" Name="RetNombre" Type="String"></asp:Parameter>
+                                    </SelectParameters>
+                                </asp:SqlDataSource>
+                                <asp:SqlDataSource runat="server" ID="SqlDsIsrRet" ConnectionString='<%$ ConnectionStrings:PVW %>' SelectCommand="SELECT Id_Ret, RetDescrip FROM [ImpRetenidos_f] WHERE (RetNombre LIKE @RetNombre)">
+                                    <SelectParameters>
+                                        <asp:Parameter DefaultValue="ISR%" Name="RetNombre" Type="String"></asp:Parameter>
+                                    </SelectParameters>
+                                </asp:SqlDataSource>
+                                <asp:SqlDataSource ID="SqlDsClaveProdSAT" runat="server" SelectCommand="select claveProdServ,descripcion from c_ProdServ_f  order by descripcion" ConnectionString='<%$ ConnectionStrings:PVW %>'></asp:SqlDataSource>
+                                <asp:SqlDataSource ID="SqlDsClaveUnidadSAT" runat="server" SelectCommand="select claveunidad,nombre from c_Unidad_f order by nombre" ConnectionString='<%$ ConnectionStrings:PVW %>'></asp:SqlDataSource>
                             </asp:Panel>
                             <div>
                                 <asp:Label runat="server" ID="lblMnsjs"></asp:Label>
@@ -1289,29 +1360,131 @@
                     <EmptyDataTemplate>
                         <table class="pad1m">
                             <tr>
-
-
-
-                                <%--<td>Forma de Pago:</td>--%>
+                                <td>Subtotal Bruto:</td>
                                 <td>
-                                    <asp:Label ID="LabelFormaPago" Visible="false" runat="server" Text="Mostrar la forma de pago!!!"></asp:Label></td>
+                                    <asp:Label ID="lblSubTotBru" runat="server" Text="0.00"></asp:Label></td>
                                 <td style="width: 100px;">&nbsp;</td>
-                                <td>Total Pagado:</td>
+                                <td>Impuesto Trasladado:</td>
                                 <td>
-                                    <asp:Label ID="lblTotal" runat="server" Text="0.00"></asp:Label></td>
+                                    <asp:Label ID="lblImpTras" runat="server" Text="0.00"></asp:Label></td>
                             </tr>
-                            
+                            <tr>
+                                <td>Descuento Global:</td>
+                                <td>
+                                    <asp:TextBox ID="txtPctjeDsctoGlb" runat="server" Text="0.00" Columns="1" OnTextChanged="txtPctjeDsctoGlb_TextChanged" AutoPostBack="true" CssClass="input-small"></asp:TextBox>%&nbsp;
+                                        <asp:Label ID="lblDsctoGlb" runat="server" Text="0.00"></asp:Label>
+                                    <cc1:FilteredTextBoxExtender ID="filtxtPctjeDsctoGlb" runat="server" TargetControlID="txtPctjeDsctoGlb" FilterType="Custom, Numbers" ValidChars="." />
+                                </td>
+                                <td style="width: 100px;">&nbsp;</td>
+                                <td>Subtotal despues de traslados:</td>
+                                <td>
+                                    <asp:Label ID="lblSubTotTras" runat="server" Text="0.00"></asp:Label></td>
+                            </tr>
+                            <tr>
+                                <td>Descuento:</td>
+                                <td>
+                                    <asp:Label ID="lblTotDscto" runat="server" Text="0.00"></asp:Label></td>
+                                <td style="width: 100px;">&nbsp;</td>
+                                <td>Impuesto Retenido:</td>
+                                <td>
+                                    <asp:Label ID="lblImpRet" runat="server" Text="0.00"></asp:Label></td>
+                            </tr>
+                            <tr>
+                                <td>Subtotal Neto:</td>
+                                <td>
+                                    <asp:Label ID="lblSubTotNeto" runat="server" Text="0.00"></asp:Label></td>
+                                <td style="width: 100px;">&nbsp;</td>
+                                <td>Subtotal despu&eacute;s de retenciones:</td>
+                                <td>
+                                    <asp:Label ID="lblSubTotRet" runat="server" Text="0.00"></asp:Label></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label runat="server" ID="lblMotDscto" Text="Motivo del Descuento:"></asp:Label></td>
+                                <td>
+                                    <asp:TextBox runat="server" ID="txtMotivoDscto" Columns="10"></asp:TextBox></td>
+                                <td style="width: 100px;">&nbsp;</td>
+                                <td>Traslados y retenciones adicionales:</td>
+                                <td>
+                                    <asp:Label ID="lblTrasRetAd" runat="server" Text="0.00"></asp:Label></td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                                <td style="width: 100px;">&nbsp;</td>
+                                <td>Total:</td>
+                                <td>
+                                    <asp:Label ID="lblTotalGral" runat="server" Text="0.00"></asp:Label></td>
+                            </tr>
                         </table>
                     </EmptyDataTemplate>
                     <ItemTemplate>
                         <table class="pad1m">
-                            
+                            <tr>
+                                <td>Subtotal Bruto:</td>
+                                <td>
+                                    <asp:Label ID="lblSubTotBru" runat="server" Text='<%# string.IsNullOrEmpty(Eval("EncSubTotal").ToString()) ? "0.00" : Eval("EncSubTotal") %>'></asp:Label>
+                                </td>
+                                <td style="width: 100px;">&nbsp;</td>
+                                <td>Impuesto Trasladado:</td>
+                                <td>
+                                    <asp:Label ID="lblImpTras" runat="server" Text='<%# string.IsNullOrEmpty(Eval("EncImpTras").ToString()) ? "0.00" : Eval("EncImpTras") %>'></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Descuento Global:</td>
+                                <td>
+                                    <asp:TextBox ID="txtPctjeDsctoGlb" runat="server" Text='<%# string.IsNullOrEmpty(Eval("EncDescGlob").ToString()) ? "0.00" : Eval("EncDescGlob") %>' Columns="1" CssClass="input-small" OnTextChanged="txtPctjeDsctoGlb_TextChanged" AutoPostBack="true"></asp:TextBox>
+                                    %&nbsp;
+                                        <asp:Label ID="lblDsctoGlb" runat="server" Text='<%# string.IsNullOrEmpty(Eval("EncDescGlobImp").ToString()) ? "0.00" : Eval("EncDescGlobImp") %>'></asp:Label></td>
+                                <cc1:FilteredTextBoxExtender ID="filtxtPctjeDsctoGlb" runat="server" TargetControlID="txtPctjeDsctoGlb" FilterType="Custom, Numbers" ValidChars="." />
+                                <td style="width: 100px;">&nbsp;</td>
+                                <td>Subtotal despues de traslados:</td>
+                                <td>
+                                    <asp:Label ID="lblSubTotTras" runat="server" Text="0.00"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Descuento:</td>
+                                <td>
+                                    <asp:Label ID="lblTotDscto" runat="server" Text='<%# string.IsNullOrEmpty(Eval("EncDesc").ToString()) ? "0.00" : Eval("EncDesc") %>'></asp:Label></td>
+                                <td style="width: 100px;">&nbsp;</td>
+                                <td>Impuesto Retenido:</td>
+                                <td>
+                                    <asp:Label ID="lblImpRet" runat="server" Text='<%# string.IsNullOrEmpty(Eval("EncImpRet").ToString()) ? "0.00" : Eval("EncImpRet") %>'></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Subtotal Neto:</td>
+                                <td>
+                                    <asp:Label ID="lblSubTotNeto" runat="server" Text="0.00"></asp:Label></td>
+                                <td style="width: 100px;">&nbsp;</td>
+                                <td>Subtotal despu&eacute;s de retenciones:</td>
+                                <td>
+                                    <asp:Label ID="lblSubTotRet" runat="server" Text="0.00"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Label runat="server" ID="lblMotDscto" Text="Motivo del Descuento:" Visible="false"></asp:Label></td>
+                                <td>
+                                    <asp:TextBox runat="server" ID="txtMotivoDscto" Text='<%# Eval("EncMotivoDescuento") %>' Columns="10" Visible="false"></asp:TextBox></td>
+                                <td style="width: 100px;">&nbsp;</td>
+                                <td>Traslados y retenciones adicionales:
+                                </td>
+                                <td>
+                                    <asp:Label ID="lblTrasRetAd" runat="server" Text="0.00"></asp:Label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
                                 <td style="width: 100px;">&nbsp;</td>
                                 <td>Total:
                                 </td>
                                 <td>
-                                    <asp:Label ID="lblasd" runat="server" Text='<%# string.IsNullOrEmpty(Eval("EncTotal").ToString()) ? "0.00" : Eval("EncTotal") %>'></asp:Label>
-                                <td style="width: 100px;">&nbsp;</td>
+                                    <asp:Label ID="lblTotalGral" runat="server" Text='<%# string.IsNullOrEmpty(Eval("EncTotal").ToString()) ? "0.00" : Eval("EncTotal") %>'></asp:Label>
+                                </td>
                             </tr>
                         </table>
                         <br />
@@ -1440,7 +1613,7 @@
                         <asp:Parameter Name="IdCfd" Type="Int32" />
                     </UpdateParameters>
                 </asp:SqlDataSource>
-                <%-- <asp:SqlDataSource ID="SqlDataSource3" runat="server" ConnectionString='<%$ ConnectionStrings:PVW %>'
+               <%-- <asp:SqlDataSource ID="SqlDataSource3" runat="server" ConnectionString='<%$ ConnectionStrings:PVW %>'
                     DeleteCommand="DELETE FROM [DetCFD_f] WHERE [IdDetCfd] = @IdDetCfd" InsertCommand="INSERT INTO [DetCFD_f] ([IdCfd], [IdConcepto], [IdUnid], [DetCantidad], [DetValorUnit], [IdTras1], [DetImpTras1], [IdTras2], [DetImpTras2], [IdRet1], [DetImpRet1], [IdRet2], [DetImpRet2], [DetPorcDesc], [DetImpDesc], [Subtotal], [Total], [IdEmisor], [DetDesc], [CoCuentaPredial], [IdTras3], [DetImpTras3]) VALUES (@IdCfd, @IdConcepto, @IdUnid, @DetCantidad, @DetValorUnit, @IdTras1, @DetImpTras1, @IdTras2, @DetImpTras2, @IdRet1, @DetImpRet1, @IdRet2, @DetImpRet2, @DetPorcDesc, @DetImpDesc, @Subtotal, @Total, @IdEmisor, @DetDesc, @CoCuentaPredial, @IdTras3, @DetImpTras3)" SelectCommand="SELECT [IdDetCfd], [IdCfd], [IdConcepto], [IdUnid], [DetCantidad], [DetValorUnit], [IdTras1], [DetImpTras1], [IdTras2], [DetImpTras2], [IdRet1], [DetImpRet1], [IdRet2], [DetImpRet2], [DetPorcDesc], [DetImpDesc], [Subtotal], [Total], [IdEmisor], [DetDesc], [CoCuentaPredial], [IdTras3], [DetImpTras3] FROM [DetCFD]" UpdateCommand="UPDATE [DetCFD] SET [IdCfd] = @IdCfd, [IdConcepto] = @IdConcepto, [IdUnid] = @IdUnid, [DetCantidad] = @DetCantidad, [DetValorUnit] = @DetValorUnit, [IdTras1] = @IdTras1, [DetImpTras1] = @DetImpTras1, [IdTras2] = @IdTras2, [DetImpTras2] = @DetImpTras2, [IdRet1] = @IdRet1, [DetImpRet1] = @DetImpRet1, [IdRet2] = @IdRet2, [DetImpRet2] = @DetImpRet2, [DetPorcDesc] = @DetPorcDesc, [DetImpDesc] = @DetImpDesc, [Subtotal] = @Subtotal, [Total] = @Total, [IdEmisor] = @IdEmisor, [DetDesc] = @DetDesc, [CoCuentaPredial] = @CoCuentaPredial, [IdTras3] = @IdTras3, [DetImpTras3] = @DetImpTras3 WHERE [IdDetCfd] = @IdDetCfd">
                     <DeleteParameters>
                         <asp:Parameter Name="IdDetCfd" Type="Int32"></asp:Parameter>
@@ -1515,13 +1688,13 @@
                         <asp:LinkButton ID="lnkTimbrar" runat="server" CssClass="btn btn-primary t14"
                             OnClick="lnkTimbrar_Click"><i class="fa fa-rocket"></i><span>&nbsp;Timbrar Documento</span></asp:LinkButton>
                         <%-- Label introducido por jose luis --%>
-                        <asp:Label ID="unidadcant" runat="server" Text="1" Visible="False"></asp:Label>
-
+                            <asp:Label ID="unidadcant" runat="server" Text="1" Visible="False"></asp:Label> 
+                         
                     </div>
                     <div class="col-lg-3 col-ms-3 text-center">
-                        <asp:LinkButton ID="lnkDescargar" runat="server" CssClass="btn btn-primary t14"
+                        <asp:LinkButton ID="lnkDescargar"  runat="server" CssClass="btn btn-primary t14"
                             OnClick="lnkDescargarXML_Click"><i class="fa fa-download"></i><span>&nbsp;Descargar XML</span></asp:LinkButton>
-                        <asp:LinkButton ID="lnkDescargaTimbrado" runat="server" CssClass="btn btn-primary t14" OnClick="lnkDescargaTimbrado_Click"><i class="fa fa-download"></i><span>&nbsp;Timbrado</span></asp:LinkButton>
+                            <asp:LinkButton ID="lnkDescargaTimbrado"  runat="server" CssClass="btn btn-primary t14" OnClick="lnkDescargaTimbrado_Click"><i class="fa fa-download"></i><span>&nbsp;Timbrado</span></asp:LinkButton>
                     </div>
                     <div class="col-lg-3 col-ms-3 text-center">
                         <asp:LinkButton ID="lnkImprimir" runat="server" CssClass="btn btn-info t14"
