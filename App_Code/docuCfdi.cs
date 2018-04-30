@@ -210,47 +210,61 @@ public class docuCfdi
 
         //using (comm)
         //{
+        string Insertar = "";
         object[] re = new object[1];
             try
             {
             BaseDatos bd = new BaseDatos();
 
-            string valores = "";
-            foreach (detDocCfdi a in lstDet){
-                valores=",'"+a.Folio+"','"+a.Parcialidad+"','"+a.SaldoAnt+"','"+a.SaldoPagado+"','"+a.SaldoAct+"','" + a.UUID+"','"+a.ProductoSAT+"','"+a.ClaveUnidadSAT+"'";
+            string valores = "", up="";
+            foreach (detDocCfdi a in lstDet) {
+                valores = ",'" + a.Folio + "','" + a.Parcialidad + "','" + a.SaldoAnt + "','" + a.SaldoPagado + "','" + a.SaldoAct + "','" + a.UUID + "','" + a.ProductoSAT + "','" + a.ClaveUnidadSAT + "'";
+                up = a.Folio + "," + a.Parcialidad + "," + a.SaldoAnt + "," + a.SaldoPagado + "," + a.SaldoAct;
             }
-            object[] idcfd=bd.scalarInt("select count(*)+1 from recepcion_pagos_f");
-            
-                string Insertar = "insert into recepcion_pagos_f (idcfd,idemisor,idrecep,idtipodoc,idmoneda,EncEmRfc,EncReRfc,EncFecha,EncHora,EncSello,EncCertificado,EncTimbre,EncFormaPago,EncCondicionesPago,EncMetodoPago," +
-                    "EncTipoCambio,EncNota,EncReferencia,EncNumCtaPago,EncRegimen,EncLugarExpedicion,EncFolioImpresion,EncSerieImpresion,usocfdi_sat,tipoDocumento,Folio,Parcialidad," +
-                    "SaldoAnterior, SaldoPagado, SaldoActual, UUIDFactura,ProductoSAT,ClaveUnidadSAT,encestatus,idcfdAnt)" +
-                    "values ('"+idcfd[1].ToString()+"','"+ dcfd.IdEmisor + "'" +
-                    ",'"+ dcfd.IdRecep + "'" +
-                    ",'"+ dcfd.IdTipoDoc + "'" +
-                    ",'"+ dcfd.IdMoneda + "'" +
-                    ",'"+ dcfd.strEmRfc + "'" +
-                    ",'"+ dcfd.strReRfc + "'" +
-                    ",'"+ dcfd.dteFecha.ToShortDateString() + "'" +
-                    ",'"+ dcfd.strHora + "'" +
-                    ",'"+ dcfd.strEncSello + "'" +
-                    ",'"+ dcfd.strEncCert + "'" +
-                    ",'"+ dcfd.strEncTimbre + "'" +
-                    ",'"+ dcfd.strEncFormaPago + "'" +
-                    ",'"+ dcfd.strEncCondicionesPago + "'" +
-                    ",'"+ dcfd.strEncMetodoPago +"'" +
-                    ",'"+ dcfd.floEncTipoCambio + "'" +
-                    ",'"+ dcfd.strEncNota + "'" +
-                    ",'"+ dcfd.strEncReferencia + "'" +
-                    ",'"+ dcfd.strEncNumCtaPago + "'" +
-                    ",'"+ dcfd.strEncRegimen + "'" +
-                    ",'"+ dcfd.strEncLugarExpedicion + "'" +
-                    ",'"+ dcfd.strEncFolioImp + "'" +
-                    ",'"+ dcfd.strEncSerieImp + "'" +
-                    ",'"+ dcfd.idUsoCFDI + "'" +
-                    ",'"+ dcfd.tipoDocumento + "'"+valores +",'P','"+dcfd.idCfdAnt+"')";
-            re= bd.insertUpdateDelete(Insertar);
 
+            string[] x = up.Split(',');
 
+            object[] ab = bd.scalarInt("Select count(*) from recepcion_pagos_f where idemisor='" + dcfd.IdEmisor + "' and idrecep='" + dcfd.IdRecep + "'");
+
+            if (Convert.ToInt32(ab[1]) == 1)
+            {
+                Insertar = "update recepcion_pagos_f set Folio='" + x[0] + "', Parcialidad='" + x[1] + "', SaldoAnterior='" + x[2] + "', SaldoPagado='" + x[3] + "', SaldoActual='" + x[4] + "' where idemisor='" + dcfd.IdEmisor + "' and idrecep='" + dcfd.IdRecep + "';" +
+                    "update recepcionpagos_f set Parcialidad='"+x[1]+"', SaldoAnterior='"+x[2]+"', SaldoActual='"+x[3]+"', Total='"+x[4] + "' where idemisor='" + dcfd.IdEmisor + "' and idreceptor='" + dcfd.IdRecep + "';";
+                re = bd.insertUpdateDelete(Insertar);
+            }
+            else
+            {
+                object[] idcfd = bd.scalarInt("select count(*)+1 from recepcion_pagos_f");
+
+                Insertar = "insert into recepcion_pagos_f (idcfd,idemisor,idrecep,idtipodoc,idmoneda,EncEmRfc,EncReRfc,EncFecha,EncHora,EncSello,EncCertificado,EncTimbre,EncFormaPago,EncCondicionesPago,EncMetodoPago," +
+                "EncTipoCambio,EncNota,EncReferencia,EncNumCtaPago,EncRegimen,EncLugarExpedicion,EncFolioImpresion,EncSerieImpresion,usocfdi_sat,tipoDocumento,Folio,Parcialidad," +
+                "SaldoAnterior, SaldoPagado, SaldoActual, UUIDFactura,ProductoSAT,ClaveUnidadSAT,encestatus,idcfdAnt)" +
+                "values ('" + idcfd[1].ToString() + "','" + dcfd.IdEmisor + "'" +
+                ",'" + dcfd.IdRecep + "'" +
+                ",'" + dcfd.IdTipoDoc + "'" +
+                ",'" + dcfd.IdMoneda + "'" +
+                ",'" + dcfd.strEmRfc + "'" +
+                ",'" + dcfd.strReRfc + "'" +
+                ",'" + dcfd.dteFecha.ToShortDateString() + "'" +
+                ",'" + dcfd.strHora + "'" +
+                ",'" + dcfd.strEncSello + "'" +
+                ",'" + dcfd.strEncCert + "'" +
+                ",'" + dcfd.strEncTimbre + "'" +
+                ",'" + dcfd.strEncFormaPago + "'" +
+                ",'" + dcfd.strEncCondicionesPago + "'" +
+                ",'" + dcfd.strEncMetodoPago + "'" +
+                ",'" + dcfd.floEncTipoCambio + "'" +
+                ",'" + dcfd.strEncNota + "'" +
+                ",'" + dcfd.strEncReferencia + "'" +
+                ",'" + dcfd.strEncNumCtaPago + "'" +
+                ",'" + dcfd.strEncRegimen + "'" +
+                ",'" + dcfd.strEncLugarExpedicion + "'" +
+                ",'" + dcfd.strEncFolioImp + "'" +
+                ",'" + dcfd.strEncSerieImp + "'" +
+                ",'" + dcfd.idUsoCFDI + "'" +
+                ",'" + dcfd.tipoDocumento + "'" + valores + ",'P','" + dcfd.idCfdAnt + "')";
+                re = bd.insertUpdateDelete(Insertar);
+            }
 
                 //int filAfec = comm.ExecuteNonQuery();
 

@@ -715,8 +715,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
 
     protected void grdDocu_PreRender(object sender, EventArgs e)
     {
-        //GridTableView masterTable = (sender as RadGrid).MasterTableView; // comentado AGD
-        //GridColumn ConceptoColumn = masterTable.GetColumnSafe("TemplateColumn2") as GridColumn; // comentado AGD
+        GridTableView masterTable = (sender as RadGrid).MasterTableView; // comentado AGD
+        GridColumn ConceptoColumn = masterTable.GetColumnSafe("TemplateColumn2") as GridColumn; // comentado AGD
         //TextBox txtIdent = masterTable.GetBatchColumnEditor("txtIdent") as TextBox;
         //TextBox txtConcepto = masterTable.GetBatchColumnEditor("txtConcepto") as TextBox;
         //RadNumericTextBox radnumCantidad = masterTable.GetBatchColumnEditor("radnumCantidad") as RadNumericTextBox;
@@ -727,10 +727,10 @@ public partial class FComprobantePagos : System.Web.UI.Page
     //Guardar el Documento en la BD
     protected void grdDocu_ItemCommand(object sender, GridCommandEventArgs e)
     {
-        BaseDatos bd = new BaseDatos();
+        //BaseDatos bd = new BaseDatos();
 
-        string delete = "delete from recepcion_pagos_f WHERE IdEmisor = " + lblEmisorFacturas.Text + " AND IdRecep = " + lblReceptorFactura.Text;
-        bd.insertUpdateDelete(delete);
+        //string delete = "delete from recepcion_pagos_f WHERE IdEmisor = " + lblEmisorFacturas.Text + " AND IdRecep = " + lblReceptorFactura.Text;
+        //bd.insertUpdateDelete(delete);
 
         if (status != "P"){
 
@@ -1230,7 +1230,17 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 try
                 {
                     conLoc.Open();
-                    qrySelect = "select * FROM RecepcionPagos_f_temp WHERE IdEmisor = " + IDEmisor + " AND IdReceptor = " + IdRecep+ " and len(noCertificadoCfd)=0";
+
+                    BaseDatos e = new BaseDatos();
+                    object[] f = e.scalarInt("select top 1(idtimbre) from RecepcionPagos_f WHERE IdEmisor = " + IDEmisor + " AND IdReceptor = " + IdRecep + " order by idtimbre desc");
+                    int timbr = Convert.ToInt32(f[1]);
+                    if (timbr > 1)
+                    {
+                        timbr -= 1;
+                        qrySelect = "select IdCfd,Folio,IdEmisor,IdReceptor,IdTimbre,noCertificadoSat,fechaTimbrado,uuid,selloSat,selloCFD,qr,rutaArchivo,cadenaOriginal,noCertificadoCfd,Moneda,Total as SaldoAnterior,SaldoActual=0,Total=0,Parcialidad=0 from recepcionpagos_f WHERE IdEmisor ='" + IDEmisor + "' AND IdReceptor ='" + IdRecep + "' and IdTimbre ='" + timbr + "'";
+                    }
+                    else
+                        qrySelect = "select * FROM RecepcionPagos_f WHERE IdEmisor = " + IDEmisor + " AND IdReceptor = " + IdRecep + " and len(noCertificadoCfd)=0";
 
                     using (conLoc)
                     {
@@ -1315,7 +1325,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
         }
     }
 
-    
+
 
     private void cargaDatosFacturaPrevia(int idCfd)
     {

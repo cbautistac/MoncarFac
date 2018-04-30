@@ -53,7 +53,7 @@ public partial class ComprobatePagos : System.Web.UI.Page
     }
     protected void btnCancelar_Click(object sender, EventArgs e)
     {
-        LinkButton aut = (LinkButton)sender;
+        /*LinkButton aut = (LinkButton)sender;
         string[] arg = aut.CommandArgument.ToString().Split(new char[] { ';' });
         int fac = Convert.ToInt16(arg[0]);
 
@@ -147,10 +147,10 @@ public partial class ComprobatePagos : System.Web.UI.Page
              {
 
              }*/
-        }
+        /*}
         else
             lblError.Text = "Ocurrió un error al cancelar el XML: " + objCan.MensajeDeError;
-
+        */
     }
 
     public string LeerValorXML(string xml, string atributo, string nodo)

@@ -989,7 +989,7 @@ public partial class FacturacionGral : System.Web.UI.Page
             {
                 e.Canceled = true;
                 bolErrConcpto = true;
-                string strErr = "alert('El Identificador ya la descripción del Concepto deben ser capturados.');";
+                string strErr = "alert('El Identificador y la descripción del Concepto deben ser capturados.');";
                 ScriptManager.RegisterStartupScript(this, typeof(Page), "AlertScritpt", strErr, true);
             }
             else if (ctrlPostBack == "SaveChangesButton")
