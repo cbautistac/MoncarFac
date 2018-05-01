@@ -701,6 +701,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
         //DropDownList ddlUnidad = masterTable.GetBatchColumnEditor("ddlUnidad") as DropDownList;
     }
 
+    //Guarda la info en la BD
     protected void grdDocu_ItemCommand(object sender, GridCommandEventArgs e)
     {
         if (status != "P")
@@ -854,317 +855,300 @@ public partial class FComprobantePagos : System.Web.UI.Page
             }
             else if (ctrlPostBack == "SaveChangesButton")
             {
+
                 if (status != "T" && status != "C")
                 {
-                    if (((TextBox)fvwResumen.Row.FindControl("txtMotivoDscto")).Text == "" && Convert.ToDecimal(((TextBox)fvwResumen.Row.FindControl("txtPctjeDsctoGlb")).Text) != 0 || ((TextBox)fvwResumen.Row.FindControl("txtMotivoDscto")).Text == "" && Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblDsctoGlb")).Text) != 0)
+
+                    docuCfdi docCfd = new docuCfdi(int.Parse(lblEmisorFacturas.Text), int.Parse(lblReceptorFactura.Text), 1);
+                    docCfd.IdMoneda = ddlMonedaSAT.Text;
+                    docCfd.strEmRfc = lblRfcEmisor.Text;
+                    docCfd.IdTipoDoc = 2;
+                    string strReRfcNom = lblRfcReceptor.Text;
+                    docCfd.strReRfc = strReRfcNom.Substring(0, 13).Trim();
+                    docCfd.decEncTotal = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblTotal")).Text);
+                    docCfd.charEncEstatus = 'P';
+                    docCfd.strEncFormaPago = ddlFormaPagoSAT.Text.ToUpper(); //Forma de Pago SAT
+                    docCfd.strEncMetodoPago = ddlMetodoPagoSAT.Text.ToUpper(); //Metodo Pago SAT
+                    docCfd.strEncCondicionesPago = txtCondicionesPago.Text.ToUpper();
+                    docCfd.strEncRegimen = ddlRegimenSAT.Text.ToUpper(); //Regimen Fiscal SAT
+                    docCfd.strEncNumCtaPago = txtCtaPago.Text.ToUpper();
+                    docCfd.floEncTipoCambio = float.Parse(txtTipoCambio.Text);
+                    docCfd.strEncNota = txtNotaFac.Text;
+                    docCfd.idUsoCFDI = ddlUsoCFDI.SelectedValue;
+                    docCfd.tipoDocumento = cmbTipoDocumento.Text;
+                    string lugarExpedicion = "";
+
+                    lugarExpedicion = lugarExpedicion.Trim() + lblCalleEmiExFac.Text.Trim().ToUpper() + " No. Ext. " + lblNoExtEmiExFac.Text.Trim().ToUpper();
+                    if (lblNoIntEmiExFac.Text != "")
+                        lugarExpedicion = lugarExpedicion.Trim() + " No. Int. " + lblNoIntEmiExFac.Text.Trim().ToUpper();
+                    lugarExpedicion = lugarExpedicion + ", Col. " + lblColoniaEmiExFac.Text.Trim().ToUpper() + ", C.P. " + lblCpEmiExFac.Text.Trim().ToUpper() + ", " + lblDelMunEmiExFac.Text.Trim().ToUpper() + ", " + lblEdoEmiExFac.Text.Trim().ToUpper() + ", " + lblPaisEmiExFac.Text.Trim().ToUpper();
+
+                    docCfd.strEncLugarExpedicion = lugarExpedicion.Trim();
+
+                    object[] infoFacura = { 1, 1 };// recepciones.obtieneUltimaFacturaTaller("1", "1");
+                    float folioFactura = 0;
+                    if (Convert.ToBoolean(infoFacura[0]))
                     {
-                        string mensaje = string.Format("alert('Debe indicar el motivo de descuento');");
-                        ScriptManager.RegisterStartupScript(this, typeof(Page), "Scritpt", mensaje, true);
+                        int ticketF = 0;
+                        try { ticketF = Convert.ToInt32(Request.QueryString["tck"].ToString()); } catch (Exception) { ticketF = 0; }
+                        if (ticketF != 0)
+                            docCfd.strEncReferencia = "T" + Request.QueryString["p"].ToString() + "-Tk" + Request.QueryString["tck"].ToString() + "-" + Convert.ToInt32(infoFacura[1]).ToString();
+                        else
+                        {
+                            if (txtReferenciasFac.Text != "")
+                            {
+                                string textitu = txtReferenciasFac.Text;
+                                string test1 = textitu.Substring(1, 6).ToString();
+                                docCfd.strEncReferencia = txtReferenciasFac.Text;
+
+                                //docCfd.strEncFolioImp = Convert.ToInt32(test1);
+                            }
+                            else
+                            {
+                                docCfd.strEncFolioImp = float.Parse(Convert.ToInt32(infoFacura[1]).ToString());
+                                docCfd.strEncReferencia = "T" + Request.QueryString["p"].ToString() + "-Tk0-" + Convert.ToInt32(infoFacura[1]).ToString();
+                            }
+                        }
+
+
+                        bool pagadosTk = docCfd.strEncReferencia.Contains("Tk");
+
+                        folioFactura = float.Parse(Convert.ToInt32(infoFacura[1]).ToString());
+                        docCfd.strEncRegimen = ddlRegimenSAT.Text; //REGIMEN FISCAL SAT
+                        docCfd.idCfdAnt = Convert.ToInt32(Request.QueryString["fact"]);
+                        try
+                        {
+                            object[] prefijoTaller = { 0, 0 };// recepciones.obtienePrefijoTaller(Request.QueryString["t"]);
+                            if (Convert.ToBoolean(prefijoTaller[0]))
+                                docCfd.strEncSerieImp = "E" + Request.QueryString["e"] + "-T" + Request.QueryString["t"] + "-TFG" + Convert.ToInt32(infoFacura[1]).ToString();
+                            else
+                                docCfd.strEncSerieImp = "E" + Request.QueryString["e"] + "-TFG";
+                        }
+                        catch (Exception)
+                        {
+                            docCfd.strEncSerieImp = "E" + Request.QueryString["e"] + "-T" + Request.QueryString["t"] + "-TFG" + Convert.ToInt32(infoFacura[1]).ToString();
+                        }
+
+                        docCfd.tipoFactura = ddlTipoFactura.SelectedValue;
+
+                        List<detDocCfdi> lstDetCfd = new List<detDocCfdi>();
+                        foreach (GridDataItem fila in grdDocu.Items)
+                        {
+                            RadDropDownList parcialidad = (RadDropDownList)fila.FindControl("ddlParcialidad");
+                            //RadDropDownList ddlTras2 = (RadDropDownList)fila.FindControl("ddlIeps");
+                            //RadDropDownList ddlRet1 = (RadDropDownList)fila.FindControl("ddlIvaRet");
+                            //RadDropDownList ddlRet2 = (RadDropDownList)fila.FindControl("ddlIsrRet");
+                            //DropDownList ddlProdServ = (DropDownList)fila.FindControl("ddlClaveProdSAT");
+                            //DropDownList ddlCveUnidad = (DropDownList)fila.FindControl("ddlClaveUnidadSAT");
+
+                            detDocCfdi asd = new detDocCfdi();
+                            asd.IdDetCfd = fila.ItemIndex + 1;
+                            asd.IdEmisor = Convert.ToInt16(IDEmisor);
+                            asd.UUID = ((TextBox)fila.FindControl("txtUUID")).Text;
+                            asd.Folio = ((TextBox)fila.FindControl("txtFoliot")).Text;
+                            asd.Parcialidad = parcialidad.SelectedValue;
+                            asd.SaldoAnt = ((TextBox)fila.FindControl("txtSaldoAnterior")).Text;
+                            asd.SaldoPagado = ((TextBox)fila.FindControl("txtIportePagado")).Text;
+                            asd.SaldoAct = ((Label)fila.FindControl("lblSaldoActual")).Text;
+                            asd.Total = Convert.ToDecimal(((Label)fila.FindControl("lblSaldoActual")).Text);
+                            asd.ProductoSAT = "84111506";
+                            asd.ClaveUnidadSAT = "ACT";
+                            asd.idcfdAnterior = Request.QueryString["fact"];
+
+                            lstDetCfd.Add(asd);
+                            //Falta Guardarlos en la nueva tabla Recepcion_pagos_f
+                        }
+
+                        object[] result = docuCfdi.GuardaRecepcionPago(docCfd, lstDetCfd);
+                        string scriptMnsj;
+                        //if (Convert.ToBoolean(result[0]))
+                        //{
+                        //    if (Convert.ToInt32(result[1].ToString()) > 0)
+                        //    {
+                        //        ticketF = 0;
+                        //        DateTime fecha = fechas.obtieneFechaLocal();
+                        //        try { ticketF = Convert.ToInt32(Request.QueryString["tck"].ToString()); } catch (Exception) { ticketF = 0; }
+                        //        if (ticketF != 0)
+                        //        {
+                        //        object[] actualizaFacturado = VentaDet.actualizaFacturado(ticketF, Request.QueryString["p"].ToString(), Convert.ToInt32(result[1].ToString()));
+                        //            object[] infoTk = VentaDet.obtieneFechaTicket(ticketF, Request.QueryString["p"].ToString());
+                        //            if (Convert.ToBoolean(infoTk[0]))
+                        //                fecha = Convert.ToDateTime(infoTk[1]);
+                        //            else
+                        //                fecha = fechas.obtieneFechaLocal();
+                        //        }
+                        //        else
+                        //        {
+                        //            try
+                        //            {
+                        //                string[] ticketsFact = Request.QueryString["tck"].ToString().Split(new char[] { ';' });
+                        //                foreach (string ticketEncontrado in ticketsFact)
+                        //                {
+                        //                    object[] actualizaFacturado = VentaDet.actualizaFacturado(Convert.ToInt32(ticketEncontrado), Request.QueryString["p"].ToString(), Convert.ToInt32(result[1].ToString()));
+                        //                }
+                        //                fecha = fechas.obtieneFechaLocal();
+                        //            }
+                        //            catch (Exception) { }
+                        //        }
+
+                        //        docCfd.IdCfd = Convert.ToInt32(result[1].ToString());
+                        //        docCfd.actualizaTipoFactura();
+
+
+                        //        Facturas facturas = new Facturas();
+                        //        facturas.folio = Convert.ToInt32(folioFactura);
+                        //        facturas.tipoCuenta = "CC";
+                        //        facturas.factura = docCfd.strEncReferencia;
+                        //        CatClientes clientes = new CatClientes();
+                        //        string politica = clientes.obtieneClavePoliticaCliente(lblReceptorFactura.Text);
+                        //        int diasPlazo = clientes.obtieneDiasPolitica(lblReceptorFactura.Text);
+                        //        FacturacionElectronica.Receptores recp = new FacturacionElectronica.Receptores();
+                        //        recp.idReceptor = Convert.ToInt32(lblReceptorFactura.Text);
+                        //        recp.obtieneInfoReceptor();
+                        //        object[] retorno = recp.info;
+                        //        try
+                        //        {
+                        //            DataSet infoRec = (DataSet)retorno[1];
+                        //            foreach (DataRow i in infoRec.Tables[0].Rows)
+                        //            {
+                        //                facturas.razon_social = Convert.ToString(i[2]);
+                        //                break;
+                        //            }
+                        //        }
+                        //        catch (Exception ex) { facturas.razon_social = ""; }
+                        //        int tickets = 0;
+                        //        try
+                        //        {
+                        //            tickets = Convert.ToInt32(Request.QueryString["tck"]);
+                        //        }
+                        //        catch (Exception)
+                        //        {
+                        //            tickets = 0;
+                        //        }
+                        //        if (tickets == 0)
+                        //        {
+                        //            facturas.fechaRevision = fecha;
+                        //            facturas.fechaProgPago = fechas.obtieneFechaLocal().AddDays(Convert.ToDouble(diasPlazo));
+                        //            facturas.id_cliprov = Convert.ToInt32(lblReceptorFactura.Text);
+                        //            facturas.formaPago = "E";
+                        //            facturas.politica = politica;
+                        //            if (pagadosTk)
+                        //                facturas.estatus = "PAG";
+                        //            else
+                        //                facturas.estatus = "PEN";
+                        //            facturas.empresa = Convert.ToInt32(Request.QueryString["e"]);
+                        //            facturas.taller = Convert.ToInt32(Request.QueryString["t"]);
+                        //            facturas.tipoCargo = "I";
+                        //            facturas.Importe = docCfd.decEncTotal;
+                        //            facturas.orden = Convert.ToInt32(Request.QueryString["o"]);
+                        //        }
+                        //        else
+                        //        {
+                        //            if (ticketF != 0)
+                        //            {
+                        //                facturas.fechaRevision = fecha;
+                        //                facturas.fechaProgPago = fecha;
+                        //                facturas.id_cliprov = Convert.ToInt32(lblReceptorFactura.Text);
+                        //                facturas.formaPago = "E";
+                        //                facturas.politica = politica;
+                        //                if (pagadosTk)
+                        //                    facturas.estatus = "PAG";
+                        //                else
+                        //                    facturas.estatus = "PEN";
+                        //                facturas.empresa = Convert.ToInt32(Request.QueryString["e"]);
+                        //                facturas.taller = Convert.ToInt32(Request.QueryString["p"].ToString());
+                        //                facturas.tipoCargo = "I";
+                        //                facturas.Importe = docCfd.decEncTotal;
+                        //                facturas.orden = ticketF;
+                        //                facturas.fechaPago = fecha;
+                        //            }
+                        //            else
+                        //            {
+                        //                facturas.fechaRevision = fecha;
+                        //                facturas.fechaProgPago = fecha;
+                        //                facturas.id_cliprov = Convert.ToInt32(lblReceptorFactura.Text);
+                        //                facturas.formaPago = "E";
+                        //                facturas.politica = politica;
+                        //                if (pagadosTk)
+                        //                    facturas.estatus = "PAG";
+                        //                else
+                        //                    facturas.estatus = "PEN";
+                        //                facturas.empresa = Convert.ToInt32(Request.QueryString["e"]);
+                        //                facturas.taller = Convert.ToInt32(Request.QueryString["p"].ToString());
+                        //                facturas.tipoCargo = "I";
+                        //                facturas.Importe = docCfd.decEncTotal;
+                        //                facturas.orden = ticketF;
+                        //                facturas.fechaPago = fecha;
+                        //            }
+                        //        }
+
+                        //        if (Request.QueryString["refct"] == "0" || Request.QueryString["refct"] == "1")
+                        //        {
+                        //            facturas.idCfd = Convert.ToInt32(result[1].ToString());
+                        //            //facturas.generaFacturaCC();
+                        //        }
+                        //        else
+                        //        {
+                        //            Ejecuciones ej = new Ejecuciones();
+                        //            object[] existeCoso = ej.scalarToInt("select count(*)  from facturas where folio=" + facturas.folio + " and factura='" + facturas.factura + "' and id_cliprov=" + facturas.id_cliprov);
+                        //            if (Convert.ToInt32(Request.QueryString["fact"]) == 0 || Convert.ToInt32(existeCoso[1]) == 0)
+                        //            {
+                        //                try { facturas.idCfd = Convert.ToInt32(result[1].ToString()); }
+                        //                catch (Exception) { facturas.idCfd = Convert.ToInt32(Request.QueryString["fact"]); }
+                        //                //facturas.generaFacturaCC();
+                        //            }
+                        //            else
+                        //            {
+                        //                facturas.idCfd = Convert.ToInt32(Request.QueryString["fact"]);
+                        //                //facturas.actualizaFacturaCC();
+                        //            }
+                        //        }
+                        //        object[] facturasInternas = facturas.retorno;
+                        //        /*if (!Convert.ToBoolean(facturasInternas[0]))
+                        //            facturas.actualizaFactura();*/
+
+                        //    }
+                        //    if (Convert.ToBoolean(result[0]))
+                        //    {
+                        //        scriptMnsj = string.Format("alert('Se ha guardado el documento: {0}');", result[1].ToString());
+                        //        int tck, c;
+                        //        try { tck = Convert.ToInt32(Request.QueryString["tck"]); }
+                        //        catch (Exception) { tck = 0; }
+                        //        try { c = Convert.ToInt32(Request.QueryString["c"]); }
+                        //        catch (Exception) { c = 0; }
+                        //        if (tck != 0 && c != 0)
+                        //        {
+                        //            Response.Redirect("FacturacionGral.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + result[1].ToString() + "&tck=" + tck + "&c=" + c);
+                        //        }
+                        //        else
+                        //            Response.Redirect("FacturacionGral.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + result[1].ToString());
+                        //    }
+                        //    else
+                        //        scriptMnsj = string.Format("alert('Hubo un problema al guardar el documento: {0}');", result[1].ToString());
+                        //    ScriptManager.RegisterStartupScript(this, typeof(Page), "Scritpt", scriptMnsj, true);
+                        //}
+
+                        //else
+                        //{
+                        //    scriptMnsj = string.Format("alert('Hubo un problema al guardar el documento: {0}');", Convert.ToString(infoFacura[1]));
+                        //    ScriptManager.RegisterStartupScript(this, typeof(Page), "Scritpt", scriptMnsj, true);
+                        //}
+
                     }
                     else
                     {
-                        docuCfdi docCfd = new docuCfdi(int.Parse(lblEmisorFacturas.Text), int.Parse(lblReceptorFactura.Text), 1);
-                        docCfd.IdMoneda = ddlMonedaSAT.Text;
-                        docCfd.strEmRfc = lblRfcEmisor.Text;
-                        docCfd.IdTipoDoc = 2;
-                        string strReRfcNom = lblRfcReceptor.Text;
-                        docCfd.strReRfc = strReRfcNom.Substring(0, 13).Trim();
-                        docCfd.decEncDescGlob = Convert.ToDecimal(((TextBox)fvwResumen.Row.FindControl("txtPctjeDsctoGlb")).Text);
-                        docCfd.decEncDescGlobImp = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblDsctoGlb")).Text);
-                        docCfd.decEncSubTotal = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblSubTotBru")).Text);
-                        docCfd.decEncDesc = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblTotDscto")).Text);
-                        docCfd.decEncImpTras = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblImpTras")).Text);
-                        docCfd.decEncImpRet = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblImpRet")).Text);
-                        docCfd.decEncTotal = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblTotalGral")).Text);
-                        docCfd.strEncMotDesc = ((TextBox)fvwResumen.Row.FindControl("txtMotivoDscto")).Text;
-                        docCfd.charEncEstatus = 'P';
-                        docCfd.strEncFormaPago = ddlFormaPagoSAT.Text.ToUpper(); //Forma de Pago SAT
-                        docCfd.strEncMetodoPago = ddlMetodoPagoSAT.Text.ToUpper(); //Metodo Pago SAT
-                        docCfd.strEncCondicionesPago = txtCondicionesPago.Text.ToUpper();
-                        docCfd.strEncRegimen = ddlRegimenSAT.Text.ToUpper(); //Regimen Fiscal SAT
-                        docCfd.strEncNumCtaPago = txtCtaPago.Text.ToUpper();
-                        docCfd.floEncTipoCambio = float.Parse(txtTipoCambio.Text);
-                        docCfd.strEncNota = txtNotaFac.Text;
-                        docCfd.idUsoCFDI = ddlUsoCFDI.SelectedValue;
-                        docCfd.tipoDocumento = cmbTipoDocumento.SelectedValue;
-                        string lugarExpedicion = "";
-
-                        lugarExpedicion = lugarExpedicion.Trim() + lblCalleEmiExFac.Text.Trim().ToUpper() + " No. Ext. " + lblNoExtEmiExFac.Text.Trim().ToUpper();
-                        if (lblNoIntEmiExFac.Text != "")
-                            lugarExpedicion = lugarExpedicion.Trim() + " No. Int. " + lblNoIntEmiExFac.Text.Trim().ToUpper();
-                        lugarExpedicion = lugarExpedicion + ", Col. " + lblColoniaEmiExFac.Text.Trim().ToUpper() + ", C.P. " + lblCpEmiExFac.Text.Trim().ToUpper() + ", " + lblDelMunEmiExFac.Text.Trim().ToUpper() + ", " + lblEdoEmiExFac.Text.Trim().ToUpper() + ", " + lblPaisEmiExFac.Text.Trim().ToUpper();
-
-                        docCfd.strEncLugarExpedicion = lugarExpedicion.Trim();
-
-                        object[] infoFacura = recepciones.obtieneUltimaFacturaTaller("1", "1");
-                        float folioFactura = 0;
-                        if (Convert.ToBoolean(infoFacura[0]))
-                        {
-                            int ticketF = 0;
-                            try { ticketF = Convert.ToInt32(Request.QueryString["tck"].ToString()); } catch (Exception) { ticketF = 0; }
-                            if (ticketF != 0)
-                                docCfd.strEncReferencia = "T" + Request.QueryString["p"].ToString() + "-Tk" + Request.QueryString["tck"].ToString() + "-" + Convert.ToInt32(infoFacura[1]).ToString();
-                            else
-                            {
-                                if (txtReferenciasFac.Text != "")
-                                {
-                                    string textitu = txtReferenciasFac.Text;
-                                    string test1 = textitu.Substring(1, 6).ToString();
-                                    docCfd.strEncReferencia = txtReferenciasFac.Text;
-
-                                    //docCfd.strEncFolioImp = Convert.ToInt32(test1);
-                                }
-                                else
-                                {
-                                    docCfd.strEncFolioImp = float.Parse(Convert.ToInt32(infoFacura[1]).ToString());
-                                    docCfd.strEncReferencia = "T" + Request.QueryString["p"].ToString() + "-Tk0-" + Convert.ToInt32(infoFacura[1]).ToString();
-                                }
-                            }
-
-
-                            bool pagadosTk = docCfd.strEncReferencia.Contains("Tk");
-
-                            folioFactura = float.Parse(Convert.ToInt32(infoFacura[1]).ToString());
-                            docCfd.strEncRegimen = ddlRegimenSAT.Text; //REGIMEN FISCAL SAT
-                            docCfd.idCfdAnt = Convert.ToInt32(Request.QueryString["fact"]);
-                            try
-                            {
-                                object[] prefijoTaller = recepciones.obtienePrefijoTaller(Request.QueryString["t"]);
-                                if (Convert.ToBoolean(prefijoTaller[0]))
-                                    docCfd.strEncSerieImp = "E" + Request.QueryString["e"] + "-T" + Request.QueryString["t"] + "-TFG" + Convert.ToInt32(infoFacura[1]).ToString();
-                                else
-                                    docCfd.strEncSerieImp = "E" + Request.QueryString["e"] + "-TFG";
-                            }
-                            catch (Exception)
-                            {
-                                docCfd.strEncSerieImp = "E" + Request.QueryString["e"] + "-T" + Request.QueryString["t"] + "-TFG" + Convert.ToInt32(infoFacura[1]).ToString();
-                            }
-
-                            docCfd.tipoFactura = ddlTipoFactura.SelectedValue;
-
-                            List<detDocCfdi> lstDetCfd = new List<detDocCfdi>();
-                            foreach (GridDataItem fila in grdDocu.Items)
-                            {
-                                RadDropDownList ddlTras1 = (RadDropDownList)fila.FindControl("ddlIvaTras");
-                                RadDropDownList ddlTras2 = (RadDropDownList)fila.FindControl("ddlIeps");
-                                RadDropDownList ddlRet1 = (RadDropDownList)fila.FindControl("ddlIvaRet");
-                                RadDropDownList ddlRet2 = (RadDropDownList)fila.FindControl("ddlIsrRet");
-                                DropDownList ddlProdServ = (DropDownList)fila.FindControl("ddlClaveProdSAT");
-                                DropDownList ddlCveUnidad = (DropDownList)fila.FindControl("ddlClaveUnidadSAT");
-                                lstDetCfd.Add(new detDocCfdi()
-                                {
-                                    IdDetCfd = fila.ItemIndex + 1,
-                                    IdEmisor = Convert.ToInt16(IDEmisor),
-                                    IdConcepto = ((TextBox)fila.FindControl("txtIdent")).Text,
-                                    DetDesc = ((TextBox)fila.FindControl("txtConcepto")).Text.Trim(),
-                                    DetCantidad = Convert.ToInt16(((RadNumericTextBox)fila.FindControl("radnumCantidad")).Value),
-                                    IdUnid = Convert.ToInt16(((DropDownList)fila.FindControl("ddlUnidad")).SelectedValue),
-                                    DetValorUni = Convert.ToDecimal(((TextBox)fila.FindControl("txtValUnit")).Text),
-                                    //IdTras1 = string.IsNullOrEmpty(ddlTras1.SelectedValue) ? short.Parse("0") : Convert.ToInt16(ddlTras1.SelectedValue),
-                                    DetImpTras1 = 0,
-                                    IdTras2 = string.IsNullOrEmpty(ddlTras2.SelectedValue) ? short.Parse("0") : Convert.ToInt16(ddlTras2.SelectedValue),
-                                    DetImpTras2 = Convert.ToDecimal(((Label)fila.FindControl("lblIeps")).Text),
-                                    IdTras3 = string.IsNullOrEmpty(ddlTras1.SelectedValue) ? short.Parse("0") : Convert.ToInt16(ddlTras1.SelectedValue),
-                                    DetImpTras3 = Convert.ToDecimal(((Label)fila.FindControl("lblIvaTras")).Text),
-                                    IdRet1 = string.IsNullOrEmpty(ddlRet1.SelectedValue) ? Int16.Parse("0") : Convert.ToInt16(ddlRet1.SelectedValue),
-                                    DetImpRet1 = Convert.ToDecimal(((Label)fila.FindControl("lblIvaRet")).Text),
-                                    IdRet2 = string.IsNullOrEmpty(ddlRet2.SelectedValue) ? short.Parse("0") : Convert.ToInt16(ddlRet2.SelectedValue),
-                                    DetImpRet2 = Convert.ToDecimal(((Label)fila.FindControl("lblIsrRet")).Text),
-                                    DetPorcDesc = Convert.ToDecimal(((TextBox)fila.FindControl("txtPtjeDscto")).Text.Trim()),
-                                    DetImpDesc = Convert.ToDecimal(((TextBox)fila.FindControl("txtDscto")).Text.Trim()),
-                                    Subtotal = Convert.ToDecimal(((Label)fila.FindControl("lblSubTotal")).Text),
-                                    Total = Convert.ToDecimal(((Label)fila.FindControl("lblTotalCpto")).Text),
-                                    CoCuentaPredial = null,
-                                    CveProdServSAT = ddlProdServ.SelectedValue,
-                                    CveUnidadSAT = ddlCveUnidad.SelectedValue
-                                });
-                            }
-                            object[] result = docuCfdi.guardaEncCfdi(docCfd, lstDetCfd);
-                            string scriptMnsj;
-                            if (Convert.ToBoolean(result[0]))
-                            {
-                                if (Convert.ToInt32(result[1].ToString()) > 0)
-                                {
-                                    ticketF = 0;
-                                    DateTime fecha = fechas.obtieneFechaLocal();
-                                    try { ticketF = Convert.ToInt32(Request.QueryString["tck"].ToString()); } catch (Exception) { ticketF = 0; }
-                                    if (ticketF != 0)
-                                    {
-                                        object[] actualizaFacturado = VentaDet.actualizaFacturado(ticketF, Request.QueryString["p"].ToString(), Convert.ToInt32(result[1].ToString()));
-                                        object[] infoTk = VentaDet.obtieneFechaTicket(ticketF, Request.QueryString["p"].ToString());
-                                        if (Convert.ToBoolean(infoTk[0]))
-                                            fecha = Convert.ToDateTime(infoTk[1]);
-                                        else
-                                            fecha = fechas.obtieneFechaLocal();
-                                    }
-                                    else
-                                    {
-                                        try
-                                        {
-                                            string[] ticketsFact = Request.QueryString["tck"].ToString().Split(new char[] { ';' });
-                                            foreach (string ticketEncontrado in ticketsFact)
-                                            {
-                                                object[] actualizaFacturado = VentaDet.actualizaFacturado(Convert.ToInt32(ticketEncontrado), Request.QueryString["p"].ToString(), Convert.ToInt32(result[1].ToString()));
-                                            }
-                                            fecha = fechas.obtieneFechaLocal();
-                                        }
-                                        catch (Exception) { }
-                                    }
-
-                                    docCfd.IdCfd = Convert.ToInt32(result[1].ToString());
-                                    docCfd.actualizaTipoFactura();
-
-
-                                    Facturas facturas = new Facturas();
-                                    facturas.folio = Convert.ToInt32(folioFactura);
-                                    facturas.tipoCuenta = "CC";
-                                    facturas.factura = docCfd.strEncReferencia;
-                                    CatClientes clientes = new CatClientes();
-                                    string politica = clientes.obtieneClavePoliticaCliente(lblReceptorFactura.Text);
-                                    int diasPlazo = clientes.obtieneDiasPolitica(lblReceptorFactura.Text);
-                                    FacturacionElectronica.Receptores recp = new FacturacionElectronica.Receptores();
-                                    recp.idReceptor = Convert.ToInt32(lblReceptorFactura.Text);
-                                    recp.obtieneInfoReceptor();
-                                    object[] retorno = recp.info;
-                                    try
-                                    {
-                                        DataSet infoRec = (DataSet)retorno[1];
-                                        foreach (DataRow i in infoRec.Tables[0].Rows)
-                                        {
-                                            facturas.razon_social = Convert.ToString(i[2]);
-                                            break;
-                                        }
-                                    }
-                                    catch (Exception ex) { facturas.razon_social = ""; }
-                                    int tickets = 0;
-                                    try
-                                    {
-                                        tickets = Convert.ToInt32(Request.QueryString["tck"]);
-                                    }
-                                    catch (Exception)
-                                    {
-                                        tickets = 0;
-                                    }
-                                    if (tickets == 0)
-                                    {
-                                        facturas.fechaRevision = fecha;
-                                        facturas.fechaProgPago = fechas.obtieneFechaLocal().AddDays(Convert.ToDouble(diasPlazo));
-                                        facturas.id_cliprov = Convert.ToInt32(lblReceptorFactura.Text);
-                                        facturas.formaPago = "E";
-                                        facturas.politica = politica;
-                                        if (pagadosTk)
-                                            facturas.estatus = "PAG";
-                                        else
-                                            facturas.estatus = "PEN";
-                                        facturas.empresa = Convert.ToInt32(Request.QueryString["e"]);
-                                        facturas.taller = Convert.ToInt32(Request.QueryString["t"]);
-                                        facturas.tipoCargo = "I";
-                                        facturas.Importe = docCfd.decEncTotal;
-                                        facturas.orden = Convert.ToInt32(Request.QueryString["o"]);
-                                    }
-                                    else
-                                    {
-                                        if (ticketF != 0)
-                                        {
-                                            facturas.fechaRevision = fecha;
-                                            facturas.fechaProgPago = fecha;
-                                            facturas.id_cliprov = Convert.ToInt32(lblReceptorFactura.Text);
-                                            facturas.formaPago = "E";
-                                            facturas.politica = politica;
-                                            if (pagadosTk)
-                                                facturas.estatus = "PAG";
-                                            else
-                                                facturas.estatus = "PEN";
-                                            facturas.empresa = Convert.ToInt32(Request.QueryString["e"]);
-                                            facturas.taller = Convert.ToInt32(Request.QueryString["p"].ToString());
-                                            facturas.tipoCargo = "I";
-                                            facturas.Importe = docCfd.decEncTotal;
-                                            facturas.orden = ticketF;
-                                            facturas.fechaPago = fecha;
-                                        }
-                                        else
-                                        {
-                                            facturas.fechaRevision = fecha;
-                                            facturas.fechaProgPago = fecha;
-                                            facturas.id_cliprov = Convert.ToInt32(lblReceptorFactura.Text);
-                                            facturas.formaPago = "E";
-                                            facturas.politica = politica;
-                                            if (pagadosTk)
-                                                facturas.estatus = "PAG";
-                                            else
-                                                facturas.estatus = "PEN";
-                                            facturas.empresa = Convert.ToInt32(Request.QueryString["e"]);
-                                            facturas.taller = Convert.ToInt32(Request.QueryString["p"].ToString());
-                                            facturas.tipoCargo = "I";
-                                            facturas.Importe = docCfd.decEncTotal;
-                                            facturas.orden = ticketF;
-                                            facturas.fechaPago = fecha;
-                                        }
-                                    }
-
-                                    if (Request.QueryString["refct"] == "0" || Request.QueryString["refct"] == "1")
-                                    {
-                                        facturas.idCfd = Convert.ToInt32(result[1].ToString());
-                                        facturas.generaFacturaCC();
-                                    }
-                                    else
-                                    {
-                                        Ejecuciones ej = new Ejecuciones();
-                                        object[] existeCoso = ej.scalarToInt("select count(*)  from facturas where folio=" + facturas.folio + " and factura='" + facturas.factura + "' and id_cliprov=" + facturas.id_cliprov);
-                                        if (Convert.ToInt32(Request.QueryString["fact"]) == 0 || Convert.ToInt32(existeCoso[1]) == 0)
-                                        {
-                                            try { facturas.idCfd = Convert.ToInt32(result[1].ToString()); }
-                                            catch (Exception) { facturas.idCfd = Convert.ToInt32(Request.QueryString["fact"]); }
-                                            facturas.generaFacturaCC();
-                                        }
-                                        else
-                                        {
-                                            facturas.idCfd = Convert.ToInt32(Request.QueryString["fact"]);
-                                            facturas.actualizaFacturaCC();
-                                        }
-                                    }
-                                    object[] facturasInternas = facturas.retorno;
-                                    /*if (!Convert.ToBoolean(facturasInternas[0]))
-                                        facturas.actualizaFactura();*/
-
-                                }
-                                if (Convert.ToBoolean(result[0]))
-                                {
-                                    scriptMnsj = string.Format("alert('Se ha guardado el documento: {0}');", result[1].ToString());
-                                    int tck, c;
-                                    try { tck = Convert.ToInt32(Request.QueryString["tck"]); }
-                                    catch (Exception) { tck = 0; }
-                                    try { c = Convert.ToInt32(Request.QueryString["c"]); }
-                                    catch (Exception) { c = 0; }
-                                    if (tck != 0 && c != 0)
-                                    {
-                                        Response.Redirect("FacturacionGral.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + result[1].ToString() + "&tck=" + tck + "&c=" + c);
-                                    }
-                                    else
-                                        Response.Redirect("FacturacionGral.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + result[1].ToString());
-                                }
-                                else
-                                    scriptMnsj = string.Format("alert('Hubo un problema al guardar el documento: {0}');", result[1].ToString());
-                                ScriptManager.RegisterStartupScript(this, typeof(Page), "Scritpt", scriptMnsj, true);
-                            }
-
-                            else
-                            {
-                                scriptMnsj = string.Format("alert('Hubo un problema al guardar el documento: {0}');", Convert.ToString(infoFacura[1]));
-                                ScriptManager.RegisterStartupScript(this, typeof(Page), "Scritpt", scriptMnsj, true);
-                            }
-
-                        }
-                        else
-                        {
-                            string scriptMnsj = string.Format("alert('No es posible guardar los cambios ya que la factura se encuentra timbrada o cancelada');");
-                            ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptMnsj, true);
-                        }
+                        string scriptMnsj = string.Format("alert('No es posible guardar los cambios ya que la factura se encuentra timbrada o cancelada');");
+                        ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptMnsj, true);
                     }
+
                 }
+                string scriptError = string.Format("alert('La Factura se guardo Correctamente');");
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptError, true);
+                lnkTimbrar.Visible = true;
             }
         }
     }
+
 
     protected void grdDocu_ItemDataBound(object sender, GridItemEventArgs e)
     {
@@ -1329,406 +1313,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
     decimal totImpTras = 0;
     decimal totImpRet = 0;
 
-    private void CalculaSubTotal(GridDataItem Item)
-    {
-        decimal descuento = decimal.Parse(((TextBox)Item.FindControl("txtDscto")).Text);
-        //si hay descuento global, lo resta también al concepto
-        PctjeDsctoGlb = Convert.ToDecimal(((TextBox)fvwResumen.Row.FindControl("txtPctjeDsctoGlb")).Text);
-        if (Importe == 0)
-            Importe = Convert.ToDecimal(((Label)Item.FindControl("lblImporte")).Text);
-        subTotalCncpto = (Importe - descuento);
-        if (PctjeDsctoGlb != 0 && subTotalCncpto != 0)
-        {
-            dtoGlobConcepto = this.getValue5Decimals(((subTotalCncpto * PctjeDsctoGlb) / 100));
-            subTotalCncpto = subTotalCncpto - dtoGlobConcepto;
-            ((Label)Item.FindControl("lblDtoGlobalConcepto")).Text = dtoGlobConcepto.ToString("F2");
-        }
-        ((Label)Item.FindControl("lblSubTotal")).Text = subTotalCncpto.ToString("F2");
-        calculaIvaTras(Item);
-        calculaIepsTras(Item);
-        calculaIvaRet(Item);
-        calculaIsrRet(Item);
-        CalculaSubTotBruto(subTotalCncpto);
-    }
-
-    private void calculaIsrRet(GridDataItem Item)
-    {
-        isrRet = Convert.ToDecimal(((Label)Item.FindControl("lblIsrRet")).Text);
-        if (subTotalCncpto != 0 && isrRet != 0)
-        {
-            BaseDatos bd = new BaseDatos();
-            RadDropDownList ddlIsrRet = (RadDropDownList)Item.FindControl("ddlIsrRet");
-            string qryValIva = "SELECT RetTasa FROM ImpRetenidos WHERE Id_Ret ='" + ddlIsrRet.SelectedValue + "'";
-            object[] valIsr = bd.scalarToDecimal(qryValIva);
-            ivaTras = Convert.ToDecimal(((Label)Item.FindControl("lblIvaTras")).Text);
-            iepsTras = Convert.ToDecimal(((Label)Item.FindControl("lblIeps")).Text);
-            ivaRet = Convert.ToDecimal(((Label)Item.FindControl("lblIvaRet")).Text);
-            isrRet = (subTotalCncpto * Convert.ToDecimal(valIsr[1])) / 100;
-            ((Label)Item.FindControl("lblIsrRet")).Text = isrRet.ToString("F2");
-        }
-        totalLinea = (subTotalCncpto + ivaTras + iepsTras - ivaRet - isrRet);
-        ((Label)Item.FindControl("lblTotalCpto")).Text = (totalLinea).ToString("F2");
-    }
-
-    private void calculaIvaRet(GridDataItem Item)
-    {
-        ivaRet = Convert.ToDecimal(((Label)Item.FindControl("lblIvaRet")).Text);
-        if (subTotalCncpto != 0 && ivaRet != 0)
-        {
-            BaseDatos bd = new BaseDatos();
-            RadDropDownList ddlIvaRet = (RadDropDownList)Item.FindControl("ddlIvaRet");
-            string qryValIva = "SELECT RetTasa FROM ImpRetenidos WHERE Id_Ret ='" + ddlIvaRet.SelectedValue + "'";
-            object[] valIva = bd.scalarToDecimal(qryValIva);
-            isrRet = Convert.ToDecimal(((Label)Item.FindControl("lblIsrRet")).Text);
-            ivaTras = Convert.ToDecimal(((Label)Item.FindControl("lblIvaTras")).Text);
-            iepsTras = Convert.ToDecimal(((Label)Item.FindControl("lblIeps")).Text);
-            ivaRet = (subTotalCncpto * Convert.ToDecimal(valIva[1])) / 100;
-            ((Label)Item.FindControl("lblIvaRet")).Text = ivaRet.ToString("F2");
-        }
-        totalLinea = (subTotalCncpto + ivaTras + iepsTras - ivaRet - isrRet);
-        ((Label)Item.FindControl("lblTotalCpto")).Text = (totalLinea).ToString("F2");
-    }
-
-    private void calculaIepsTras(GridDataItem item)
-    {
-        iepsTras = Convert.ToDecimal(((Label)item.FindControl("lblIeps")).Text);
-        if (iepsTras != 0 && subTotalCncpto != 0 && ivaTras == 0)
-        {
-            BaseDatos bd = new BaseDatos();
-            RadDropDownList ddlIepsTras = (RadDropDownList)item.FindControl("ddlIeps");
-            string qryValIeps = "SELECT TrasTasa FROM ImpTrasladado_f WHERE Id_Tras ='" + ddlIepsTras.SelectedValue + "'";
-            object[] valorIeps = bd.scalarToDecimal(qryValIeps);
-            iepsTras = (subTotalCncpto * Convert.ToDecimal(valorIeps[1])) / 100;
-            ((Label)item.FindControl("lblIeps")).Text = iepsTras.ToString("F2");
-        }
-        else if (iepsTras != 0 && subTotalCncpto != 0 && ivaTras != 0)
-        {
-            BaseDatos bd = new BaseDatos();
-            RadDropDownList ddlIvaTras = (RadDropDownList)item.FindControl("ddlIvaTras");
-            string qryValIva = "SELECT TrasTasa FROM ImpTrasladado_f WHERE Id_Tras ='" + ddlIvaTras.SelectedValue + "'";
-            object[] valorIva = bd.scalarInt(qryValIva);
-            ivaTras = this.getValue5Decimals((this.getValue5Decimals((subTotalCncpto * Convert.ToDecimal(valorIva[1]))) / 100));
-
-            RadDropDownList ddlIepsTras = (RadDropDownList)item.FindControl("ddlIeps");
-            string qryValIeps = "SELECT TrasTasa FROM ImpTrasladado_f WHERE Id_Tras ='" + ddlIepsTras.SelectedValue + "'";
-            object[] valorIeps = bd.scalarToDecimal(qryValIeps);
-            iepsTras = this.getValue5Decimals(((subTotalCncpto * Convert.ToDecimal(valorIeps[1])) / 100));
-            ivaTras = ivaTras + this.getValue5Decimals((this.getValue5Decimals((ivaTras * Convert.ToDecimal(valorIeps[1]))) / 100)); //(subTotalCncpto * Convert.ToDecimal(valorIeps[1])) / 100;
-
-            ((Label)item.FindControl("lblIvaTras")).Text = ivaTras.ToString("F2");
-            ((Label)item.FindControl("lblIeps")).Text = iepsTras.ToString("F2");
-        }
-        totalLinea = (subTotalCncpto + ivaTras + iepsTras);
-        ((Label)item.FindControl("lblTotalCpto")).Text = (totalLinea).ToString("F2");
-    }
-
-    private void calculaIvaTras(GridDataItem item)
-    {
-        /////////////////////////////////////////////////////
-        ivaTras = Convert.ToDecimal(((Label)item.FindControl("lblIvaTras")).Text);
-        if (subTotalCncpto == 0)
-            subTotalCncpto = Convert.ToInt32(unidadcant.Text);
-        //subTotalCncpto = Convert.ToDecimal(((Label)item.FindControl("txtValUnit")).Text) * int.Parse(((RadNumericTextBox)item.FindControl("radnumCantidad")).Value.ToString());
-        if (subTotalCncpto != 0)
-        {
-            BaseDatos bd = new BaseDatos();
-            RadDropDownList ddlIvaTras = (RadDropDownList)item.FindControl("ddlIvaTras");
-            string qryValIva = "SELECT TrasTasa FROM ImpTrasladado_f WHERE Id_Tras ='" + ddlIvaTras.SelectedValue + "'";
-            object[] valorIva = bd.scalarInt(qryValIva);
-            ivaTras = this.getValue5Decimals((this.getValue5Decimals((subTotalCncpto * Convert.ToDecimal(valorIva[1]))) / 100));
-            ((Label)item.FindControl("lblIvaTras")).Text = ivaTras.ToString("F2");
-        }
-        totalLinea = (subTotalCncpto + ivaTras);
-        ((Label)item.FindControl("lblTotalCpto")).Text = (totalLinea).ToString("F2");
-    }
-
-    protected void radnumCantidad_TextChanged(object sender, EventArgs e)
-    {
-        RadNumericTextBox radnumCant = (RadNumericTextBox)sender;
-        GridTableCell cell = (GridTableCell)radnumCant.Parent;
-        int intCant = int.Parse(radnumCant.Value.ToString());
-        unidadcant.Text = intCant.ToString();
-        valUnit = decimal.Parse(((TextBox)cell.FindControl("txtValUnit")).Text);
-        if (valUnit != 0)
-        {
-            Importe = intCant * valUnit;
-            ((Label)cell.FindControl("lblImporte")).Text = Importe.ToString("F2");
-            GridDataItem Item = (GridDataItem)cell.Parent;
-            CalculaSubTotal(Item);
-        }
-    }
-    public void cantidadtexto()
-    {
-        GridTableCell cell = (GridTableCell)unidadcant.Parent;
-        int intCant = Convert.ToInt32(unidadcant.Text);
-        valUnit = decimal.Parse(((TextBox)cell.FindControl("txtValUnit")).Text);
-        if (valUnit != 0)
-        {
-            Importe = intCant * valUnit;
-            ((Label)cell.FindControl("lblImporte")).Text = Importe.ToString("F2");
-            GridDataItem Item = (GridDataItem)cell.Parent;
-            CalculaSubTotal(Item);
-        }
-    }
-
-    protected void txtValUnit_TextChanged(object sender, EventArgs e)
-    {
-        TextBox txtValUnit = (TextBox)sender;
-        GridTableCell cell = (GridTableCell)txtValUnit.Parent;
-        valUnit = decimal.Parse(txtValUnit.Text);
-        int intCant = int.Parse(((RadNumericTextBox)cell.FindControl("radnumCantidad")).Value.ToString());
-        //int intCantwero = Convert.ToInt32 (unidadcant.Text);
-        Importe = intCant * valUnit;
-        ((Label)cell.FindControl("lblImporte")).Text = Importe.ToString("F2");
-        GridDataItem Item = (GridDataItem)cell.Parent;
-        CalculaSubTotal(Item);
-    }
-
-    protected void txtPtjeDscto_TextChanged(object sender, EventArgs e)
-    {
-        TextBox txtPtje = (TextBox)sender;
-        GridDataItem Item = (GridDataItem)txtPtje.Parent.Parent;
-        Importe = decimal.Parse(((Label)Item.FindControl("lblImporte")).Text);
-        ptjeDscto = decimal.Parse(txtPtje.Text);
-        if (Importe != 0)
-        {
-            Dscto = (Importe * ptjeDscto) / 100;
-            subTotalCncpto = Importe - Dscto;
-            ((TextBox)Item.FindControl("txtDscto")).Text = Dscto.ToString("F2");
-            CalculaSubTotal(Item);
-        }
-    }
-
-    protected void txtDscto_TextChanged(object sender, EventArgs e)
-    {
-        TextBox txtDscto = (TextBox)sender;
-        GridDataItem Item = (GridDataItem)txtDscto.Parent.Parent;
-        decimal Importe = decimal.Parse(((Label)Item.FindControl("lblImporte")).Text);
-        decimal Dscto = decimal.Parse(txtDscto.Text);
-        decimal Ptje = 0;
-        Ptje = (Dscto * 100) / Importe;
-        ((TextBox)Item.FindControl("txtPtjeDscto")).Text = Ptje.ToString("F2");
-        CalculaSubTotal(Item);
-    }
-
-    protected void ddlIvaTras_SelectedIndexChanged(object sender, DropDownListEventArgs e)
-    {
-        BaseDatos bd = new BaseDatos();
-        string qryValIva = "SELECT TrasTasa FROM ImpTrasladado_f WHERE Id_Tras ='" + e.Value + "'";
-        object[] valIva = bd.scalarInt(qryValIva);
-        RadDropDownList ddlIvaTras = (RadDropDownList)sender;
-        GridDataItem Item = (GridDataItem)ddlIvaTras.Parent.Parent;
-        ivaTras = Convert.ToDecimal(((Label)Item.FindControl("lblIvaTras")).Text);
-        iepsTras = Convert.ToDecimal(((Label)Item.FindControl("lblIeps")).Text);
-        subTotalCncpto = Convert.ToDecimal(((Label)Item.FindControl("lblSubTotal")).Text);
-        if (subTotalCncpto != 0)
-            ivaTras = (subTotalCncpto * Convert.ToDecimal(valIva[1])) / 100;
-        if (iepsTras != 0)
-        {
-            RadDropDownList ddlIepsTras = (RadDropDownList)Item.FindControl("ddlIeps");
-            string qryValIeps = "SELECT TrasTasa FROM ImpTrasladado_f WHERE Id_Tras ='" + ddlIepsTras.SelectedValue + "'";
-            object[] valorIeps = bd.scalarToDecimal(qryValIeps);
-            iepsTras = (subTotalCncpto * Convert.ToDecimal(valorIeps[1])) / 100;
-            ivaTras = ivaTras + ((ivaTras * Convert.ToDecimal(valorIeps[1])) / 100);
-        }
-        ivaRet = Convert.ToDecimal(((Label)Item.FindControl("lblIvaRet")).Text);
-        isrRet = Convert.ToDecimal(((Label)Item.FindControl("lblIsrRet")).Text);
-        ((Label)Item.FindControl("lblIvaTras")).Text = ivaTras.ToString("F2");
-        ((Label)Item.FindControl("lblIeps")).Text = iepsTras.ToString("F2");
-        totalLinea = (subTotalCncpto + ivaTras + iepsTras - ivaRet - isrRet);
-        ((Label)Item.FindControl("lblTotalCpto")).Text = (subTotalCncpto + ivaTras + iepsTras - ivaRet - isrRet).ToString("F2");
-        calculaTotales();
-    }
-
-    protected void ddlIeps_SelectedIndexChanged(object sender, DropDownListEventArgs e)
-    {
-        BaseDatos bd = new BaseDatos();
-        string qryValIeps = "SELECT TrasTasa FROM ImpTrasladado_f WHERE Id_Tras ='" + e.Value + "'";
-        object[] valorIeps = bd.scalarToDecimal(qryValIeps);
-        RadDropDownList ddlIeps = (RadDropDownList)sender;
-        GridDataItem Item = (GridDataItem)ddlIeps.Parent.Parent;
-        ivaTras = Convert.ToDecimal(((Label)Item.FindControl("lblIvaTras")).Text);
-        iepsTras = Convert.ToDecimal(((Label)Item.FindControl("lblIeps")).Text);
-        subTotalCncpto = Convert.ToDecimal(((Label)Item.FindControl("lblSubTotal")).Text);
-        if (subTotalCncpto != 0)
-            iepsTras = (subTotalCncpto * Convert.ToDecimal(valorIeps[1])) / 100;
-        if (ivaTras != 0)
-        {
-            RadDropDownList ddlIvaTras = (RadDropDownList)Item.FindControl("ddlIvaTras");
-            string qryValIva = "SELECT TrasTasa FROM ImpTrasladado_f WHERE Id_Tras ='" + ddlIvaTras.SelectedValue + "'";
-            object[] valorIva = bd.scalarInt(qryValIva);
-            ivaTras = (subTotalCncpto * Convert.ToDecimal(valorIva[1])) / 100;
-            ivaTras = ivaTras + ((ivaTras * Convert.ToDecimal(valorIeps[1])) / 100);
-        }
-
-        ivaRet = Convert.ToDecimal(((Label)Item.FindControl("lblIvaRet")).Text);
-        isrRet = Convert.ToDecimal(((Label)Item.FindControl("lblIsrRet")).Text);
-        ((Label)Item.FindControl("lblIvaTras")).Text = ivaTras.ToString("F2");
-        ((Label)Item.FindControl("lblIeps")).Text = iepsTras.ToString("F2");
-        totalLinea = (subTotalCncpto + ivaTras + iepsTras - ivaRet - isrRet);
-        ((Label)Item.FindControl("lblTotalCpto")).Text = (subTotalCncpto + ivaTras + iepsTras - ivaRet - isrRet).ToString("F2");
-        calculaTotales();
-    }
-
-    protected void ddlIvaRet_SelectedIndexChanged(object sender, DropDownListEventArgs e)
-    {
-        BaseDatos bd = new BaseDatos();
-        string qryValIva = "SELECT RetTasa FROM ImpRetenidos WHERE Id_Ret ='" + e.Value + "'";
-        object[] valIva = bd.scalarToDecimal(qryValIva);
-        RadDropDownList ddlIvaRet = (RadDropDownList)sender;
-        GridDataItem Item = (GridDataItem)ddlIvaRet.Parent.Parent;
-        Label lblTotalCpto = (Label)Item.FindControl("lblTotalCpto");
-        subTotalCncpto = Convert.ToDecimal(((Label)Item.FindControl("lblSubTotal")).Text);
-        isrRet = Convert.ToDecimal(((Label)Item.FindControl("lblIsrRet")).Text);
-        ivaTras = Convert.ToDecimal(((Label)Item.FindControl("lblIvaTras")).Text);
-        iepsTras = Convert.ToDecimal(((Label)Item.FindControl("lblIeps")).Text);
-        TotalConcepto = Convert.ToDecimal(lblTotalCpto.Text);
-        if (subTotalCncpto != 0 && !string.IsNullOrEmpty(valIva[1].ToString()))
-            ivaRet = (subTotalCncpto * Convert.ToDecimal(valIva[1])) / 100;
-        decimal totImpRet = ivaRet + isrRet;
-        totalLinea = (subTotalCncpto + ivaTras + iepsTras - ivaRet - isrRet);
-        lblTotalCpto.Text = (subTotalCncpto + ivaTras + iepsTras - totImpRet).ToString("F2");
-        ((Label)Item.FindControl("lblIvaRet")).Text = ivaRet.ToString("F2");
-        calculaTotales();
-    }
-
-    protected void ddlIsrRet_SelectedIndexChanged(object sender, DropDownListEventArgs e)
-    {
-        BaseDatos bd = new BaseDatos();
-        string qryValIva = "SELECT RetTasa FROM ImpRetenidos WHERE Id_Ret ='" + e.Value + "'";
-        object[] valIsr = bd.scalarToDecimal(qryValIva);
-        RadDropDownList ddlIsrRet = (RadDropDownList)sender;
-        GridDataItem Item = (GridDataItem)ddlIsrRet.Parent.Parent;
-        ivaRet = Convert.ToDecimal(((Label)Item.FindControl("lblIvaRet")).Text);
-        Label lblTotalCpto = (Label)Item.FindControl("lblTotalCpto");
-        subTotalCncpto = Convert.ToDecimal(((Label)Item.FindControl("lblSubTotal")).Text);
-        ivaTras = Convert.ToDecimal(((Label)Item.FindControl("lblIvaTras")).Text);
-        iepsTras = Convert.ToDecimal(((Label)Item.FindControl("lblIeps")).Text);
-        TotalConcepto = Convert.ToDecimal(lblTotalCpto.Text);
-        if (subTotalCncpto != 0 && !string.IsNullOrEmpty(valIsr[1].ToString()))
-            isrRet = (subTotalCncpto * Convert.ToDecimal(valIsr[1])) / 100;
-        ((Label)Item.FindControl("lblIsrRet")).Text = isrRet.ToString("F2");
-        decimal totImpRet = ivaRet + isrRet;
-        totalLinea = (subTotalCncpto + ivaTras + iepsTras - ivaRet - isrRet);
-        lblTotalCpto.Text = (subTotalCncpto + ivaTras + iepsTras - totImpRet).ToString("F2");
-        calculaTotales();
-    }
-
-    private void CalculaSubTotBruto(decimal subTotConcepto)
-    {
-        subTotBrut = 0;
-        foreach (GridDataItem fila in grdDocu.Items)
-        {
-            subTotBrut = subTotBrut + Convert.ToDecimal(((Label)fila.FindControl("lblImporte")).Text);
-        }
-        //lblSubTotBru.Text = subTotBrut.ToString("F2");
-        ((Label)fvwResumen.Row.FindControl("lblSubTotBru")).Text = subTotBrut.ToString("F2");
-        calculaTotalDescuento();
-    }
-
-    private void calculaTotalDescuento()
-    {
-        totDscto = totDsctoGbl = 0;
-        foreach (GridDataItem fila in grdDocu.Items)
-        {
-            //Cálculo del descuento total INDIVIDUAL (por concepto)
-            totDscto = totDscto + Convert.ToDecimal(((TextBox)fila.FindControl("txtDscto")).Text);
-            //Cálculo el descuento total GLOBAL
-            if (PctjeDsctoGlb != 0)
-            {
-                Importe = Convert.ToDecimal(((Label)fila.FindControl("lblImporte")).Text);
-                Dscto = Convert.ToDecimal(((TextBox)fila.FindControl("txtDscto")).Text);
-
-                if (Importe != 0)
-                    subTotalCncpto = ((Importe - Dscto));
-                else
-                    subTotalCncpto = 0;
-
-                if (subTotalCncpto != 0)
-                {
-                    //////////////////////////////////////////////////////////////////
-                    decimal res = totDsctoGbl + ((subTotalCncpto * PctjeDsctoGlb) / 100);
-                    if (res < 0.5M)
-                        totDsctoGbl = res;
-                    else if (res >= 0.5M)
-                        totDsctoGbl = Math.Round(res + 0.01M, 2);
-                }
-            }
-        }
-
-        //lblTotDscto.Text = totDscto.ToString("F2");
-        ((Label)fvwResumen.Row.FindControl("lblTotDscto")).Text = totDscto.ToString("F2");
-        ((Label)fvwResumen.Row.FindControl("lblDsctoGlb")).Text = totDsctoGbl.ToString("F2");
-        calculaSubTotNeto();
-    }
-
-    protected void txtPctjeDsctoGlb_TextChanged(object sender, EventArgs e)
-    {
-        //PctjeDsctoGlb = Convert.ToDecimal(txtPctjeDsctoGlb.Text);
-        PctjeDsctoGlb = Convert.ToDecimal(((TextBox)fvwResumen.Row.FindControl("txtPctjeDsctoGlb")).Text);
-        decimal subTotBru_menos_Dscto = 0;
-        decimal desctoCpto = 0;
-        decimal ImporteCpto = 0;
-        //vuelve a calcular subtotales e impuesto trasladado por item (concepto)
-        foreach (GridDataItem item in grdDocu.Items)
-        {
-            ImporteCpto = Convert.ToDecimal(((Label)item.FindControl("lblImporte")).Text);
-            desctoCpto = decimal.Parse(((TextBox)item.FindControl("txtDscto")).Text);
-            dtoGlobConcepto = 0;
-            if (ImporteCpto != 0)
-                //Creo que aqui esta el erro??
-                subTotalCncpto = ((ImporteCpto - desctoCpto));
-            if (PctjeDsctoGlb != 0 && subTotalCncpto != 0)
-            {
-                dtoGlobConcepto = ((subTotalCncpto * PctjeDsctoGlb) / 100);
-                subTotalCncpto = subTotalCncpto - ((subTotalCncpto * PctjeDsctoGlb) / 100);
-            }
-            string global = dtoGlobConcepto.ToString("F2");
-            string sub = subTotalCncpto.ToString("F2");
-            ((Label)item.FindControl("lblDtoGlobalConcepto")).Text = global;//dtoGlobConcepto.ToString("F2");
-            ((Label)item.FindControl("lblSubTotal")).Text = sub;//subTotalCncpto.ToString("F2");
-            calculaIvaTras(item);
-            calculaIepsTras(item);
-            calculaIvaRet(item);
-            calculaIsrRet(item);
-        }
-        if (PctjeDsctoGlb != 0)
-        {
-            //txtMotivoDscto.Visible = true;
-            //lblMotDscto.Visible = true;
-            ((TextBox)fvwResumen.Row.FindControl("txtMotivoDscto")).Visible = true;
-            ((Label)fvwResumen.Row.FindControl("lblMotDscto")).Visible = true;
-            totDscto = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblTotDscto")).Text);
-            subTotBrut = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblSubTotBru")).Text);
-            subTotBru_menos_Dscto = subTotBrut - totDscto;
-
-            totDsctoGbl = ((subTotBru_menos_Dscto * PctjeDsctoGlb) / 100);
-        }
-        else
-        {
-            //txtMotivoDscto.Visible = false;
-            //lblMotDscto.Visible = false;
-            ((TextBox)fvwResumen.Row.FindControl("txtMotivoDscto")).Visible = false;
-            ((Label)fvwResumen.Row.FindControl("lblMotDscto")).Visible = false;
-        }
-
-        //lblDsctoGlb.Text = totDsctoGbl.ToString("F2");
-        ((Label)fvwResumen.Row.FindControl("lblDsctoGlb")).Text = totDsctoGbl.ToString("F2");
-        calculaSubTotNeto();
-
-    }
-
-    private void calculaSubTotNeto()
-    {
-        subTotBrut = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblSubTotBru")).Text);
-        totDscto = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblTotDscto")).Text);
-        totDsctoGbl = Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblDsctoGlb")).Text);
-        //////////////////////////////////////////////////////////
-        subTotNeto = ((subTotBrut - totDsctoGbl) - totDscto);
-        //lblSubTotNeto.Text = subTotNeto.ToString("F2");
-        ((Label)fvwResumen.Row.FindControl("lblSubTotNeto")).Text = subTotNeto.ToString("F2");
-        calculaTotales();
-    }
+    
 
     private void calculaTotales()
     {
@@ -1812,46 +1397,43 @@ public partial class FComprobantePagos : System.Web.UI.Page
                     {
                         if (filaIns == filasDt)
                         {
-                            ((TextBox)fila.FindControl("txtIdent")).Text = dato[3].ToString();
-                            ((TextBox)fila.FindControl("txtConcepto")).Text = dato[4].ToString();
-                            ((RadNumericTextBox)fila.FindControl("radnumCantidad")).Value = Convert.ToDouble(dato[5].ToString());
-                            ((DropDownList)fila.FindControl("ddlUnidad")).SelectedValue = dato[6].ToString();
-                            ((TextBox)fila.FindControl("txtValUnit")).Text = Convert.ToDecimal(dato[7].ToString()).ToString("F2");
-                            ((Label)fila.FindControl("lblImporte")).Text = Convert.ToDecimal(dato[8].ToString()).ToString("F2");
-                            ((TextBox)fila.FindControl("txtPtjeDscto")).Text = Convert.ToDecimal(dato[9].ToString()).ToString("F2");
-                            ((TextBox)fila.FindControl("txtDscto")).Text = Convert.ToDecimal(dato[10].ToString()).ToString("F2");
-                            ((Label)fila.FindControl("lblSubTotal")).Text = Convert.ToDecimal(dato[11].ToString()).ToString();    //asdsad
-                            ((RadDropDownList)fila.FindControl("ddlIvaTras")).SelectedValue = dato[12].ToString();
-                            ((Label)fila.FindControl("lblIvaTras")).Text = Convert.ToDecimal(dato[14].ToString()).ToString("F2");
-                            ((RadDropDownList)fila.FindControl("ddlIeps")).SelectedValue = dato[13].ToString();
-                            ((Label)fila.FindControl("lblIeps")).Text = dato[15].ToString();
-                            ((RadDropDownList)fila.FindControl("ddlIvaRet")).SelectedValue = dato[16].ToString();
-                            ((Label)fila.FindControl("lblIvaRet")).Text = dato[18].ToString();
-                            ((RadDropDownList)fila.FindControl("ddlIsrRet")).SelectedValue = dato[17].ToString();
-                            ((Label)fila.FindControl("lblIsrRet")).Text = dato[19].ToString();
-                            ((Label)fila.FindControl("lblTotalCpto")).Text = Convert.ToDecimal(dato[20].ToString()).ToString("F2");
-                            try { ((DropDownList)fila.FindControl("ddlClaveProdSAT")).SelectedValue = dato[22].ToString(); }
-                            catch (Exception) { ((DropDownList)fila.FindControl("ddlClaveProdSAT")).SelectedValue = 0.ToString(); }
-                            try { ((DropDownList)fila.FindControl("ddlClaveUnidadSAT")).SelectedValue = dato[23].ToString(); }
-                            catch (Exception) { ((DropDownList)fila.FindControl("ddlClaveUnidadSAT")).SelectedValue = ""; }
+                            ((TextBox)fila.FindControl("txtUUID")).Text = dato[3].ToString();
+                            ((TextBox)fila.FindControl("txtFoliot")).Text = dato[4].ToString();
+                            ((RadDropDownList)fila.FindControl("ddlParcialidad")).SelectedValue = dato[17].ToString();
+                            ((TextBox)fila.FindControl("txtSaldoAnterior")).Text = Convert.ToDecimal(dato[10].ToString()).ToString("F2");
+                            ((TextBox)fila.FindControl("txtIportePagado")).Text = Convert.ToDecimal(dato[19].ToString()).ToString("F2");
+                            ((Label)fila.FindControl("lblSaldoActual")).Text = Convert.ToDecimal(dato[20].ToString()).ToString();
+                            //((RadDropDownList)fila.FindControl("ddlIvaTras")).SelectedValue = dato[12].ToString();
+                            //((Label)fila.FindControl("lblIvaTras")).Text = Convert.ToDecimal(dato[14].ToString()).ToString("F2");
+                            //((RadDropDownList)fila.FindControl("ddlIeps")).SelectedValue = dato[13].ToString();
+                            //((Label)fila.FindControl("lblIeps")).Text = dato[15].ToString();
+                            //((RadDropDownList)fila.FindControl("ddlIvaRet")).SelectedValue = dato[16].ToString();
+                            //((Label)fila.FindControl("lblIvaRet")).Text = dato[18].ToString();
+                            //((RadDropDownList)fila.FindControl("ddlIsrRet")).SelectedValue = dato[17].ToString();
+                            //((Label)fila.FindControl("lblIsrRet")).Text = dato[19].ToString();
+                            //((Label)fila.FindControl("lblTotalCpto")).Text = Convert.ToDecimal(dato[20].ToString()).ToString("F2");
+                            //try { ((DropDownList)fila.FindControl("ddlClaveProdSAT")).SelectedValue = dato[22].ToString(); }
+                            //catch (Exception) { ((DropDownList)fila.FindControl("ddlClaveProdSAT")).SelectedValue = 0.ToString(); }
+                            //try { ((DropDownList)fila.FindControl("ddlClaveUnidadSAT")).SelectedValue = dato[23].ToString(); }
+                            //catch (Exception) { ((DropDownList)fila.FindControl("ddlClaveUnidadSAT")).SelectedValue = ""; }
 
                             /*Alx: para calcular descuento global por concepto cuando se llena con datos externos (venta_det)*/
                             //el cálculo solo aplica para ventas hechas desde punto de venta
-                            decimal desctoCpto = Convert.ToDecimal(dato[9]);
-                            decimal impCpto = Convert.ToDecimal(dato[8]);
-                            decimal res = 0.0M;
-                            subTotalCncpto = impCpto - ((impCpto * desctoCpto) / 100);
-                            if (PctjeDsctoGlb != 0 && subTotalCncpto != 0)
-                            {
-                                res = ((subTotalCncpto * PctjeDsctoGlb) / 100);
-                                if (res < 0.5M)
-                                    dtoGlobConcepto = res;
-                                else if (res >= 0.5M)
-                                    dtoGlobConcepto = Math.Round(res + 0.01M, 2);
+                            //decimal desctoCpto = Convert.ToDecimal(dato[9]);
+                            //decimal impCpto = Convert.ToDecimal(dato[8]);
+                            //decimal res = 0.0M;
+                            //subTotalCncpto = impCpto - ((impCpto * desctoCpto) / 100);
+                            //if (PctjeDsctoGlb != 0 && subTotalCncpto != 0)
+                            //{
+                            //    res = ((subTotalCncpto * PctjeDsctoGlb) / 100);
+                            //    if (res < 0.5M)
+                            //        dtoGlobConcepto = res;
+                            //    else if (res >= 0.5M)
+                            //        dtoGlobConcepto = Math.Round(res + 0.01M, 2);
 
-                                //dtoGlobConcepto = ((subTotalCncpto * PctjeDsctoGlb) / 100);
-                                ((Label)fila.FindControl("lblDtoGlobalConcepto")).Text = dtoGlobConcepto.ToString();
-                            }
+                            //    //dtoGlobConcepto = ((subTotalCncpto * PctjeDsctoGlb) / 100);
+                            //    ((Label)fila.FindControl("lblDtoGlobalConcepto")).Text = dtoGlobConcepto.ToString();
+                            //}
                             /*Alx*/
                         }
                         filaIns++;
@@ -1870,7 +1452,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 grdDocu.DataBind();
             }
 
-            CalculaSubTotBruto(0);
+            //CalculaSubTotBruto(0);
         }
         catch (Exception ex)
         {
@@ -1974,8 +1556,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                                 try
                                 {
                                     conLoc.Open();
-                                    string qryInserta = "INSERT INTO ComPagosCfdi_f (IdFila, IdEmisor, IdRecep, txtIdent, txtConcepto, radnumCantidad, ddlUnidad, txtValUnit, lblImporte, txtPtjeDscto, txtDscto, lblSubTotal, ddlIvaTras, ddlIeps, lblIvaTras, lblIeps, ddlIvaRet, ddlIsrRet, lblIvaRet, lblIsrRet, lblTotal, EncFechaGenera,ddlClaveProdSAT,ddlClaveUnidadSAT) " +
-                                        "VALUES (" + filas + ",'" + IDEmisor + "' , '" + IdRecep + "', '" + r[0].ToString() + "', '" + r[1].ToString() + "', " + r[2].ToString() + ", " + r[3].ToString() + ", " + Math.Round(Convert.ToDecimal(r[4].ToString()), 2) + ", " + Math.Round(Math.Round(Convert.ToDecimal(r[4].ToString()), 2) * Convert.ToDecimal(r[2].ToString()), 2) + ", " + r[6].ToString() + ", " + Math.Round(Convert.ToDecimal(r[7].ToString()), 2) + ", " + r[8].ToString() + "," + r[9].ToString() + ", " + r[10].ToString() + ", " + Math.Round(Convert.ToDecimal(r[11].ToString()), 2) + ", " + r[12].ToString() + ", " + r[13].ToString() + ", " + r[14].ToString() + ", " + r[15].ToString() + ", " + r[16].ToString() + ", " + Math.Round(Convert.ToDecimal(r[17].ToString()), 2) + ",convert(datetime,'" + fechas.obtieneFechaLocal().ToString("yyyy-MM-dd HH:mm:ss") + "',120),'" + r[18].ToString() + "','" + r[19].ToString() + "')";
+                                    string qryInserta = "INSERT INTO ComPagosCfdi_f (IdFila, IdEmisor, IdRecep, txtIdent, txtConcepto, ddlIsrRet, txtDscto,lblIsrRet, lblTotal, EncFechaGenera,ddlClaveProdSAT,ddlClaveUnidadSAT) " +
+                                        "VALUES (" + filas + ",'" + IDEmisor + "' , '" + IdRecep + "', '" + r[0].ToString() + "', '" + r[1].ToString() + "', " + r[2].ToString() + ", " + r[3].ToString() +","+r[4].ToString()+","+r[5].ToString()+",convert(datetime,'" + fechas.obtieneFechaLocal().ToString("yyyy-MM-dd HH:mm:ss") + "',120),'84111506','ACT')";
                                     SqlCommand comLoc = new SqlCommand(qryInserta, conLoc);
                                     using (comLoc)
                                     {
@@ -2407,44 +1989,13 @@ public partial class FComprobantePagos : System.Web.UI.Page
                     {
                         try
                         {
-                            ((TextBox)fila.FindControl("txtIdent")).Text = dato[3].ToString();
-                            ((TextBox)fila.FindControl("txtConcepto")).Text = dato[4].ToString();
-                            ((RadNumericTextBox)fila.FindControl("radnumCantidad")).Value = Convert.ToDouble(dato[5].ToString());
-                            try
-                            {
-                                ((DropDownList)fila.FindControl("ddlUnidad")).SelectedValue = dato[6].ToString();
-                            }
-                            catch (Exception) { ((DropDownList)fila.FindControl("ddlUnidad")).SelectedIndex = -1; }
-                            ((TextBox)fila.FindControl("txtValUnit")).Text = Convert.ToDecimal(dato[7].ToString()).ToString("F2");
-                            ((Label)fila.FindControl("lblImporte")).Text = Convert.ToDecimal(dato[8].ToString()).ToString("F2");
-                            ((TextBox)fila.FindControl("txtPtjeDscto")).Text = Convert.ToDecimal(dato[9].ToString()).ToString("F2");
-                            ((TextBox)fila.FindControl("txtDscto")).Text = Convert.ToDecimal(dato[10].ToString()).ToString("F2");
-                            ((Label)fila.FindControl("lblSubTotal")).Text = Convert.ToDecimal(dato[11].ToString()).ToString("F2");
-                            try
-                            {
-                                ((RadDropDownList)fila.FindControl("ddlIvaTras")).SelectedValue = dato[12].ToString();
-                            }
-                            catch (Exception) { ((DropDownList)fila.FindControl("ddlIvaTras")).SelectedIndex = -1; }
-                            ((Label)fila.FindControl("lblIvaTras")).Text = Convert.ToDecimal(dato[14].ToString()).ToString("F2");
-                            try
-                            {
-                                ((RadDropDownList)fila.FindControl("ddlIeps")).SelectedValue = dato[13].ToString();
-                            }
-                            catch (Exception) { ((DropDownList)fila.FindControl("ddlIeps")).SelectedIndex = -1; }
-                            ((Label)fila.FindControl("lblIeps")).Text = dato[15].ToString();
-                            try
-                            {
-                                ((RadDropDownList)fila.FindControl("ddlIvaRet")).SelectedValue = dato[16].ToString();
-                            }
-                            catch (Exception) { ((DropDownList)fila.FindControl("ddlIvaRet")).SelectedIndex = -1; }
-                            ((Label)fila.FindControl("lblIvaRet")).Text = dato[18].ToString();
-                            try
-                            {
-                                ((RadDropDownList)fila.FindControl("ddlIsrRet")).SelectedValue = dato[17].ToString();
-                            }
-                            catch (Exception) { ((DropDownList)fila.FindControl("ddlIsrRet")).SelectedIndex = -1; }
-                            ((Label)fila.FindControl("lblIsrRet")).Text = dato[19].ToString();
-                            ((Label)fila.FindControl("lblTotalCpto")).Text = Convert.ToDecimal(dato[20].ToString()).ToString("F2");
+                            ((TextBox)fila.FindControl("txtUUID")).Text = dato[3].ToString();
+                            ((TextBox)fila.FindControl("txtFoliot")).Text = dato[4].ToString();
+                            ((RadDropDownList)fila.FindControl("ddlParcialidad")).SelectedValue = dato[17].ToString();
+                            ((TextBox)fila.FindControl("txtSaldoAnterior")).Text = Convert.ToDecimal(dato[10].ToString()).ToString("F2");
+                            ((TextBox)fila.FindControl("txtIportePagado")).Text = Convert.ToDecimal(dato[19].ToString()).ToString("F2");
+                            ((Label)fila.FindControl("lblSaldoActual")).Text = Convert.ToDecimal(dato[20].ToString()).ToString("F2");
+                            
                         }
                         catch (Exception) { }
                     }
@@ -2452,7 +2003,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 }
                 filasDt++;
             }
-            CalculaSubTotBruto(0);
+            //CalculaSubTotBruto(0);
         }
         else
             lblError.Text = "No es posible eliminar el registro, por favor vuelva a entrar a facturacion y seleccione la factura indicada o bien agregue un nuevo documento";
