@@ -36,7 +36,8 @@ public class FacturacionElectronicaPagos
     }
 
     public void obtieneUUIDFOLIO() {
-        sql = "select UUIDFactura,Folio,Parcialidad,SaldoAnterior,SaldoPagado,Saldoactual,case when LEN(encformapago)=1 then '0'+encformapago else Encformapago end as EncFormaPago,encmetodopago from Recepcion_Pagos_F where idcfdant=" + idCFD;
+        //sql = "select UUIDFactura,Folio,Parcialidad,SaldoAnterior,SaldoPagado,Saldoactual,case when LEN(encformapago)=1 then '0'+encformapago else Encformapago end as EncFormaPago,encmetodopago from Recepcion_Pagos_F where idcfdant=" + idCFD;
+        sql = "select IdConcepto as UUID,IdUnid as Folio, DetCantidad as Parcialidad,DetValorUnit as SaldoAnterior,IdTras1 as ImportePagado,DetImpTras1 as SaldoActual,(select EncFormaPago from Recepcion_Pagos_F where idcfdant='"+idCFD+"') as EncFormaPago,(select encmetodopago from Recepcion_Pagos_F where idcfdant='"+idCFD+"')as encmetodopago from DetPagos_f where idcfd='"+idCFD+"'";
         retorno = ejecuta.dataSet(sql);
     }
 

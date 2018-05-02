@@ -290,12 +290,14 @@ public class docuCfdi
                     //asd.SaldoPagado = ((TextBox)fila.FindControl("txtIportePagado")).Text;
                     //asd.SaldoAct = ((Label)fila.FindControl("lblSaldoActual")).Text;
                     //asd.Total = Convert.ToDecimal(((Label)fila.FindControl("lblSaldoActual")).Text);
+                    //asd.FECHA = ((TextBox)fila.FindControl("txtFecha")).Text;
+                    //asd.HORA = ((TextBox)fila.FindControl("txtHora")).Text;
                     //asd.ProductoSAT = "84111506";
                     //asd.ClaveUnidadSAT = "ACT";
                     //asd.idcfdAnterior = Request.QueryString["fact"];
 
                     object[] valores = {det.IdDetCfd, det.IdEmisor, det.UUID, det.Folio, det.Parcialidad, det.SaldoAnt, det.SaldoPagado, det.SaldoAct,
-                        det.Total, 0, 0, 0, 0, 0, 0, 0,
+                        det.FECHA, det.HORA, 0, 0, 0, 0, 0, 0,
                         0, 0, 0, 0, 0, 0, det.ProductoSAT, det.ClaveUnidadSAT };
                     dt.Rows.Add(valores);
                 }
@@ -472,6 +474,8 @@ public class detDocCfdi
     public string ProductoSAT { set; get; }
     public string ClaveUnidadSAT { set; get; }
     public string idcfdAnterior { set; get; }
+    public string FECHA { set; get; }
+    public string HORA { set; get; }
 
     public int IdDetCfd { get; set; }
     int IdCfd { get; set; }

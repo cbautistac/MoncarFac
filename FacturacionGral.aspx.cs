@@ -3476,8 +3476,8 @@ public partial class FacturacionGral : System.Web.UI.Page
                     "set @ID = (select count(*) from Recepcion_Pagos_F); " +
                     "set @idcfd = (select top 1(idcfd) from recepcion_pagos_f order by idcfd desc);" +
                     "update recepcion_pagos_f set idcfd=@ID, idcfdant=@idcfd,EncFolioUUID='', EncFechaGenera=NULL,EncHoraGenera=NULL, EncEstatus='P',Folio=(select right(encreferencia,5) from enccfd_f where idcfd='"+factura+ "'), parcialidad=0, saldoanterior=(select enctotal from EncCFD_f where idcfd='"+factura+ "'), saldopagado=0,saldoactual=0,productosat='84111506',claveunidadsat='ACT', UUIDFactura=(select encfoliouuid from EncCFD_f where idcfd='"+factura+"') where IdCfd=@idcfd;" +
-                    "insert into DetPagos_f (IdCfd,IdEmisor,IdConcepto,IdUnid,DetCantidad,DetValorUnit,IdTras1,DetImpTras1,IdDetCfd,DetDesc) " +
-                    "select idcfdAnt, IdEmisor, UUIDFactura, Folio, Parcialidad, SaldoAnterior, SaldoPagado, SaldoActual,1,0 from Recepcion_Pagos_F where idcfdAnt='"+factura+"'";
+                    "insert into DetPagos_f (IdCfd,IdEmisor,IdConcepto,IdUnid,DetCantidad,DetValorUnit,IdTras1,DetImpTras1,IdTras2,DetImpTras2,IdDetCfd,DetDesc) " +
+                    "select idcfdAnt, IdEmisor, UUIDFactura, Folio, Parcialidad, SaldoAnterior, SaldoPagado, SaldoActual,EncFecha,EncHora,1,0 from Recepcion_Pagos_F where idcfdAnt='" + factura+"'";
                 object[] verdad = bd.insertUpdateDelete(query);
                 if (Convert.ToBoolean(verdad[1]))
                     Response.Redirect("FComprobantePagos.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + factura);

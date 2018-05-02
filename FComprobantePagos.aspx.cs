@@ -701,7 +701,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
         //DropDownList ddlUnidad = masterTable.GetBatchColumnEditor("ddlUnidad") as DropDownList;
     }
 
-    //Guarda la info en la BD
+    //Guardar la info en la BD
     protected void grdDocu_ItemCommand(object sender, GridCommandEventArgs e)
     {
         if (status != "P")
@@ -951,6 +951,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                             asd.SaldoPagado = ((TextBox)fila.FindControl("txtIportePagado")).Text;
                             asd.SaldoAct = ((Label)fila.FindControl("lblSaldoActual")).Text;
                             asd.Total = Convert.ToDecimal(((Label)fila.FindControl("lblSaldoActual")).Text);
+                            asd.FECHA = ((TextBox)fila.FindControl("txtFecha")).Text;
+                            asd.HORA = ((TextBox)fila.FindControl("txtHora")).Text;
                             asd.ProductoSAT = "84111506";
                             asd.ClaveUnidadSAT = "ACT";
                             asd.idcfdAnterior = Request.QueryString["fact"];
@@ -1403,6 +1405,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                             ((TextBox)fila.FindControl("txtSaldoAnterior")).Text = Convert.ToDecimal(dato[10].ToString()).ToString("F2");
                             ((TextBox)fila.FindControl("txtIportePagado")).Text = Convert.ToDecimal(dato[19].ToString()).ToString("F2");
                             ((Label)fila.FindControl("lblSaldoActual")).Text = Convert.ToDecimal(dato[20].ToString()).ToString();
+                            ((TextBox)fila.FindControl("txtFecha")).Text = dato[14].ToString();
+                            ((TextBox)fila.FindControl("txtHora")).Text = dato[15].ToString();
                             //((RadDropDownList)fila.FindControl("ddlIvaTras")).SelectedValue = dato[12].ToString();
                             //((Label)fila.FindControl("lblIvaTras")).Text = Convert.ToDecimal(dato[14].ToString()).ToString("F2");
                             //((RadDropDownList)fila.FindControl("ddlIeps")).SelectedValue = dato[13].ToString();
@@ -1556,8 +1560,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                                 try
                                 {
                                     conLoc.Open();
-                                    string qryInserta = "INSERT INTO ComPagosCfdi_f (IdFila, IdEmisor, IdRecep, txtIdent, txtConcepto, ddlIsrRet, txtDscto,lblIsrRet, lblTotal, EncFechaGenera,ddlClaveProdSAT,ddlClaveUnidadSAT) " +
-                                        "VALUES (" + filas + ",'" + IDEmisor + "' , '" + IdRecep + "', '" + r[0].ToString() + "', '" + r[1].ToString() + "', " + r[2].ToString() + ", " + r[3].ToString() +","+r[4].ToString()+","+r[5].ToString()+",convert(datetime,'" + fechas.obtieneFechaLocal().ToString("yyyy-MM-dd HH:mm:ss") + "',120),'84111506','ACT')";
+                                    string qryInserta = "INSERT INTO ComPagosCfdi_f (IdFila, IdEmisor, IdRecep, txtIdent, txtConcepto, ddlIsrRet, txtDscto,lblIsrRet, lblTotal,lblIvaTras,lblIeps, EncFechaGenera,ddlClaveProdSAT,ddlClaveUnidadSAT) " +
+                                        "VALUES (" + filas + ",'" + IDEmisor + "' , '" + IdRecep + "', '" + r[0].ToString() + "', '" + r[1].ToString() + "', " + r[2].ToString() + ", " + r[3].ToString() +","+r[4].ToString()+","+r[5].ToString()+",'"+r[6].ToString()+"','"+r[7].ToString()+"',convert(datetime,'" + fechas.obtieneFechaLocal().ToString("yyyy-MM-dd HH:mm:ss") + "',120),'84111506','ACT')";
                                     SqlCommand comLoc = new SqlCommand(qryInserta, conLoc);
                                     using (comLoc)
                                     {
@@ -1992,6 +1996,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                             ((TextBox)fila.FindControl("txtUUID")).Text = dato[3].ToString();
                             ((TextBox)fila.FindControl("txtFoliot")).Text = dato[4].ToString();
                             ((RadDropDownList)fila.FindControl("ddlParcialidad")).SelectedValue = dato[17].ToString();
+                            //((TextBox)fila.FindControl("txtFecha")).Text=
                             ((TextBox)fila.FindControl("txtSaldoAnterior")).Text = Convert.ToDecimal(dato[10].ToString()).ToString("F2");
                             ((TextBox)fila.FindControl("txtIportePagado")).Text = Convert.ToDecimal(dato[19].ToString()).ToString("F2");
                             ((Label)fila.FindControl("lblSaldoActual")).Text = Convert.ToDecimal(dato[20].ToString()).ToString("F2");
@@ -2030,7 +2035,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
     protected void lnkTimbrar_Click(object sender, EventArgs e)
     {
         Ejecuciones obtienestatus = new Ejecuciones();
-        object[] st = obtienestatus.scalarToString("select encestatus from EncCFD_f where idcfd =" + Convert.ToInt32(Request.QueryString["fact"]));
+        object[] st = obtienestatus.scalarToString("select encestatus from Recepcion_Pagos_F where idcfd =" + Convert.ToInt32(Request.QueryString["fact"]));
         status = st[1].ToString();
         if (status != "C" || status != "T")
         {
@@ -2099,10 +2104,10 @@ public partial class FComprobantePagos : System.Web.UI.Page
         // Agrega el certificado
         //object[] certificado = bd.scalarToString("select certRutaCert from certificados_f where idEmisor=" + lblIdEmisor.Text);
         //object[] llave = bd.scalarToString("select certRutaLlave from certificados_f where idEmisor=" + lblIdEmisor.Text);
-        string rutaCer = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/00001000000406147836.cer");
-        string rutaKey = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_DEL_ORIENTE_MCA9505036Z2_20170511_143948.key");
-        //string rutaCer = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_Pruebas_CFDI_LAN7008173R5.cer");
-        //string rutaKey = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_Pruebas_CFDI_LAN7008173R5.key");
+        //string rutaCer = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/00001000000406147836.cer");
+        //string rutaKey = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_DEL_ORIENTE_MCA9505036Z2_20170511_143948.key");
+        string rutaCer = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_Pruebas_CFDI_LAN7008173R5.cer");
+        string rutaKey = HttpContext.Current.Server.MapPath("~/Comprobantes/Certificados/CSD_Pruebas_CFDI_LAN7008173R5.key");
         //string rutaCer = certificado[1].ToString();
         //string rutaKey = llave[1].ToString();
         //string[] NoCertificadoOrgRuta = certificado[1].ToString().Split(new char[] { '\\' });
@@ -2119,6 +2124,132 @@ public partial class FComprobantePagos : System.Web.UI.Page
         {
             #region Pagos 1.0
             case "Pago10":
+
+                //string serie;
+                //string RFC = "";
+                //string Folio, FormaDePago, CondicionesDePago, TipoDoc;
+                //double SubTotal, DescuentoTotal, total;
+                //decimal subtotal2;
+                //string Moneda, TipoCambio, TipoDeComprobante, MetodoPago, LugarExpedicion, Confirmacion;
+                //double imptrastot = 0;
+                //double descuentoGlobal = 0;
+                ////Obtenemos la informacion del Encabezado del XML
+                //FacturacionElectronicaPagos comprobante = new FacturacionElectronicaPagos();
+                //comprobante.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
+                //comprobante.obtieneDatosEncabezado();
+                //if (Convert.ToBoolean(comprobante.retorno[0]))
+                //{
+                //    DataSet DatosComprobante = (DataSet)comprobante.retorno[1];
+
+                //    foreach (DataRow InfoComprobante in DatosComprobante.Tables[0].Rows)
+                //    {
+                //        RFC = InfoComprobante[14].ToString();
+                //        if (RFC == "MTE440316E54 ")
+                //        {
+                //            serie = "";
+                //        }
+                //        else
+                //        {
+                //            serie = "A";
+                //        }
+                //        Folio = InfoComprobante[0].ToString();
+                //        string[] folio2 = Folio.ToString().Split(new char[] { '-' });
+                //        Folio = folio2[1];
+                //        FormaDePago = InfoComprobante[1].ToString();
+                //        CondicionesDePago = "01";
+                //        SubTotal = Convert.ToDouble(InfoComprobante[3]);
+                //        subtotal2 = Convert.ToDecimal(InfoComprobante[3]);
+                //        SubTotal = Convert.ToDouble(subtotal2);
+                //        DescuentoTotal = Convert.ToDouble(InfoComprobante[4]);
+                //        Moneda = InfoComprobante[6].ToString();
+                //        TipoCambio = InfoComprobante[7].ToString();
+                //        total = Convert.ToDouble(InfoComprobante[5]);
+                //        TipoDoc = InfoComprobante[8].ToString();
+                //        if (TipoDoc == "NC")
+                //        {
+                //            TipoDeComprobante = "E";
+                //        }
+                //        else
+                //        {
+                //            TipoDeComprobante = "I";
+                //        }
+                //        MetodoPago = InfoComprobante[9].ToString();
+                //        LugarExpedicion = InfoComprobante[10].ToString();
+                //        if (LugarExpedicion.Length <= 4)
+
+                //            LugarExpedicion = "0" + LugarExpedicion;
+
+                //        Confirmacion = "";
+                //        //Agrega nodo Comprobande al XML
+                //        Fechas fecha = new Fechas();
+                //        DateTime fechaHoy = fecha.obtieneFechaLocal();
+                //        string dia, hora;
+                //        dia = fechaHoy.ToString("yyyy-MM-dd");
+                //        hora = fechaHoy.ToString("HH:mm:ss");
+                //        idreceptor = Convert.ToInt32(InfoComprobante[11]);
+                //        imptrastot = Convert.ToDouble(InfoComprobante[12]);
+                //        descuentoGlobal = Convert.ToDouble(InfoComprobante[13]);
+                //        objCfdi.agregarComprobante33(serie, Folio, dia + "T" + hora, "", "", 0, 0, "XXX", "", 0, "P", "", LugarExpedicion, Confirmacion);
+                //    }//
+                //}
+
+                ////Obtenemos la informacion del Emisor al XML
+                //FacturacionElectronica3 emisor = new FacturacionElectronica3();
+                //emisor.idEmisor = Convert.ToInt32(lblIdEmisor.Text);
+                //emisor.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
+                //emisor.obtieneInfoEmisor();
+                //if (Convert.ToBoolean(emisor.retorno[0]))
+                //{
+                //    DataSet DatosEmisor = (DataSet)emisor.retorno[1];
+                //    foreach (DataRow InfoEmisor in DatosEmisor.Tables[0].Rows)
+                //    {
+                //        //Agrega nodo Emisor al XML
+                //        EMISOR = InfoEmisor[0].ToString().Trim().ToUpper();
+                //        objCfdi.agregarEmisor(InfoEmisor[0].ToString().Trim(), InfoEmisor[1].ToString().Trim(), InfoEmisor[2].ToString().Trim());
+                //    }
+                //}
+                ////Obtenemos la informacion del Receptor XML
+                //FacturacionElectronica3 receptor = new FacturacionElectronica3();
+                //receptor.idReceptor = idreceptor;
+                //receptor.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
+                //receptor.obtieneInfoReceptor();
+                //if (Convert.ToBoolean(receptor.retorno[0]))
+                //{
+                //    DataSet DatosReceptor = (DataSet)receptor.retorno[1];
+                //    foreach (DataRow InfoReceptor in DatosReceptor.Tables[0].Rows)
+                //    {
+                //        //Agrega nodo Receptor al XML
+                //        RECEPTOR = InfoReceptor[0].ToString();
+                //        objCfdi.agregarReceptor(InfoReceptor[0].ToString().Trim(), InfoReceptor[1].ToString().Trim(), "", "", InfoReceptor[2].ToString().Trim());
+                //    }
+                //}
+
+
+                objCfdi.agregarConcepto("84111506", "", 1, "ACT", "", "Pago", 0, 0, 0);
+
+                //Obtenemos los datos de los conceptos
+                FacturacionElectronicaPagos conceptos = new FacturacionElectronicaPagos();
+                conceptos.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
+                conceptos.obtieneUUIDFOLIO();
+                string UUIDF = "", Fol = "", Par = "", SAnt = "", SP = "", SACT = "", formapago = "", metodpago = "";
+                if (Convert.ToBoolean(conceptos.retorno[0]))
+                {
+                    DataSet DatosConceptos = (DataSet)conceptos.retorno[1];
+
+                    foreach (DataRow InfoConceptos in DatosConceptos.Tables[0].Rows)
+                    {
+                        //Agrega nodo Conceptos con el impuesto de Traslado (Si es que tiene) al XML
+                        UUIDF = InfoConceptos[0].ToString();
+                        Fol = InfoConceptos[1].ToString();
+                        Par = InfoConceptos[2].ToString();
+                        SAnt = InfoConceptos[3].ToString();
+                        SP = InfoConceptos[4].ToString();
+                        SACT = InfoConceptos[5].ToString();
+                        formapago = InfoConceptos[6].ToString();
+                        metodpago = InfoConceptos[7].ToString();
+                    }
+                }
+
                 objCfdi.agregarComprobante33("Pago", "1", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "", "", 0, 0, "XXX", "", 0, "P", "", "39300", "");
                 objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
                 objCfdi.agregarReceptor("XAXX010101000", "Cliente general", "", "", "P01");

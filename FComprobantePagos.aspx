@@ -1165,11 +1165,10 @@
                                     <MasterTableView CommandItemDisplay="Bottom" AllowAutomaticInserts="false" CommandItemSettings-ShowAddNewRecordButton="True" SkinID="Metro" DataKeyNames="IdFila">
                                         <CommandItemSettings ShowRefreshButton="false" ShowSaveChangesButton="true" ShowCancelChangesButton="false" AddNewRecordText="Agregar Concepto" SaveChangesText="Guardar Documento" />
                                         <Columns>
-                                            <telerik:GridTemplateColumn HeaderText="UUID" UniqueName="UUID">
+                                            <telerik:GridTemplateColumn HeaderText="UUID"  UniqueName="UUID">
                                                 <ItemTemplate>
                                                     <table style="text-align: center;">
                                                         <tr>
-                                                            <td class="text-left">UUID:</td>
                                                             <td class="text-right">
                                                                 <asp:TextBox ID="txtUUID" Width="270px" runat="server" />
                                                         </tr>
@@ -1181,7 +1180,6 @@
                                                     <table>
 
                                                         <tr>
-                                                            <td class="text-left">Folio:</td>
                                                             <td class="text-right">
                                                                 <asp:TextBox ID="txtFoliot" Width="70px" runat="server" Columns="2" Text="" AutoPostBack="true"></asp:TextBox>
                                                                 <cc1:FilteredTextBoxExtender ID="atxtFoliot" runat="server" TargetControlID="txtFoliot" FilterType="Custom, Numbers" ValidChars="." />
@@ -1190,12 +1188,39 @@
                                                     </table>
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
+
+                                            <telerik:GridTemplateColumn UniqueName="Fecha" HeaderText="Fecha">
+                                                <ItemTemplate>
+                                                    <table>
+
+                                                        <tr>
+                                                            <td class="text-right">
+                                                                <asp:TextBox ID="txtFecha" Width="90px" runat="server" Text="" AutoPostBack="true"></asp:TextBox>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </ItemTemplate>
+                                            </telerik:GridTemplateColumn>
+
+                                            <telerik:GridTemplateColumn UniqueName="Hora" HeaderText="Hora">
+                                                <ItemTemplate>
+                                                    <table>
+
+                                                        <tr>
+                                                            <td class="text-right">
+                                                                <asp:TextBox ID="txtHora" Width="70px" runat="server"  Text="" AutoPostBack="true"></asp:TextBox>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </ItemTemplate>
+                                            </telerik:GridTemplateColumn>
+
+
                                             <telerik:GridTemplateColumn UniqueName="Moneda" HeaderText="Moneda">
                                                 <ItemTemplate>
                                                     <table>
 
                                                         <tr>
-                                                            <td class="text-left">Moneda: </td>
                                                             <td class="text-right">
                                                                 <asp:Label ID="lblMoneda" runat="server" Text="Peso"></asp:Label></td>
                                                         </tr>
@@ -1210,7 +1235,7 @@
                                                             <td class="text-left">
                                                                 <telerik:RadDropDownList runat="server" ID="ddlParcialidad"
                                                                     DataSourceID="SqlParcialidad" DataTextField="Parcialidad"
-                                                                    DataValueField="IdParcialidad" Width="100" AutoPostBack="true" OnSelectedIndexChanged="ddlParcialidad_SelectedIndexChanged">
+                                                                    DataValueField="IdParcialidad" Width="50px" AutoPostBack="true" OnSelectedIndexChanged="ddlParcialidad_SelectedIndexChanged">
                                                                 </telerik:RadDropDownList>
                                                             </td>
                                                         </tr>
@@ -1222,9 +1247,7 @@
                                                 <ItemTemplate>
                                                     <table>
                                                         <tr>
-                                                            <td>Anterior:
-                                                                <br />
-                                                                <asp:TextBox ID="txtSaldoAnterior" Width="100px" Text="0.00" runat="server" />
+                                                            <td><asp:TextBox ID="txtSaldoAnterior" Width="80px" Text="0.00" runat="server" />
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -1234,9 +1257,7 @@
                                                 <ItemTemplate>
                                                     <table>
                                                         <tr>
-                                                            <td>Pagado:
-                                                                <br />
-                                                                <asp:TextBox ID="txtIportePagado" Width="100px" Text="0.00" OnTextChanged="txtIportePagado_TextChanged" runat="server" />
+                                                            <td><asp:TextBox ID="txtIportePagado" Width="80px" Text="0.00" OnTextChanged="txtIportePagado_TextChanged" runat="server" />
                                                             </td>
                                                         </tr>
                                                     </table>
