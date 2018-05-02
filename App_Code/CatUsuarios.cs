@@ -1,7 +1,5 @@
 ﻿using System;
-
 using System.Data;
-
 using E_Utilities;
 
 /// <summary>

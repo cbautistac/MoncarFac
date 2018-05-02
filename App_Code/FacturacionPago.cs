@@ -870,7 +870,8 @@ public class FacturacionPago
             ejecuta.baseDatos = "PVW";
             //recuperar el uuid, de la factura timbrada.
             //sql = "select IdConcepto,DetDesc,DetCantidad,IdUnid,DetValorUnit,cast(Subtotal as decimal(15,5)) as Subtotal,DetPorcDesc,DetImpDesc,cast(Subtotal as decimal(15,5)),IdTras3,IdTras2,cast(DetImpTras3 as decimal(15,5)) as DetImpTras3,cast(DetImpTras2 as decimal(15,4)) as DetImpTras2,IdRet1,IdRet2,cast(DetImpRet1 as decimal(15,5)) as DetImpRet1,cast(DetImpRet2 as decimal(15,5)) as DetImpRet2,cast(Total as decimal(15,5)) as Total,ClaveProdServ,ClaveUnidad_SAT  from DetCFD_f where IdCfd=" + idCfd.ToString() + " order by IdDetCfd asc";
-            sql = "select UUIDFactura,Folio,Parcialidad,SaldoAnterior, SaldoPagado,SaldoActual from recepcion_pagos_f where IdCfdant=" + idCfd.ToString();
+            //sql = "select UUIDFactura,Folio,Parcialidad,SaldoAnterior, SaldoPagado,SaldoActual from recepcion_pagos_f where IdCfdant=" + idCfd.ToString();
+            sql = "select IdConcepto as UUID,IdUnid as Folio, DetCantidad as Parcialidad,DetValorUnit as SaldoAnterior,IdTras1 as ImportePagado,DetImpTras1 as SaldoActual from DetPagos_f where IdCfd=" + idCfd.ToString() + " order by IdDetCfd asc";
             info = ejecuta.dataSet(sql);
         }
 

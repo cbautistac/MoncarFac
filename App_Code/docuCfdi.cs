@@ -198,6 +198,136 @@ public class docuCfdi
     }
 
 
+    public static object[] RecePago(docuCfdi dcfd, List<detDocCfdi> lstDet)
+    {
+        int CfdiID = -1;
+        object[] result = new object[2] { false, "" };
+        conn = new SqlConnection(ConfigurationManager.ConnectionStrings["PVW"].ToString());
+        if (conn.State == ConnectionState.Open)
+            conn.Close();
+
+        comm = new SqlCommand();
+
+        using (comm)
+        {
+            try
+            {
+                conn.Open();
+                comm.Connection = conn;
+                comm.CommandType = CommandType.StoredProcedure;
+                comm.CommandText = "ComprobantePago";
+                comm.Parameters.Add("@IdCfd", SqlDbType.Int).Direction = ParameterDirection.Output;
+                comm.Parameters.AddWithValue("@idEmisor", dcfd.IdEmisor).DbType = DbType.Int32;
+                comm.Parameters.AddWithValue("@idRecep", dcfd.IdRecep).DbType = DbType.Int32;
+                comm.Parameters.AddWithValue("@IdTipoDoc", dcfd.IdTipoDoc).DbType = DbType.Int32;
+                comm.Parameters.AddWithValue("@IdMoneda", dcfd.IdMoneda).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncEmRfc", dcfd.strEmRfc).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncReRfc", dcfd.strReRfc).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncFecha", dcfd.dteFecha).DbType = DbType.Date;
+                comm.Parameters.AddWithValue("@EncHora", dcfd.strHora).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncSello", dcfd.strEncSello).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncCertificado", dcfd.strEncCert).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncTimbre", dcfd.strEncTimbre).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncFormaPago", dcfd.strEncFormaPago).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncCondicionesPago", dcfd.strEncCondicionesPago).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncMetodoPago", dcfd.strEncMetodoPago).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncDescGlob", dcfd.decEncDescGlob).SqlDbType = SqlDbType.Real;
+                comm.Parameters.AddWithValue("@EncDescMO", dcfd.decEncDescMO).SqlDbType = SqlDbType.Real;
+                comm.Parameters.AddWithValue("@EncDescRefaccion", dcfd.decEncDescRefaccion).SqlDbType = SqlDbType.Real;
+                comm.Parameters.AddWithValue("@EncDescGlobImp", dcfd.decEncDescGlobImp).SqlDbType = SqlDbType.Float;
+                comm.Parameters.AddWithValue("@EncSubTotal", dcfd.decEncSubTotal).SqlDbType = SqlDbType.Decimal;
+                comm.Parameters.AddWithValue("@EncDesc", dcfd.decEncDesc).SqlDbType = SqlDbType.Float;
+                comm.Parameters.AddWithValue("@EncImpTras", dcfd.decEncImpTras).SqlDbType = SqlDbType.Float;
+                comm.Parameters.AddWithValue("@EncImpRet", dcfd.decEncImpRet).SqlDbType = SqlDbType.Float;
+                comm.Parameters.AddWithValue("@EncTotal", dcfd.decEncTotal).SqlDbType = SqlDbType.Decimal;
+                comm.Parameters.AddWithValue("@EncMotivoDescuento", dcfd.strEncMotDesc).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncTipoCambio", dcfd.floEncTipoCambio).SqlDbType = SqlDbType.Float;
+                comm.Parameters.AddWithValue("@EncNota", dcfd.strEncNota).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncReferencia", dcfd.strEncReferencia).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncNumCtaPago", dcfd.strEncNumCtaPago).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncRegimen", dcfd.strEncRegimen).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncLugarExpedicion", dcfd.strEncLugarExpedicion).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@EncFolioImpresion", dcfd.strEncFolioImp).SqlDbType = SqlDbType.Float;
+                comm.Parameters.AddWithValue("@EncSerieImpresion", dcfd.strEncSerieImp).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@idCfdAnt", dcfd.idCfdAnt).DbType = DbType.Int32;
+                comm.Parameters.AddWithValue("@idUsoCFDI", dcfd.idUsoCFDI).DbType = DbType.String;
+                comm.Parameters.AddWithValue("@tipoDocumento", dcfd.tipoDocumento).DbType = DbType.String;
+
+                DataTable dt = new DataTable();
+                dt.Columns.Add("IdDetCfd", typeof(int));
+                dt.Columns.Add("IdEmisor", typeof(int));
+                dt.Columns.Add("IdConcepto", typeof(string));
+                dt.Columns.Add("IdUnid", typeof(string));
+                dt.Columns.Add("DetCantidad", typeof(string));
+                dt.Columns.Add("CoValorUnit", typeof(string));
+                dt.Columns.Add("IdTras1", typeof(string));
+                dt.Columns.Add("DetImpTras1", typeof(string));
+                dt.Columns.Add("IdTras2", typeof(string));
+                dt.Columns.Add("DetImpTras2", typeof(string));
+                dt.Columns.Add("IdTras3", typeof(string));
+                dt.Columns.Add("DetImpTras3", typeof(string));
+                dt.Columns.Add("IdRet1", typeof(string));
+                dt.Columns.Add("DetImpRet1", typeof(string));
+                dt.Columns.Add("IdRet2", typeof(string));
+                dt.Columns.Add("DetImpRet2", typeof(string));
+                dt.Columns.Add("DetPorcDesc", typeof(string));
+                dt.Columns.Add("DetImpDesc", typeof(string));
+                dt.Columns.Add("Subtotal", typeof(string));
+                dt.Columns.Add("Total", typeof(string));
+                dt.Columns.Add("DetDesc", typeof(string));
+                dt.Columns.Add("CoCuentaPredial", typeof(string));
+                dt.Columns.Add("CveProdSerSAT", typeof(string));
+                dt.Columns.Add("CveUnidadSAT", typeof(string));
+
+                foreach (detDocCfdi det in lstDet)
+                {
+                    //asd.IdDetCfd = fila.ItemIndex + 1;
+                    //asd.IdEmisor = Convert.ToInt16(IDEmisor);
+                    //asd.UUID = ((TextBox)fila.FindControl("txtUUID")).Text;
+                    //asd.Folio = ((TextBox)fila.FindControl("txtFoliot")).Text;
+                    //asd.Parcialidad = parcialidad.SelectedValue;
+                    //asd.SaldoAnt = ((TextBox)fila.FindControl("txtSaldoAnterior")).Text;
+                    //asd.SaldoPagado = ((TextBox)fila.FindControl("txtIportePagado")).Text;
+                    //asd.SaldoAct = ((Label)fila.FindControl("lblSaldoActual")).Text;
+                    //asd.Total = Convert.ToDecimal(((Label)fila.FindControl("lblSaldoActual")).Text);
+                    //asd.ProductoSAT = "84111506";
+                    //asd.ClaveUnidadSAT = "ACT";
+                    //asd.idcfdAnterior = Request.QueryString["fact"];
+
+                    object[] valores = {det.IdDetCfd, det.IdEmisor, det.UUID, det.Folio, det.Parcialidad, det.SaldoAnt, det.SaldoPagado, det.SaldoAct,
+                        det.Total, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, det.ProductoSAT, det.ClaveUnidadSAT };
+                    dt.Rows.Add(valores);
+                }
+
+                comm.Parameters.AddWithValue("@tbDetConceptos", dt);
+                comm.Parameters.Add("@respuesta", SqlDbType.VarChar, 256).Direction = ParameterDirection.Output;
+
+                int filAfec = comm.ExecuteNonQuery();
+
+                string resp = comm.Parameters["@IdCfd"].Value.ToString();
+                CfdiID = Convert.ToInt32(comm.Parameters["@IdCfd"].Value);
+                result[0] = true;
+                if (CfdiID != -1)
+                    result[1] = CfdiID;
+                else
+                    result[1] = resp;
+            }
+            catch (Exception ex)
+            {
+                result[1] = ex.Message;
+            }
+            finally
+            {
+                comm.Dispose();
+                conn.Close();
+                conn.Dispose();
+            }
+        }
+
+        return result;
+    }
+
     public static object[] GuardaRecepcionPago(docuCfdi dcfd, List<detDocCfdi> lstDet)
     {
         //int CfdiID = -1;

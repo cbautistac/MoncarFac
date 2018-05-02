@@ -850,7 +850,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
             {
                 e.Canceled = true;
                 bolErrConcpto = true;
-                string strErr = "alert('El Identificador ya la descripción del Concepto deben ser capturados.');";
+                string strErr = "alert('El UUID y el Folio deben ser capturados.');";
                 ScriptManager.RegisterStartupScript(this, typeof(Page), "AlertScritpt", strErr, true);
             }
             else if (ctrlPostBack == "SaveChangesButton")
@@ -959,7 +959,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                             //Falta Guardarlos en la nueva tabla Recepcion_pagos_f
                         }
 
-                        object[] result = docuCfdi.GuardaRecepcionPago(docCfd, lstDetCfd);
+                        object[] result = docuCfdi.RecePago(docCfd, lstDetCfd);
                         string scriptMnsj;
                         //if (Convert.ToBoolean(result[0]))
                         //{
