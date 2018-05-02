@@ -777,8 +777,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                                     int IdFila = fila.ItemIndex;
                                     string txtIdent = ((TextBox)fila.FindControl("txtUUID")).Text;  //UUID Factura de donde proviene
                                     string txtConcepto = ((TextBox)fila.FindControl("txtFoliot")).Text.Trim();  //Folio de la factura de donde proviene
-                                    //string radnumCantidad = ((RadNumericTextBox)fila.FindControl("radnumCantidad")).Value.ToString();   
-                                    //string ddlUnidad = ((DropDownList)fila.FindControl("ddlUnidad")).SelectedValue;
+                                    string radnumCantidad = ((TextBox)fila.FindControl("txtFecha")).Text.Trim();
+                                    string ddlUnidad = ((TextBox)fila.FindControl("txtHora")).Text.Trim();
                                     //string txtValUnit = ((TextBox)fila.FindControl("txtValUnit")).Text.Trim();
                                     //string lblImporte = ((Label)fila.FindControl("lblImporte")).Text;
                                     //string txtPtjeDscto = ((TextBox)fila.FindControl("txtPtjeDscto")).Text.Trim();
@@ -801,8 +801,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                                     comLoc.Parameters["IdRecep"].Value = IdRecep;
                                     comLoc.Parameters["txtIdent"].Value = txtIdent;
                                     comLoc.Parameters["txtConcepto"].Value = txtConcepto;
-                                    comLoc.Parameters["radnumCantidad"].Value =     "0";//radnumCantidad;
-                                    comLoc.Parameters["ddlUnidad"].Value =          "0";//ddlUnidad;
+                                    comLoc.Parameters["radnumCantidad"].Value =     radnumCantidad;//radnumCantidad;
+                                    comLoc.Parameters["ddlUnidad"].Value =          ddlUnidad;//ddlUnidad;
                                     comLoc.Parameters["txtValUnit"].Value =         "0";//txtValUnit;
                                     comLoc.Parameters["lblImporte"].Value =         "0";//lblImporte;
                                     comLoc.Parameters["txtPtjeDscto"].Value =       "0";//txtPtjeDscto;
@@ -1184,6 +1184,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                         int IdFila = dr.GetInt16(0);
                         ((TextBox)e.Item.FindControl("txtUUID")).Text = dr["txtIdent"].ToString();
                         ((TextBox)e.Item.FindControl("txtFoliot")).Text = dr["txtConcepto"].ToString();
+                        ((TextBox)e.Item.FindControl("txtFecha")).Text = dr["radnumCantidad"].ToString();
+                        ((TextBox)e.Item.FindControl("txtHora")).Text = dr["ddlUnidad"].ToString();
                         //((RadNumericTextBox)e.Item.FindControl("radnumCantidad")).Value = Convert.ToDouble(dr["radnumCantidad"].ToString());
                         //DropDownList ddlUni = (DropDownList)e.Item.FindControl("ddlUnidad");
                         //valorCombo(ddlUni, dr["ddlUnidad"].ToString());
