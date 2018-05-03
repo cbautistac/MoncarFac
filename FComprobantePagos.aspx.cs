@@ -701,7 +701,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
         //DropDownList ddlUnidad = masterTable.GetBatchColumnEditor("ddlUnidad") as DropDownList;
     }
 
-    //Guardar la info en la BD
+    //Guardadito la info en la BD
     protected void grdDocu_ItemCommand(object sender, GridCommandEventArgs e)
     {
         if (status != "P")
@@ -777,8 +777,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                                     int IdFila = fila.ItemIndex;
                                     string txtIdent = ((TextBox)fila.FindControl("txtUUID")).Text;  //UUID Factura de donde proviene
                                     string txtConcepto = ((TextBox)fila.FindControl("txtFoliot")).Text.Trim();  //Folio de la factura de donde proviene
-                                    string radnumCantidad = ((TextBox)fila.FindControl("txtFecha")).Text.Trim();
-                                    string ddlUnidad = ((TextBox)fila.FindControl("txtHora")).Text.Trim();
+                                    //string radnumCantidad = ((TextBox)fila.FindControl("txtFecha")).Text.Trim();
+                                    //string ddlUnidad = ((TextBox)fila.FindControl("txtHora")).Text.Trim();
                                     //string txtValUnit = ((TextBox)fila.FindControl("txtValUnit")).Text.Trim();
                                     //string lblImporte = ((Label)fila.FindControl("lblImporte")).Text;
                                     //string txtPtjeDscto = ((TextBox)fila.FindControl("txtPtjeDscto")).Text.Trim();
@@ -801,8 +801,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                                     comLoc.Parameters["IdRecep"].Value = IdRecep;
                                     comLoc.Parameters["txtIdent"].Value = txtIdent;
                                     comLoc.Parameters["txtConcepto"].Value = txtConcepto;
-                                    comLoc.Parameters["radnumCantidad"].Value =     radnumCantidad;//radnumCantidad;
-                                    comLoc.Parameters["ddlUnidad"].Value =          ddlUnidad;//ddlUnidad;
+                                    comLoc.Parameters["radnumCantidad"].Value =     "0";//radnumCantidad;
+                                    comLoc.Parameters["ddlUnidad"].Value =          "0";//ddlUnidad;
                                     comLoc.Parameters["txtValUnit"].Value =         "0";//txtValUnit;
                                     comLoc.Parameters["lblImporte"].Value =         "0";//lblImporte;
                                     comLoc.Parameters["txtPtjeDscto"].Value =       "0";//txtPtjeDscto;
@@ -872,7 +872,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                     docCfd.strEncCondicionesPago = txtCondicionesPago.Text.ToUpper();
                     docCfd.strEncRegimen = ddlRegimenSAT.Text.ToUpper(); //Regimen Fiscal SAT
                     docCfd.strEncNumCtaPago = txtCtaPago.Text.ToUpper();
-                    docCfd.floEncTipoCambio = float.Parse(txtTipoCambio.Text);
+                    //docCfd.floEncTipoCambio = float.Parse(txtTipoCambio.Text);
                     docCfd.strEncNota = txtNotaFac.Text;
                     docCfd.idUsoCFDI = ddlUsoCFDI.SelectedValue;
                     docCfd.tipoDocumento = cmbTipoDocumento.Text;
@@ -931,6 +931,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
 
                         docCfd.tipoFactura = ddlTipoFactura.SelectedValue;
 
+                        string Folios = "", UUIDs = "";
+
                         List<detDocCfdi> lstDetCfd = new List<detDocCfdi>();
                         foreach (GridDataItem fila in grdDocu.Items)
                         {
@@ -951,17 +953,44 @@ public partial class FComprobantePagos : System.Web.UI.Page
                             asd.SaldoPagado = ((TextBox)fila.FindControl("txtIportePagado")).Text;
                             asd.SaldoAct = ((Label)fila.FindControl("lblSaldoActual")).Text;
                             asd.Total = Convert.ToDecimal(((Label)fila.FindControl("lblSaldoActual")).Text);
-                            asd.FECHA = ((TextBox)fila.FindControl("txtFecha")).Text;
-                            asd.HORA = ((TextBox)fila.FindControl("txtHora")).Text;
+                            //asd.FECHA = ((TextBox)fila.FindControl("txtFecha")).Text;
+                            //asd.HORA = ((TextBox)fila.FindControl("txtHora")).Text;
                             asd.ProductoSAT = "84111506";
                             asd.ClaveUnidadSAT = "ACT";
                             asd.idcfdAnterior = Request.QueryString["fact"];
+                            Folios += ((TextBox)fila.FindControl("txtFoliot")).Text+",";
+                            UUIDs += ((TextBox)fila.FindControl("txtUUID")).Text+",";
 
                             lstDetCfd.Add(asd);
                             //Falta Guardarlos en la nueva tabla Recepcion_pagos_f
                         }
 
-                        object[] result = docuCfdi.RecePago(docCfd, lstDetCfd);
+                        Folios = Folios.Remove(Folios.Length - 1);
+                        UUIDs = UUIDs.Remove(UUIDs.Length - 1);
+
+                        try{
+                            BaseDatos ejecuciones = new BaseDatos();
+                            object[] result;
+                            object[] obj = ejecuciones.insertUpdateDelete("update Recepcion_Pagos_F set SaldoAnterior='" + Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblSaldoAnterior")).Text) +
+                                "', SaldoPagado='" + Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblSaldoAnterior")).Text) +
+                                "', SaldoActual='" + Convert.ToDecimal(((Label)fvwResumen.Row.FindControl("lblSaldoAnterior")).Text) + 
+                                "', Folio='" + Folios + "', UUIDFactura='" + UUIDs + "',EncMetodopago='"+ ddlMetodoPagoSAT.Text.ToUpper() + "', EncFormaPago='"+ ddlFormaPagoSAT.Text.ToUpper() + "' EN where idcfd='" + Convert.ToInt32(Request.QueryString["fact"]) + "'");
+                            if (Convert.ToBoolean(obj[1]))
+                            {
+                                result = docuCfdi.RecePago(docCfd, lstDetCfd);
+                                string scriptError = string.Format("alert('La Factura se guardo Correctamente');");
+                                ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptError, true);
+                            }
+                            else {
+                                string scriptError = string.Format("alert('Hubo un error al guardar el documento');");
+                                ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptError, true);
+                            }
+
+
+                        } 
+                        catch (Exception es){}
+
+                        //object[] result = docuCfdi.RecePago(docCfd, lstDetCfd);
                         string scriptMnsj;
                         //if (Convert.ToBoolean(result[0]))
                         //{
@@ -1135,6 +1164,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                         //    scriptMnsj = string.Format("alert('Hubo un problema al guardar el documento: {0}');", Convert.ToString(infoFacura[1]));
                         //    ScriptManager.RegisterStartupScript(this, typeof(Page), "Scritpt", scriptMnsj, true);
                         //}
+                        
 
                     }
                     else
@@ -1144,8 +1174,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                     }
 
                 }
-                string scriptError = string.Format("alert('La Factura se guardo Correctamente');");
-                ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptError, true);
+                
                 lnkTimbrar.Visible = true;
             }
         }
@@ -1184,8 +1213,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                         int IdFila = dr.GetInt16(0);
                         ((TextBox)e.Item.FindControl("txtUUID")).Text = dr["txtIdent"].ToString();
                         ((TextBox)e.Item.FindControl("txtFoliot")).Text = dr["txtConcepto"].ToString();
-                        ((TextBox)e.Item.FindControl("txtFecha")).Text = dr["radnumCantidad"].ToString();
-                        ((TextBox)e.Item.FindControl("txtHora")).Text = dr["ddlUnidad"].ToString();
+                        //((TextBox)e.Item.FindControl("txtFecha")).Text = dr["radnumCantidad"].ToString();
+                        //((TextBox)e.Item.FindControl("txtHora")).Text = dr["ddlUnidad"].ToString();
                         //((RadNumericTextBox)e.Item.FindControl("radnumCantidad")).Value = Convert.ToDouble(dr["radnumCantidad"].ToString());
                         //DropDownList ddlUni = (DropDownList)e.Item.FindControl("ddlUnidad");
                         //valorCombo(ddlUni, dr["ddlUnidad"].ToString());
@@ -1407,8 +1436,8 @@ public partial class FComprobantePagos : System.Web.UI.Page
                             ((TextBox)fila.FindControl("txtSaldoAnterior")).Text = Convert.ToDecimal(dato[10].ToString()).ToString("F2");
                             ((TextBox)fila.FindControl("txtIportePagado")).Text = Convert.ToDecimal(dato[19].ToString()).ToString("F2");
                             ((Label)fila.FindControl("lblSaldoActual")).Text = Convert.ToDecimal(dato[20].ToString()).ToString();
-                            ((TextBox)fila.FindControl("txtFecha")).Text = dato[14].ToString();
-                            ((TextBox)fila.FindControl("txtHora")).Text = dato[15].ToString();
+                            //((TextBox)fila.FindControl("txtFecha")).Text = dato[14].ToString();
+                            //((TextBox)fila.FindControl("txtHora")).Text = dato[15].ToString();
                             //((RadDropDownList)fila.FindControl("ddlIvaTras")).SelectedValue = dato[12].ToString();
                             //((Label)fila.FindControl("lblIvaTras")).Text = Convert.ToDecimal(dato[14].ToString()).ToString("F2");
                             //((RadDropDownList)fila.FindControl("ddlIeps")).SelectedValue = dato[13].ToString();
@@ -1458,6 +1487,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 grdDocu.DataBind();
             }
 
+            CalculaTotal();
             //CalculaSubTotBruto(0);
         }
         catch (Exception ex)
@@ -2227,30 +2257,30 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 //}
 
 
-                objCfdi.agregarConcepto("84111506", "", 1, "ACT", "", "Pago", 0, 0, 0);
+                //objCfdi.agregarConcepto("84111506", "", 1, "ACT", "", "Pago", 0, 0, 0);
 
                 //Obtenemos los datos de los conceptos
                 FacturacionElectronicaPagos conceptos = new FacturacionElectronicaPagos();
                 conceptos.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
                 conceptos.obtieneUUIDFOLIO();
-                string UUIDF = "", Fol = "", Par = "", SAnt = "", SP = "", SACT = "", formapago = "", metodpago = "";
-                if (Convert.ToBoolean(conceptos.retorno[0]))
-                {
-                    DataSet DatosConceptos = (DataSet)conceptos.retorno[1];
+                //string UUIDF = "", Fol = "", Par = "", SAnt = "", SP = "", SACT = "", formapago = "", metodpago = "";
+                //if (Convert.ToBoolean(conceptos.retorno[0]))
+                //{
+                //    DataSet DatosConceptos = (DataSet)conceptos.retorno[1];
 
-                    foreach (DataRow InfoConceptos in DatosConceptos.Tables[0].Rows)
-                    {
-                        //Agrega nodo Conceptos con el impuesto de Traslado (Si es que tiene) al XML
-                        UUIDF = InfoConceptos[0].ToString();
-                        Fol = InfoConceptos[1].ToString();
-                        Par = InfoConceptos[2].ToString();
-                        SAnt = InfoConceptos[3].ToString();
-                        SP = InfoConceptos[4].ToString();
-                        SACT = InfoConceptos[5].ToString();
-                        formapago = InfoConceptos[6].ToString();
-                        metodpago = InfoConceptos[7].ToString();
-                    }
-                }
+                //    foreach (DataRow InfoConceptos in DatosConceptos.Tables[0].Rows)
+                //    {
+                //        //Agrega nodo Conceptos con el impuesto de Traslado (Si es que tiene) al XML
+                //        UUIDF = InfoConceptos[0].ToString();
+                //        Fol = InfoConceptos[1].ToString();
+                //        Par = InfoConceptos[2].ToString();
+                //        SAnt = InfoConceptos[3].ToString();
+                //        SP = InfoConceptos[4].ToString();
+                //        SACT = InfoConceptos[5].ToString();
+                //        formapago = InfoConceptos[6].ToString();
+                //        metodpago = InfoConceptos[7].ToString();
+                //    }
+                //}
 
                 objCfdi.agregarComprobante33("Pago", "1", System.DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"), "", "", 0, 0, "XXX", "", 0, "P", "", "39300", "");
                 objCfdi.agregarEmisor("LAN7008173R5", "CINDEMEX SA DE CV", "601");
@@ -2258,8 +2288,13 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 //
                 objCfdi.agregarConcepto("84111506", "", 1, "ACT", "", "Pago", 0, 0, 0);
                 // aquí empezamos con el Complemento de Pagos
+
                 objCfdi.agregarPago10("2017-07-18T12:00:00", "02", "MXN", 0, 3, "", "", "", "12345678901", "", "", "", "", "", "");
-                objCfdi.agregarPago10DoctoRelacionado("39BF5250-E071-4DDB-828D-6669E1C1C886", "", "", "MXN", 0, "PPD", 1, 1000, 1, 999);
+
+
+                objCfdi.agregarPago10DoctoRelacionado("39BF5250-E071-4DDB-828D-6669E1C1C886", "", "1", "MXN", 0, "PPD", 1, 1000, 1, 999);
+                objCfdi.agregarPago10DoctoRelacionado("39BF5250-E071-4DDB-828D-6669E1C1C887", "", "2", "MXN", 0, "PPD", 1, 1000, 1, 999);
+                objCfdi.agregarPago10DoctoRelacionado("39BF5250-E071-4DDB-828D-6669E1C1C888", "", "3", "MXN", 0, "PPD", 1, 1000, 1, 999);
                 //objCfdi.agregarPago10DoctoRelacionado("39BF5250-E071-4DDB-828D-6669E1C1C886", "", "", "MXN", 0, "PPD", 1, 1000, 1, 999);
                 //objCfdi.agregarPago10Impuestos(0, 10);
                 //objCfdi.agregarPago10Traslado("002", "Tasa", 0.1600, 5);
@@ -2329,27 +2364,27 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 System.IO.File.WriteAllText(Directorio + "\\" + ArchivoXMLTimbrado + ".xml", txtXML, System.Text.UTF8Encoding.UTF8);
                 FacturacionElectronica3 guarda = new FacturacionElectronica3();
                 guarda.idCFD = Convert.ToInt32(Request.QueryString["fact"]);
-                guarda.actualizaFactura(UUID, fecha[0], fecha[1], SelloSAT, certificadoSAT, SelloCFDI, T_Certificado, noCertificado);
+                //guarda.actualizaFactura(UUID, fecha[0], fecha[1], SelloSAT, certificadoSAT, SelloCFDI, T_Certificado, noCertificado);
                 string directorioTimbrado = Directorio + "\\" + ArchivoXMLTimbrado + ".xml";
                 string cadenaOriginal = objCfdi.CadenaOriginal;
                 //Damos valores para generar el QR
                 objCfdi.GenerarQrCodeArchivo(Directorio + "\\" + objCfdi.UUID + "-" + Request.QueryString["fact"].ToString() + ".jpg");
 
                 byte[] QR = objCfdi.ConvertirQrCode("Hola");
-                guarda.actualizaTimbrado(Convert.ToInt32(Request.QueryString["fact"]), certificadoSAT, FechaTimbrado, UUID, SelloSAT, SelloCFDI, QR, directorioTimbrado, cadenaOriginal, noCertificado);
-                if (Convert.ToBoolean(guarda.retorno[1]))
-                {
-                    lblError.Text = "Factura timbrada correctamente";
-                    lnkBuscar.Visible = false;
-                    lnkBuscaRec.Visible = false;
-                    lnkBuscaMonedas.Visible = false;
-                    multiPagina.PageViews[3].Enabled = multiPagina.PageViews[4].Enabled = false;
-                    fvwResumen.Enabled = false;
-                    ddlFormaPagoSAT.Enabled = txtCondicionesPago.Enabled = ddlMetodoPagoSAT.Enabled = ddlRegimenSAT.Enabled = txtCtaPago.Enabled = true;
-                    lnkTimbrar.Visible = false;
-                    //Response.Redirect("FacturacionGral.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + Request.QueryString["fact"]); 
-                    retorno = true;
-                }
+                //guarda.actualizaTimbrado(Convert.ToInt32(Request.QueryString["fact"]), certificadoSAT, FechaTimbrado, UUID, SelloSAT, SelloCFDI, QR, directorioTimbrado, cadenaOriginal, noCertificado);
+                //if (Convert.ToBoolean(guarda.retorno[1]))
+                //{
+                //    lblError.Text = "Factura timbrada correctamente";
+                //    lnkBuscar.Visible = false;
+                //    lnkBuscaRec.Visible = false;
+                //    lnkBuscaMonedas.Visible = false;
+                //    multiPagina.PageViews[3].Enabled = multiPagina.PageViews[4].Enabled = false;
+                //    fvwResumen.Enabled = false;
+                //    ddlFormaPagoSAT.Enabled = txtCondicionesPago.Enabled = ddlMetodoPagoSAT.Enabled = ddlRegimenSAT.Enabled = txtCtaPago.Enabled = true;
+                //    lnkTimbrar.Visible = false;
+                //    //Response.Redirect("FacturacionGral.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + Request.QueryString["fact"]); 
+                //    retorno = true;
+                //}
             }
             else
             {
@@ -2538,17 +2573,65 @@ public partial class FComprobantePagos : System.Web.UI.Page
 
     }
 
-    protected void txtIportePagado_TextChanged(object sender, EventArgs e)
-    {
+    protected void CalculaTotal(){
         decimal a = 0;
-        decimal total = 0;
+        decimal SaldoAnterior = 0, total = 0, SaldoActual = 0;
         foreach (GridDataItem item in grdDocu.Items)
         {
             a = Convert.ToDecimal(((TextBox)item.FindControl("txtSaldoAnterior")).Text) - Convert.ToDecimal(((TextBox)item.FindControl("txtIportePagado")).Text);
             ((Label)item.FindControl("lblSaldoActual")).Text = a.ToString();
-            total = Convert.ToDecimal(((TextBox)item.FindControl("txtIportePagado")).Text);
+            total = total + Convert.ToDecimal(((TextBox)item.FindControl("txtIportePagado")).Text);
+            SaldoAnterior = SaldoAnterior + Convert.ToDecimal(((TextBox)item.FindControl("txtSaldoAnterior")).Text);
+            SaldoActual = SaldoActual + Convert.ToDecimal(((Label)item.FindControl("lblSaldoActual")).Text);
         }
 
         ((Label)fvwResumen.Row.FindControl("lblTotal")).Text = total.ToString();
+        ((Label)fvwResumen.Row.FindControl("lblSaldoAnterior")).Text = SaldoAnterior.ToString();
+        ((Label)fvwResumen.Row.FindControl("lblSaldoActual")).Text = SaldoActual.ToString();
+    }
+
+    protected void txtIportePagado_TextChanged(object sender, EventArgs e)
+    {
+        CalculaTotal();   
+    }
+
+    protected void lnkValidar_Click(object sender, EventArgs e)
+    {
+        LinkButton btn = (LinkButton)sender;
+        string id = btn.CommandArgument.ToString();
+        bool valida=false;
+        DataTable ds = new DataTable();
+        if (Session["info"] != null)
+        {
+            ds = (DataTable)Session["info"];
+            foreach (DataRow r in ds.Rows)
+            {
+                if (r[0].ToString() == id)
+                {
+                    valida = ValidarFactura(r[3].ToString(), r[4].ToString());
+                    break;
+                }
+            }
+            if (valida)
+            {
+                string scriptMnsj = string.Format("alert('Esta Factura es Valida');");
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptMnsj, true);
+            }
+            else {
+                string scriptMnsj = string.Format("alert('Esta Factura no existe, si es una factura externa Digite correctamente el UUID y el Folio de la Factura y guarde el documento');");
+                ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptMnsj, true);
+            }
+        }
+        else
+            lblError.Text = "Hubo un Error al realizar la Validacion";
+        
+
+
+    }
+
+    protected bool ValidarFactura(string UUID, string Folio) {
+        BaseDatos bd = new BaseDatos();
+        object[] val = bd.scalarInt("select count(*) from enccfd_f where EncFolioUUID='" + UUID + "' and EncReferencia like'%-" + Folio + "'");
+        return Convert.ToBoolean(val[1]);
     }
 }

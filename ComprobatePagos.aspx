@@ -124,16 +124,16 @@
                                         <%--<telerik:GridBoundColumn FilterCheckListEnableLoadOnDemand="true" DataField="tipo" HeaderStyle-Width="120px" FilterControlAltText="Filtro Tipo" HeaderText="Tipo Factura" SortExpression="tipo" UniqueName="tipo" Resizable="true"/>--%>
                                         <telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkSeleccionaDocumento" runat="server" CausesValidation="False"
-                                                CssClass="btn btn-info t14" CommandName="Select" ToolTip="Seleccionar" CommandArgument='<%# Eval("idcfdAnt") %>'
+                                                CssClass="btn btn-info t14" CommandName="Select" ToolTip="Seleccionar" CommandArgument='<%# Eval("idCfd") %>'
                                                 OnClick="lnkSeleccionaDocumento_Click"><i class="fa fa-check-square"></i></asp:LinkButton></ItemTemplate>
                                         </telerik:GridTemplateColumn>
                                         <telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkCancelar" runat="server" CausesValidation="False" CssClass="btn btn-danger t14"
-                                                CommandName="Cancel" ToolTip="Cancelar" OnClick="btnCancelar_Click" OnClientClick="return confirm('¿Está seguro de cancelar la Factura?')" CommandArgument='<%# Eval("idcfdAnt") %>'><i class="fa fa-ban"></i></asp:LinkButton></ItemTemplate>
+                                                CommandName="Cancel" ToolTip="Cancelar" OnClick="btnCancelar_Click" OnClientClick="return confirm('¿Está seguro de cancelar la Factura?')" CommandArgument='<%# Eval("idCfd") %>'><i class="fa fa-ban"></i></asp:LinkButton></ItemTemplate>
                                         </telerik:GridTemplateColumn>
                                         <telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkImprimir" runat="server" OnClick="lnkImprimir_Click" CausesValidation="False"
-                                                CssClass="btn btn-primary t14" CommandName="Print" ToolTip="Imprimir" CommandArgument='<%# Eval("idcfdAnt") %>'><i class="fa fa-print"></i></asp:LinkButton></ItemTemplate>
+                                                CssClass="btn btn-primary t14" CommandName="Print" ToolTip="Imprimir" CommandArgument='<%# Eval("idCfd") %>'><i class="fa fa-print"></i></asp:LinkButton></ItemTemplate>
                                         </telerik:GridTemplateColumn>
                                         <%--<telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkEnviar" runat="server" CausesValidation="False" CssClass="btn btn-success t14"  onclick="lnkEnviarCorreo_Click"

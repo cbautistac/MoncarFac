@@ -16,7 +16,7 @@
             var oWnd = $find("<%=modalEmisores.ClientID%>");
             oWnd.close();
         }
-         
+
         function abreWinRec() {
             var oWnd = $find("<%=modalReceptores.ClientID%>");
             oWnd.setUrl('');
@@ -825,7 +825,7 @@
                         SelectedIndex="0" Skin="MetroTouch">
                         <Tabs>
                             <telerik:RadTab Text="Emisor" />
-                            <telerik:RadTab Text="Lugar de Expedición" Visible="false"/>
+                            <telerik:RadTab Text="Lugar de Expedición" Visible="false" />
                             <telerik:RadTab Text="Receptor" />
                             <telerik:RadTab Text="Detalles" />
                             <telerik:RadTab Text="Información Adicional" />
@@ -1051,7 +1051,7 @@
                                 <asp:SqlDataSource ID="SqlDsFormaPagoSAT" runat="server" SelectCommand="select claveformapago,descripcion from c_FormaPago_F" ConnectionString='<%$ ConnectionStrings:PVW %>'></asp:SqlDataSource>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Debe indicar la Forma de Pago" Text="*" CssClass="errores" ControlToValidate="ddlFormaPagoSAT" ValidationGroup="factura"></asp:RequiredFieldValidator>
                             </div>
-                           
+
                             <div class="col-lg-2 col-sm-2 text-left">
                                 <asp:Label ID="Label60" runat="server" Text="Condiciones de Pago: " CssClass="textoBold"></asp:Label>
                             </div>
@@ -1165,7 +1165,7 @@
                                     <MasterTableView CommandItemDisplay="Bottom" AllowAutomaticInserts="false" CommandItemSettings-ShowAddNewRecordButton="True" SkinID="Metro" DataKeyNames="IdFila">
                                         <CommandItemSettings ShowRefreshButton="false" ShowSaveChangesButton="true" ShowCancelChangesButton="false" AddNewRecordText="Agregar Concepto" SaveChangesText="Guardar Documento" />
                                         <Columns>
-                                            <telerik:GridTemplateColumn HeaderText="UUID"  UniqueName="UUID">
+                                            <telerik:GridTemplateColumn HeaderText="UUID" UniqueName="UUID">
                                                 <ItemTemplate>
                                                     <table style="text-align: center;">
                                                         <tr>
@@ -1189,7 +1189,17 @@
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
 
-                                            <telerik:GridTemplateColumn UniqueName="Fecha" HeaderText="Fecha">
+                                            <telerik:GridTemplateColumn HeaderText="Validar">
+                                                <ItemTemplate>
+                                                    <div class="fa-3x">
+                                                        <i>
+                                                    <asp:LinkButton ID="lnkValidar"  runat="server" CssClass="btn" OnClick="lnkValidar_Click" OnClientClick="return confirm('¿Validar si existe?')" CommandArgument='<%# Eval("idFila") %>'><i class="fa fa-cog fa-spin"></i></asp:LinkButton>
+                                                            </i>
+                                                        </div>
+                                                </ItemTemplate>
+                                            </telerik:GridTemplateColumn>
+
+                                            <%--<telerik:GridTemplateColumn UniqueName="Fecha" HeaderText="Fecha">
                                                 <ItemTemplate>
                                                     <table>
 
@@ -1208,15 +1218,15 @@
 
                                                         <tr>
                                                             <td class="text-right">
-                                                                <asp:TextBox ID="txtHora" Width="70px" runat="server"  Text="" AutoPostBack="true"></asp:TextBox>
+                                                                <asp:TextBox ID="txtHora" Width="70px" runat="server" Text="" AutoPostBack="true"></asp:TextBox>
                                                             </td>
                                                         </tr>
                                                     </table>
                                                 </ItemTemplate>
-                                            </telerik:GridTemplateColumn>
+                                            </telerik:GridTemplateColumn>--%>
 
 
-                                            <telerik:GridTemplateColumn UniqueName="Moneda" HeaderText="Moneda">
+                                            <%--<telerik:GridTemplateColumn UniqueName="Moneda" HeaderText="Moneda">
                                                 <ItemTemplate>
                                                     <table>
 
@@ -1227,7 +1237,7 @@
 
                                                     </table>
                                                 </ItemTemplate>
-                                            </telerik:GridTemplateColumn>
+                                            </telerik:GridTemplateColumn>--%>
                                             <telerik:GridTemplateColumn UniqueName="Parcialidad" HeaderText="Parcialidad">
                                                 <ItemTemplate>
                                                     <table class="text-left">
@@ -1247,7 +1257,8 @@
                                                 <ItemTemplate>
                                                     <table>
                                                         <tr>
-                                                            <td><asp:TextBox ID="txtSaldoAnterior" Width="80px" Text="0.00" runat="server" />
+                                                            <td>
+                                                                <asp:TextBox ID="txtSaldoAnterior" Width="80px" Text="0.00" runat="server" />
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -1257,7 +1268,8 @@
                                                 <ItemTemplate>
                                                     <table>
                                                         <tr>
-                                                            <td><asp:TextBox ID="txtIportePagado" Width="80px" Text="0.00" OnTextChanged="txtIportePagado_TextChanged" runat="server" />
+                                                            <td>
+                                                                <asp:TextBox ID="txtIportePagado" Width="80px" Text="0.00" OnTextChanged="txtIportePagado_TextChanged" runat="server" />
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -1279,7 +1291,7 @@
                                     <HeaderContextMenu RenderMode="Lightweight"></HeaderContextMenu>
                                 </telerik:RadGrid>
                                 <asp:SqlDataSource runat="server" ID="SqlParcialidad" ConnectionString='<%$ ConnectionStrings:PVW %>' SelectCommand="SELECT * from Parcialidad_f"></asp:SqlDataSource>
-                                </asp:Panel>
+                            </asp:Panel>
                             <div>
                                 <asp:Label runat="server" ID="lblMnsjs"></asp:Label>
                             </div>
@@ -1290,21 +1302,29 @@
                     <EmptyDataTemplate>
                         <table class="pad1m">
                             <tr>
-
-
-
-                                <%--<td>Forma de Pago:</td>--%>
+                                <td>Total Saldo Anterior: </td>
                                 <td>
-                                    <asp:Label ID="LabelFormaPago" Visible="false" runat="server" Text="Mostrar la forma de pago!!!"></asp:Label></td>
-                                <td style="width: 100px;">&nbsp;</td>
-                                <td>Total Pagado:</td>
-                                <td>
-                                    <asp:Label ID="lblTotal" runat="server" Text="0.00"></asp:Label></td>
+                                    <asp:Label ID="lblSaldoAnterior" runat="server" Text="0.00"></asp:Label></td>
                             </tr>
-                            
                         </table>
+                        <table class="pad1m">
+                            <tr>
+                            <td>Total Pagado: </td>
+                            <td>
+                                <asp:Label ID="lblTotal" runat="server" Text="0.00"></asp:Label></td>
+                            </tr>
+                        </table>
+                        <table class="pad1m">
+                            <tr>
+                        <td>Total Saldo Actual: </td>
+                        <td>
+                            <asp:Label ID="lblSaldoActual" runat="server" Text="0.00"></asp:Label></td>
+                        </tr>
+                            </table>
+
+
                     </EmptyDataTemplate>
-                    <ItemTemplate>
+                    <%--<ItemTemplate>
                         <table class="pad1m">
                             
                                 <td style="width: 100px;">&nbsp;</td>
@@ -1320,7 +1340,7 @@
                         <asp:LinkButton ID="EditButton" runat="server" CausesValidation="False" CommandName="Edit" Text="Editar" />
                         &nbsp;<asp:LinkButton ID="DeleteButton" runat="server" CausesValidation="False" CommandName="Delete" Text="Eliminar" />
                         &nbsp;<asp:LinkButton ID="NewButton" runat="server" CausesValidation="False" CommandName="New" Text="Nuevo" />
-                    </ItemTemplate>
+                    </ItemTemplate>--%>
                 </asp:FormView>
 
 
@@ -1441,7 +1461,7 @@
                         <asp:Parameter Name="IdCfd" Type="Int32" />
                     </UpdateParameters>
                 </asp:SqlDataSource>
-               <%-- <asp:SqlDataSource ID="SqlDataSource3" runat="server" ConnectionString='<%$ ConnectionStrings:PVW %>'
+                <%-- <asp:SqlDataSource ID="SqlDataSource3" runat="server" ConnectionString='<%$ ConnectionStrings:PVW %>'
                     DeleteCommand="DELETE FROM [DetCFD_f] WHERE [IdDetCfd] = @IdDetCfd" InsertCommand="INSERT INTO [DetCFD_f] ([IdCfd], [IdConcepto], [IdUnid], [DetCantidad], [DetValorUnit], [IdTras1], [DetImpTras1], [IdTras2], [DetImpTras2], [IdRet1], [DetImpRet1], [IdRet2], [DetImpRet2], [DetPorcDesc], [DetImpDesc], [Subtotal], [Total], [IdEmisor], [DetDesc], [CoCuentaPredial], [IdTras3], [DetImpTras3]) VALUES (@IdCfd, @IdConcepto, @IdUnid, @DetCantidad, @DetValorUnit, @IdTras1, @DetImpTras1, @IdTras2, @DetImpTras2, @IdRet1, @DetImpRet1, @IdRet2, @DetImpRet2, @DetPorcDesc, @DetImpDesc, @Subtotal, @Total, @IdEmisor, @DetDesc, @CoCuentaPredial, @IdTras3, @DetImpTras3)" SelectCommand="SELECT [IdDetCfd], [IdCfd], [IdConcepto], [IdUnid], [DetCantidad], [DetValorUnit], [IdTras1], [DetImpTras1], [IdTras2], [DetImpTras2], [IdRet1], [DetImpRet1], [IdRet2], [DetImpRet2], [DetPorcDesc], [DetImpDesc], [Subtotal], [Total], [IdEmisor], [DetDesc], [CoCuentaPredial], [IdTras3], [DetImpTras3] FROM [DetCFD]" UpdateCommand="UPDATE [DetCFD] SET [IdCfd] = @IdCfd, [IdConcepto] = @IdConcepto, [IdUnid] = @IdUnid, [DetCantidad] = @DetCantidad, [DetValorUnit] = @DetValorUnit, [IdTras1] = @IdTras1, [DetImpTras1] = @DetImpTras1, [IdTras2] = @IdTras2, [DetImpTras2] = @DetImpTras2, [IdRet1] = @IdRet1, [DetImpRet1] = @DetImpRet1, [IdRet2] = @IdRet2, [DetImpRet2] = @DetImpRet2, [DetPorcDesc] = @DetPorcDesc, [DetImpDesc] = @DetImpDesc, [Subtotal] = @Subtotal, [Total] = @Total, [IdEmisor] = @IdEmisor, [DetDesc] = @DetDesc, [CoCuentaPredial] = @CoCuentaPredial, [IdTras3] = @IdTras3, [DetImpTras3] = @DetImpTras3 WHERE [IdDetCfd] = @IdDetCfd">
                     <DeleteParameters>
                         <asp:Parameter Name="IdDetCfd" Type="Int32"></asp:Parameter>
@@ -1516,13 +1536,13 @@
                         <asp:LinkButton ID="lnkTimbrar" runat="server" CssClass="btn btn-primary t14"
                             OnClick="lnkTimbrar_Click"><i class="fa fa-rocket"></i><span>&nbsp;Timbrar Documento</span></asp:LinkButton>
                         <%-- Label introducido por jose luis --%>
-                            <asp:Label ID="unidadcant" runat="server" Text="1" Visible="False"></asp:Label> 
-                         
+                        <asp:Label ID="unidadcant" runat="server" Text="1" Visible="False"></asp:Label>
+
                     </div>
                     <div class="col-lg-3 col-ms-3 text-center">
-                        <asp:LinkButton ID="lnkDescargar"  runat="server" CssClass="btn btn-primary t14"
+                        <asp:LinkButton ID="lnkDescargar" runat="server" CssClass="btn btn-primary t14"
                             OnClick="lnkDescargarXML_Click"><i class="fa fa-download"></i><span>&nbsp;Descargar XML</span></asp:LinkButton>
-                            <asp:LinkButton ID="lnkDescargaTimbrado"  runat="server" CssClass="btn btn-primary t14" OnClick="lnkDescargaTimbrado_Click"><i class="fa fa-download"></i><span>&nbsp;Timbrado</span></asp:LinkButton>
+                        <asp:LinkButton ID="lnkDescargaTimbrado" runat="server" CssClass="btn btn-primary t14" OnClick="lnkDescargaTimbrado_Click"><i class="fa fa-download"></i><span>&nbsp;Timbrado</span></asp:LinkButton>
                     </div>
                     <div class="col-lg-3 col-ms-3 text-center">
                         <asp:LinkButton ID="lnkImprimir" runat="server" CssClass="btn btn-info t14"
