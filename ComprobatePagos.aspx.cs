@@ -53,7 +53,7 @@ public partial class ComprobatePagos : System.Web.UI.Page
     }
     protected void btnCancelar_Click(object sender, EventArgs e)
     {
-        /*LinkButton aut = (LinkButton)sender;
+        LinkButton aut = (LinkButton)sender;
         string[] arg = aut.CommandArgument.ToString().Split(new char[] { ';' });
         int fac = Convert.ToInt16(arg[0]);
 
@@ -112,45 +112,45 @@ public partial class ComprobatePagos : System.Web.UI.Page
             lblError.Text = "Se canceló el XML con éxito";
             ProdServ cesta = new ProdServ();
             cesta.fac = fac;
-            cesta.cambiaEstatus();
-            /* com.formulasistemas.www.ManejadordeTimbres foliosWSFormula = new com.formulasistemas.www.ManejadordeTimbres();
-             object[] info = new object[2] { false, "" };
-             string rfc = "MCA9505036Z2";
-             try
-             {
-                 int empresaActiva = foliosWSFormula.ObtieneEstatus(rfc);
-                 if (empresaActiva != 6)
-                 {
-                     info[0] = false;
-                     info[1] = "Error al timbrar documento: La empresa con R.F.C. " + rfc.Trim().ToUpper() + " esta dada de baja o no existe registrada en el catálogo de empresas de su proveedor de servicios; por favor contáctelo para resolver este error";
-                 }
-                 else
-                 {
-                     int foliosDisponibles = 0;
-                     foliosDisponibles = foliosWSFormula.ObtieneFoliosDisponibles(rfc);
-                     if (foliosDisponibles == 0)
-                     {
-                         info[0] = false;
-                         info[1] = "Error al timbrar documento: La empresa con R.F.C. " + rfc.Trim().ToUpper() + " no cuenta con folios disponibles; por favor a su proveedor de servicio de timbrado para solicitar más folios";
-                     }
-                     else
-                     {
-                         int cancelados = 0;
+            cesta.cambiaEstatusCompPago();
+            com.formulasistemas.www.ManejadordeTimbres foliosWSFormula = new com.formulasistemas.www.ManejadordeTimbres();
+            object[] info = new object[2] { false, "" };
+            string rfc = "MCA9505036Z2";
+            try
+            {
+                int empresaActiva = foliosWSFormula.ObtieneEstatus(rfc);
+                if (empresaActiva != 6)
+                {
+                    info[0] = false;
+                    info[1] = "Error al timbrar documento: La empresa con R.F.C. " + rfc.Trim().ToUpper() + " esta dada de baja o no existe registrada en el catálogo de empresas de su proveedor de servicios; por favor contáctelo para resolver este error";
+                }
+                else
+                {
+                    int foliosDisponibles = 0;
+                    foliosDisponibles = foliosWSFormula.ObtieneFoliosDisponibles(rfc);
+                    if (foliosDisponibles == 0)
+                    {
+                        info[0] = false;
+                        info[1] = "Error al timbrar documento: La empresa con R.F.C. " + rfc.Trim().ToUpper() + " no cuenta con folios disponibles; por favor a su proveedor de servicio de timbrado para solicitar más folios";
+                    }
+                    else
+                    {
+                        int cancelados = 0;
 
-                             cancelados = foliosWSFormula.Timbrar(rfc);
+                        cancelados = foliosWSFormula.Timbrar(rfc);
 
-                         foliosDisponibles = foliosWSFormula.ObtieneFoliosDisponibles(rfc);
-                     }
-                 }
-             }
-             catch (Exception ex)
-             {
+                        foliosDisponibles = foliosWSFormula.ObtieneFoliosDisponibles(rfc);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
 
-             }*/
-        /*}
+            }
+        }
         else
             lblError.Text = "Ocurrió un error al cancelar el XML: " + objCan.MensajeDeError;
-        */
+
     }
 
     public string LeerValorXML(string xml, string atributo, string nodo)

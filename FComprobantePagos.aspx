@@ -1217,7 +1217,7 @@
                                                 <ItemTemplate>
                                                     <div class="fa-3x">
                                                         <i>
-                                                            <asp:LinkButton ID="lnkValidar" runat="server" CssClass="btn" OnClick="lnkValidar_Click" OnClientClick="return confirm('¿Validar si existe?')" CommandArgument='<%# Eval("idFila") %>'><i class="fa fa-cog fa-spin"></i></asp:LinkButton>
+                                                            <asp:LinkButton ID="lnkValidar" Visible="false" runat="server" CssClass="btn" OnClick="lnkValidar_Click" OnClientClick="return confirm('¿Validar si existe?')" CommandArgument='<%# Eval("idFila") %>'><i class="fa fa-cog fa-spin"></i></asp:LinkButton>
                                                         </i>
                                                     </div>
                                                 </ItemTemplate>

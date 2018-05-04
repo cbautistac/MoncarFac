@@ -60,4 +60,10 @@ public class ProdServ
         sql = "update encCfd_f set encestatus='C' where idCFD=" + fac;
         retorno = ejecuta.insertUpdateDelete(sql);
     }
+
+    public void cambiaEstatusCompPago()
+    {
+        sql = "update Recepcion_pagos_F set encestatus='C' where idCFD=" + fac;
+        retorno = ejecuta.insertUpdateDelete(sql);
+    }
 }

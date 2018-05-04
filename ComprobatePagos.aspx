@@ -129,7 +129,7 @@
                                         </telerik:GridTemplateColumn>
                                         <telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkCancelar" runat="server" CausesValidation="False" CssClass="btn btn-danger t14"
-                                                CommandName="Cancel" ToolTip="Cancelar" OnClick="btnCancelar_Click" OnClientClick="return confirm('¿Está seguro de cancelar la Factura?')" CommandArgument='<%# Eval("idCfd") %>'><i class="fa fa-ban"></i></asp:LinkButton></ItemTemplate>
+                                                CommandName="Cancel" ToolTip="Cancelar" OnClick="btnCancelar_Click" OnClientClick="return confirm('¿Está seguro de cancelar el Complemento de Pago Actual?')" CommandArgument='<%# Eval("idCfd") %>'><i class="fa fa-ban"></i></asp:LinkButton></ItemTemplate>
                                         </telerik:GridTemplateColumn>
                                         <telerik:GridTemplateColumn HeaderStyle-Width="50px">
                                             <ItemTemplate><asp:LinkButton ID="lnkImprimir" runat="server" OnClick="lnkImprimir_Click" CausesValidation="False"

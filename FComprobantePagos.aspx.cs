@@ -139,6 +139,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
                 lnkBuscaRec.Visible = false;
                 lnkBuscaMonedas.Visible = false;
                 multiPagina.PageViews[3].Enabled = multiPagina.PageViews[4].Enabled = false;
+                grdDocu.Enabled = false;
                 fvwResumen.Enabled = false;
                 ddlFormaPagoSAT.Enabled = txtCondicionesPago.Enabled = ddlMetodoPagoSAT.Enabled = ddlRegimenSAT.Enabled = txtCtaPago.Enabled = true;
                 lnkTimbrar.Visible = false;
@@ -859,7 +860,7 @@ public partial class FComprobantePagos : System.Web.UI.Page
             if (ctrlPostBack == "SaveChangesButton")
             {
 
-                if (status != "T" && status != "C")
+                if (status != "T" && status != "C" && lblRfcReceptor.Text != "")
                 {
 
                     docuCfdi docCfd = new docuCfdi(int.Parse(lblEmisorFacturas.Text), int.Parse(lblReceptorFactura.Text), 1);
@@ -1175,6 +1176,20 @@ public partial class FComprobantePagos : System.Web.UI.Page
                         //}
 
 
+
+
+
+
+
+
+
+
+
+                    //Enviar la ultima factura que se creo
+
+
+                        //Response.Redirect("FComprobantePagos.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact="
+
                     }
                     else
                     {
@@ -1182,6 +1197,10 @@ public partial class FComprobantePagos : System.Web.UI.Page
                         ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptMnsj, true);
                     }
 
+                }
+                else{
+                    string scriptMnsj = string.Format("alert('Error al Intentar Guardar el Documento, Verifique que selecciono un Receptor');");
+                    ScriptManager.RegisterStartupScript(this, typeof(Page), "alertas", scriptMnsj, true);
                 }
 
                 lnkTimbrar.Visible = true;
@@ -1281,6 +1300,19 @@ public partial class FComprobantePagos : System.Web.UI.Page
         {
             if (status != "P")
             {
+                ((TextBox)e.Item.FindControl("txtUUID")).Enabled = false; 
+                ((TextBox)e.Item.FindControl("txtFoliot")).Enabled = false;
+                ((TextBox)e.Item.FindControl("txtSaldoAnterior")).Enabled = false;
+                ((TextBox)e.Item.FindControl("txtIportePagado")).Enabled = false;
+                ((Label)e.Item.FindControl("lblSaldoActual")).Enabled = false;
+                RadDropDownList ddlIsrRet = (RadDropDownList)e.Item.FindControl("ddlParcialidad");
+                //ddlIsrRet.SelectedValue = dr["ddlIsrRet"].ToString();
+                DropDownList ddlClaveProdSAT = (DropDownList)e.Item.FindControl("ddlClaveProdSAT");
+                //ddlClaveProdSAT.SelectedValue = dr["ddlClaveProdSAT"].ToString();
+                DropDownList ddlClaveUnidadSAT = (DropDownList)e.Item.FindControl("ddlClaveUnidadSAT");
+                //ddlClaveUnidadSAT.SelectedValue = dr["ddlClaveUnidadSAT"].ToString();
+
+
                 //((TextBox)e.Item.FindControl("txtIdent")).Enabled = false;
                 //((TextBox)e.Item.FindControl("txtConcepto")).Enabled = false;
                 //((RadNumericTextBox)e.Item.FindControl("radnumCantidad")).Enabled = false;
