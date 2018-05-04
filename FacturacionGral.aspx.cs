@@ -3458,10 +3458,7 @@ public partial class FacturacionGral : System.Web.UI.Page
 
         BaseDatos bd = new BaseDatos();
         string EnCaptura = "select count(*) from recepcion_pagos_f where idcfdant=" + factura + " and encestatus in('P','T','C')";
-        string MetodoPago = "select count(*) from EncCFD_f where idcfd=" + factura + " and EncMetodoPago in('PPD','PID')";
-        object[] T = bd.scalarInt(MetodoPago);
-        if (Convert.ToBoolean(T[1]))
-        {
+        
             object[] EC = bd.scalarInt(EnCaptura);
             if (Convert.ToBoolean(EC[1]))
             {
@@ -3477,17 +3474,13 @@ public partial class FacturacionGral : System.Web.UI.Page
                     "set @idcfd = (select top 1(idcfd) from recepcion_pagos_f order by idcfd desc);" +
                     "update recepcion_pagos_f set idcfd=@ID, idcfdant=@idcfd,EncFolioUUID='', EncFechaGenera=NULL,EncHoraGenera=NULL, EncEstatus='P',Folio=(select right(encreferencia,5) from enccfd_f where idcfd='"+factura+ "'), parcialidad=0, saldoanterior=(select enctotal from EncCFD_f where idcfd='"+factura+ "'), saldopagado=0,saldoactual=0,productosat='84111506',claveunidadsat='ACT', UUIDFactura=(select encfoliouuid from EncCFD_f where idcfd='"+factura+"') where IdCfd=@idcfd;" +
                     "insert into DetPagos_f (IdCfd,IdEmisor,IdConcepto,IdUnid,DetCantidad,DetValorUnit,IdTras1,DetImpTras1,IdTras2,DetImpTras2,IdDetCfd,DetDesc) " +
-                    "select idcfdAnt, IdEmisor, UUIDFactura, Folio, Parcialidad, SaldoAnterior, SaldoPagado, SaldoActual,EncFecha,EncHora,1,0 from Recepcion_Pagos_F where idcfdAnt='" + factura+"'";
+                    "select idcfd, IdEmisor, UUIDFactura, Folio, Parcialidad, SaldoAnterior, SaldoPagado, SaldoActual,EncFecha,EncHora,1,0 from Recepcion_Pagos_F where idcfdAnt='" + factura+"'";
                 object[] verdad = bd.insertUpdateDelete(query);
+            object[] fac = bd.scalarInt("select idcfd from recepcion_pagos_f where idcfdant="+factura+"");
                 if (Convert.ToBoolean(verdad[1]))
-                    Response.Redirect("FComprobantePagos.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + factura);
+                    Response.Redirect("FComprobantePagos.aspx?u=" + Request.QueryString["u"] + "&p=" + Request.QueryString["p"] + "&e=" + Request.QueryString["e"] + "&t=" + Request.QueryString["t"] + "&fact=" + fac[1]);
                 else
                     ErrorGeneral.Text = "Hubo un error al intentar generar el Pago, intentelo de nuevo";
             }
-        }
-        else{
-            ErrorGeneral.Visible = true;
-            ErrorGeneral.Text = "No puedes generar una Recepcion de Pago para esta Factura";
-        }
     }
 }

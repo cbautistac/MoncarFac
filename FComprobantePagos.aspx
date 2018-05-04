@@ -28,6 +28,19 @@
             oWnd.close();
         }
 
+
+<%--        function abreWinFac() {
+            var oWnd = $find("<%=modalFacturas.ClientID%>");
+            oWnd.setUrl('');
+            oWnd.show();
+        }
+
+        function cierraWinFac() {
+            var oWnd = $find("<%=modalFacturas.ClientID%>");
+            oWnd.close();
+        }--%>
+
+
         function abreWinCatRec() {
             var oWnd = $find("<%=modalReceptores.ClientID%>");
             oWnd.setUrl('');
@@ -804,10 +817,20 @@
         </ContentTemplate>
     </telerik:RadWindow>
 
+
+    <%--  --%>
+
+    
+    <%--  --%>
+
+    
+
+
+
     <div class="page-header">
         <!-- /BREADCRUMBS -->
         <div class="clearfix">
-            <h3 class="content-title pull-left">Facturaci&oacute;n</h3>
+            <h3 class="content-title pull-left">Complemento de Pago</h3>
         </div>
     </div>
     <asp:Panel ID="Panel4" runat="server" CssClass="panelCatalogos text-center" ScrollBars="Auto">
@@ -1189,13 +1212,14 @@
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
 
-                                            <telerik:GridTemplateColumn HeaderText="Validar">
+                                            <%-- Buscar --%>
+                                            <telerik:GridTemplateColumn HeaderText="">
                                                 <ItemTemplate>
                                                     <div class="fa-3x">
                                                         <i>
-                                                    <asp:LinkButton ID="lnkValidar"  runat="server" CssClass="btn" OnClick="lnkValidar_Click" OnClientClick="return confirm('¿Validar si existe?')" CommandArgument='<%# Eval("idFila") %>'><i class="fa fa-cog fa-spin"></i></asp:LinkButton>
-                                                            </i>
-                                                        </div>
+                                                            <asp:LinkButton ID="lnkValidar" runat="server" CssClass="btn" OnClick="lnkValidar_Click" OnClientClick="return confirm('¿Validar si existe?')" CommandArgument='<%# Eval("idFila") %>'><i class="fa fa-cog fa-spin"></i></asp:LinkButton>
+                                                        </i>
+                                                    </div>
                                                 </ItemTemplate>
                                             </telerik:GridTemplateColumn>
 
@@ -1309,18 +1333,18 @@
                         </table>
                         <table class="pad1m">
                             <tr>
-                            <td>Total Pagado: </td>
-                            <td>
-                                <asp:Label ID="lblTotal" runat="server" Text="0.00"></asp:Label></td>
+                                <td>Total Pagado: </td>
+                                <td>
+                                    <asp:Label ID="lblTotal" runat="server" Text="0.00"></asp:Label></td>
                             </tr>
                         </table>
                         <table class="pad1m">
                             <tr>
-                        <td>Total Saldo Actual: </td>
-                        <td>
-                            <asp:Label ID="lblSaldoActual" runat="server" Text="0.00"></asp:Label></td>
-                        </tr>
-                            </table>
+                                <td>Total Saldo Actual: </td>
+                                <td>
+                                    <asp:Label ID="lblSaldoActual" runat="server" Text="0.00"></asp:Label></td>
+                            </tr>
+                        </table>
 
 
                     </EmptyDataTemplate>
@@ -1461,62 +1485,7 @@
                         <asp:Parameter Name="IdCfd" Type="Int32" />
                     </UpdateParameters>
                 </asp:SqlDataSource>
-                <%-- <asp:SqlDataSource ID="SqlDataSource3" runat="server" ConnectionString='<%$ ConnectionStrings:PVW %>'
-                    DeleteCommand="DELETE FROM [DetCFD_f] WHERE [IdDetCfd] = @IdDetCfd" InsertCommand="INSERT INTO [DetCFD_f] ([IdCfd], [IdConcepto], [IdUnid], [DetCantidad], [DetValorUnit], [IdTras1], [DetImpTras1], [IdTras2], [DetImpTras2], [IdRet1], [DetImpRet1], [IdRet2], [DetImpRet2], [DetPorcDesc], [DetImpDesc], [Subtotal], [Total], [IdEmisor], [DetDesc], [CoCuentaPredial], [IdTras3], [DetImpTras3]) VALUES (@IdCfd, @IdConcepto, @IdUnid, @DetCantidad, @DetValorUnit, @IdTras1, @DetImpTras1, @IdTras2, @DetImpTras2, @IdRet1, @DetImpRet1, @IdRet2, @DetImpRet2, @DetPorcDesc, @DetImpDesc, @Subtotal, @Total, @IdEmisor, @DetDesc, @CoCuentaPredial, @IdTras3, @DetImpTras3)" SelectCommand="SELECT [IdDetCfd], [IdCfd], [IdConcepto], [IdUnid], [DetCantidad], [DetValorUnit], [IdTras1], [DetImpTras1], [IdTras2], [DetImpTras2], [IdRet1], [DetImpRet1], [IdRet2], [DetImpRet2], [DetPorcDesc], [DetImpDesc], [Subtotal], [Total], [IdEmisor], [DetDesc], [CoCuentaPredial], [IdTras3], [DetImpTras3] FROM [DetCFD]" UpdateCommand="UPDATE [DetCFD] SET [IdCfd] = @IdCfd, [IdConcepto] = @IdConcepto, [IdUnid] = @IdUnid, [DetCantidad] = @DetCantidad, [DetValorUnit] = @DetValorUnit, [IdTras1] = @IdTras1, [DetImpTras1] = @DetImpTras1, [IdTras2] = @IdTras2, [DetImpTras2] = @DetImpTras2, [IdRet1] = @IdRet1, [DetImpRet1] = @DetImpRet1, [IdRet2] = @IdRet2, [DetImpRet2] = @DetImpRet2, [DetPorcDesc] = @DetPorcDesc, [DetImpDesc] = @DetImpDesc, [Subtotal] = @Subtotal, [Total] = @Total, [IdEmisor] = @IdEmisor, [DetDesc] = @DetDesc, [CoCuentaPredial] = @CoCuentaPredial, [IdTras3] = @IdTras3, [DetImpTras3] = @DetImpTras3 WHERE [IdDetCfd] = @IdDetCfd">
-                    <DeleteParameters>
-                        <asp:Parameter Name="IdDetCfd" Type="Int32"></asp:Parameter>
-                    </DeleteParameters>
-                    <InsertParameters>
-                        <asp:Parameter Name="IdCfd" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="IdConcepto" Type="String"></asp:Parameter>
-                        <asp:Parameter Name="IdUnid" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetCantidad" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="DetValorUnit" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdTras1" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetImpTras1" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdTras2" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetImpTras2" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdRet1" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetImpRet1" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdRet2" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetImpRet2" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="DetPorcDesc" Type="Single"></asp:Parameter>
-                        <asp:Parameter Name="DetImpDesc" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="Subtotal" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="Total" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdEmisor" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetDesc" Type="String"></asp:Parameter>
-                        <asp:Parameter Name="CoCuentaPredial" Type="String"></asp:Parameter>
-                        <asp:Parameter Name="IdTras3" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetImpTras3" Type="Double"></asp:Parameter>
-                    </InsertParameters>
-                    <UpdateParameters>
-                        <asp:Parameter Name="IdCfd" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="IdConcepto" Type="String"></asp:Parameter>
-                        <asp:Parameter Name="IdUnid" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetCantidad" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="DetValorUnit" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdTras1" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetImpTras1" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdTras2" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetImpTras2" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdRet1" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetImpRet1" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdRet2" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetImpRet2" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="DetPorcDesc" Type="Single"></asp:Parameter>
-                        <asp:Parameter Name="DetImpDesc" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="Subtotal" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="Total" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdEmisor" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetDesc" Type="String"></asp:Parameter>
-                        <asp:Parameter Name="CoCuentaPredial" Type="String"></asp:Parameter>
-                        <asp:Parameter Name="IdTras3" Type="Int32"></asp:Parameter>
-                        <asp:Parameter Name="DetImpTras3" Type="Double"></asp:Parameter>
-                        <asp:Parameter Name="IdDetCfd" Type="Int32"></asp:Parameter>
-                    </UpdateParameters>
-                </asp:SqlDataSource>
-                --%>
+                
 
                 <asp:UpdateProgress ID="UpdateProgress2" runat="server" AssociatedUpdatePanelID="UpdatePanelFact">
                     <ProgressTemplate>
@@ -1532,6 +1501,15 @@
         <asp:UpdatePanel runat="server" ID="UpdatePanel1">
             <ContentTemplate>
                 <asp:Panel runat="server" ID="Panel1" CssClass="col-lg-12 col-ms-12 text-center pad1m">
+
+                    <div class="col-lg-3 col-ms-3 text-center">
+                        <%--                        <asp:LinkButton ID="btnAgregarFactura" runat="server" CssClass="btn btn-primary t14"
+                            OnClick="btnAgregarFactura_Click"><i class="fa fa-upload"></i><span>&nbsp;Agregar Factura</span></asp:LinkButton>
+                        <asp:LinkButton ID="btnBuscar" runat="server" CssClass="btn btn-success t14"
+                                OnClick="btnBuscar_Click" OnClientClick="cierraWinRec()"><i class="fa fa-check-circle"></i><span>&nbsp;Buscar</span></asp:LinkButton>--%>
+                       <%-- <asp:LinkButton ID="btnBuscar" runat="server" CssClass="btn btn-info t14" OnClick="btnBuscar_Click" OnClientClick="abreWinFac()"><i class="fa fa-search"></i></asp:LinkButton>--%>
+                    </div>
+
                     <div class="col-lg-3 col-ms-3 text-center">
                         <asp:LinkButton ID="lnkTimbrar" runat="server" CssClass="btn btn-primary t14"
                             OnClick="lnkTimbrar_Click"><i class="fa fa-rocket"></i><span>&nbsp;Timbrar Documento</span></asp:LinkButton>

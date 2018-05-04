@@ -50,6 +50,7 @@ public class ImprimeFacturaPago
         // Crear documento
         Document documento = new Document(iTextSharp.text.PageSize.LETTER);
         //documento.AddTitle("ComparativoCotizacion_E" + idEmpresa.ToString() + "_T" + idTaller.ToString() + "_Orden" + noOrden.ToString());
+
         string[] nombre = new string[2] { "", "" };
         try
         {
@@ -481,8 +482,8 @@ public class ImprimeFacturaPago
             double descuento = 0;
             try { descuento = descuentoGlobal + descuentoMoRef; } catch (Exception) { descuento = 0; }
             double neto = subtotal - descuento;
-            double total;
-            try { total = Convert.ToDouble(Convert.ToString(encabezado[26])); } catch (Exception) { total = 0; }
+            double total=0;
+            //try { total = Convert.ToDouble(Convert.ToString(encabezado[26])); } catch (Exception) { total = 0; }
             double iva;
             try { iva = Convert.ToDouble(Convert.ToString(encabezado[24])); } catch (Exception) { iva = 0; }
 
@@ -530,12 +531,15 @@ public class ImprimeFacturaPago
                 tituPagina.Border = 0;
                 tablaDetalle.AddCell(tituPagina);
 
+                total += Convert.ToDouble(fila[4]);
+
                 //impresion de SaldoActual 
                 tituPagina = new PdfPCell(new Phrase(fila[5].ToString(), FontFactory.GetFont("ARIAL", 7, iTextSharp.text.Font.NORMAL, BaseColor.BLACK)));
                 tituPagina.HorizontalAlignment = 1;
                 tituPagina.VerticalAlignment = 1;
                 tituPagina.Border = 0;
                 tablaDetalle.AddCell(tituPagina);
+
             }
 
             documento.Add(tablaDetalle);
@@ -554,10 +558,10 @@ public class ImprimeFacturaPago
             //total con letra tetxo
             Convertidores conversor = new Convertidores();
             
-            foreach (DataRow fila in detalle.Rows)
-            {
-                total = Convert.ToDouble(fila[4].ToString());
-            }
+            //foreach (DataRow fila in detalle.Rows)
+            //{
+            //    total = Convert.ToDouble(fila[4].ToString());
+            //}
 
             conversor._importe = total.ToString();
             tituPagina = new PdfPCell(new Phrase("Total con letra: " + Environment.NewLine + Environment.NewLine + Environment.NewLine + conversor.convierteMontoEnLetras().ToUpper().Trim(), FontFactory.GetFont("ARIAL", 7, iTextSharp.text.Font.NORMAL, BaseColor.BLACK)));
